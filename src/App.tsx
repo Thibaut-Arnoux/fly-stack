@@ -1,3 +1,5 @@
 export const App = () => {
-  return <>Welcome to ReacTanstack !</>;
+  const appName = import.meta.env.VITE_APP_NAME;
+
+  return <>Welcome to {appName} !</>;
 };
