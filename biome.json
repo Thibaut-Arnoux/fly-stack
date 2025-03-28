@@ -7,7 +7,14 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": ["./.vscode", "**/node_modules", "./tsconfig.*", "./dist"]
+    "ignore": [
+      "./.vscode",
+      "./tsconfig.*",
+      "./dist/**",
+      "./node_modules/**",
+      "./src/index.css",
+      "./src/routeTree.gen.ts"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -20,7 +27,10 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "a11y": {
+        "useValidAnchor": "off"
+      }
     }
   },
   "javascript": {

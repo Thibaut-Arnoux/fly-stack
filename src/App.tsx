@@ -1,5 +1,6 @@
-export const App = () => {
-  const appName = import.meta.env.VITE_APP_NAME;
+import { router } from '@/router';
+import { RouterProvider } from '@tanstack/react-router';
 
-  return <>Welcome to {appName} !</>;
+export const App = () => {
+  return <RouterProvider router={router} />;
 };

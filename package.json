@@ -1,5 +1,5 @@
 {
-  "name": "tanstack-app",
+  "name": "fly-stack",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -8,11 +8,16 @@
     "build": "tsc -b && vite build",
     "format": "biome check --linter-enabled=false --write",
     "lint": "biome lint",
+    "ci": "biome ci",
     "preview": "vite preview"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
     "@tailwindcss/vite": "^4.0.17",
+    "@tanstack/react-router": "^1.114.29",
+    "@tanstack/react-router-devtools": "^1.114.29",
+    "@tanstack/router-plugin": "^1.114.29",
+    "@types/node": "^22.13.14",
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",

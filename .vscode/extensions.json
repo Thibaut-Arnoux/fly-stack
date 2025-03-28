@@ -1,0 +1,11 @@
+{
+    "recommendations": [
+        "biomejs.biome",
+        "bradlc.vscode-tailwindcss",
+        "vitest.explorer",
+        "vivaxy.vscode-conventional-commits",
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        "Gruntfuggly.todo-tree"
+    ]
+}
