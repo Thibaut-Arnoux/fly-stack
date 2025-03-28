@@ -10,8 +10,8 @@
     "lint": "biome lint",
     "ci": "biome ci",
     "preview": "vite preview",
-    "server": "json-server db/db.json",
-    "server:build": "tsc -b tsconfig.db.json"
+    "server": "json-server server/db.json",
+    "server:build": "tsc -b tsconfig.server.json"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",

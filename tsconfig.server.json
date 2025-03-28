@@ -23,7 +23,7 @@
     "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
 
     /* Directory */
-    "outDir": "db/dist",
+    "outDir": "server/dist",
   },
-  "include": ["db/**/*"]
+  "include": ["server/**/*"]
 }
