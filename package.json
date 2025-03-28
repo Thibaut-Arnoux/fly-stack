@@ -9,7 +9,8 @@
     "format": "biome check --linter-enabled=false --write",
     "lint": "biome lint",
     "ci": "biome ci",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "server": "json-server db/db.json"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
@@ -23,6 +24,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "daisyui": "^5.0.9",
     "globals": "^15.15.0",
+    "json-server": "^1.0.0-beta.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwindcss": "^4.0.17",
