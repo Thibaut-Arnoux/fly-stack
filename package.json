@@ -10,7 +10,8 @@
     "lint": "biome lint",
     "ci": "biome ci",
     "preview": "vite preview",
-    "server": "json-server db/db.json"
+    "server": "json-server db/db.json",
+    "server:build": "tsc -b tsconfig.db.json"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
@@ -25,6 +26,7 @@
     "daisyui": "^5.0.9",
     "globals": "^15.15.0",
     "json-server": "^1.0.0-beta.3",
+    "ky": "^1.7.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwindcss": "^4.0.17",
