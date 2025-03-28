@@ -1,3 +1,5 @@
+import { Link } from '@tanstack/react-router';
+
 export const Navbar = () => {
   const appName = import.meta.env.VITE_APP_NAME;
 
@@ -24,44 +26,16 @@ export const Navbar = () => {
         </button>
         <ul className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
           <li>
-            <a>Item 1</a>
-          </li>
-          <li>
-            <a>Parent</a>
-            <ul className="p-2">
-              <li>
-                <a>Submenu 1</a>
-              </li>
-              <li>
-                <a>Submenu 2</a>
-              </li>
-            </ul>
-          </li>
-          <li>
-            <a>Item 3</a>
+            <Link to="/about">About</Link>
           </li>
         </ul>
       </div>
-      <a className="btn btn-ghost text-xl">{appName}</a>
+      <Link className="btn btn-ghost text-xl" to="/">
+        {appName}
+      </Link>
       <ul className="menu menu-horizontal px-1 hidden lg:flex">
         <li>
-          <a>Item 1</a>
-        </li>
-        <li>
-          <details>
-            <summary>Parent</summary>
-            <ul className="p-2">
-              <li>
-                <a>Submenu 1</a>
-              </li>
-              <li>
-                <a>Submenu 2</a>
-              </li>
-            </ul>
-          </details>
-        </li>
-        <li>
-          <a>Item 3</a>
+          <Link to="/about">About</Link>
         </li>
       </ul>
     </div>

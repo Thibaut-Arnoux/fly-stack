@@ -1,5 +1,6 @@
-import { Navbar } from '@components/Navbar';
+import { router } from '@/router';
+import { RouterProvider } from '@tanstack/react-router';
 
 export const App = () => {
-  return <Navbar />;
+  return <RouterProvider router={router} />;
 };

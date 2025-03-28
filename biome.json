@@ -8,11 +8,12 @@
   "files": {
     "ignoreUnknown": false,
     "ignore": [
-      "./src/index.css",
       "./.vscode",
-      "**/node_modules",
       "./tsconfig.*",
-      "./dist"
+      "./dist/**",
+      "./node_modules/**",
+      "./src/index.css",
+      "./src/routeTree.gen.ts"
     ]
   },
   "formatter": {
