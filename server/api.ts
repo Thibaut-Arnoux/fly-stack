@@ -2,28 +2,38 @@ import ky from 'ky';
 import { splitIdsIntoBatches } from './utils.js';
 import { idsSchema, itemsSchema } from './schemas.js';
 import type { Item } from './types.js';
+import type { ZodSchema } from 'zod';
 
-export const fetchItemData = async () => {
-  try {
-    // TODO: Add env variable
-    const responseIds = await ky.get('https://api.flyff.com/item');
-    const dataIds = await responseIds.json();
-    const ids = idsSchema.parse(dataIds);
-    const batches = splitIdsIntoBatches(ids, 100);
+const fetchIds = async (endpoint: string) => {
+  const response = await ky.get(process.env.FLYFF_API_BASE_URL + endpoint);
+  const data = await response.json();
+  const ids = idsSchema.parse(data);
 
-    const allItems: Item[] = [];
+  return ids;
+};
 
-    for (const batch of batches) {
-      const splittedIds = batch.join(',');
-      const responseItems = ky.get(`https://api.flyff.com/item/${splittedIds}`);
-      const dataItems = await responseItems.json();
-      const items = itemsSchema.parse(dataItems);
+const fetchDatas = async <T>(
+  endpoint: string,
+  schema: ZodSchema,
+): Promise<T[]> => {
+  const ids = await fetchIds(endpoint);
+  const batches = splitIdsIntoBatches(ids, 100);
+  const datas: T[] = [];
 
-      allItems.push(...items);
-    }
+  for (const batch of batches) {
+    const joinedIds = batch.join(',');
+    const response = ky.get(
+      `${process.env.FLYFF_API_BASE_URL + endpoint}/${joinedIds}`,
+    );
+    const data = await response.json();
+    const parsedData = schema.parse(data);
 
-    return allItems;
-  } catch (error) {
-    console.error('Error fetching item data:', error);
+    datas.push(...parsedData);
   }
+
+  return datas;
+};
+
+export const fetchItems = async () => {
+  return await fetchDatas<Item>('/item', itemsSchema);
 };

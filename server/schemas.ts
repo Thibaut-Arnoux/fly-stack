@@ -38,7 +38,10 @@ const spawnSchema = z.object({
 });
 
 export const itemSchema = z.object({
-  id: z.number().int(),
+  id: z
+    .number()
+    .int()
+    .transform((val) => String(val)),
   name: localizedStringSchema,
   description: localizedStringSchema,
   icon: z.string(),
