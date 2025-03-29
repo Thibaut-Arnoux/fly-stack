@@ -11,7 +11,7 @@
     "ci": "biome ci",
     "preview": "vite preview",
     "server": "json-server server/db.json",
-    "server:build": "tsc -b tsconfig.server.json"
+    "server:scrap": "tsc -b tsconfig.server.json && node server/dist/scraper.js"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
@@ -31,6 +31,7 @@
     "react-dom": "^19.0.0",
     "tailwindcss": "^4.0.17",
     "typescript": "~5.7.2",
-    "vite": "^6.2.3"
+    "vite": "^6.2.3",
+    "zod": "^3.24.2"
   }
 }
