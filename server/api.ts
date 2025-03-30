@@ -1,7 +1,7 @@
 import ky from 'ky';
 import { splitIdsIntoBatches } from './utils.js';
-import { idsSchema, itemsSchema } from './schemas.js';
-import type { Item } from './types.js';
+import { classesSchema, idsSchema, itemsSchema } from './schemas.js';
+import type { Class, Item } from './types.js';
 import type { ZodSchema } from 'zod';
 
 const fetchIds = async (endpoint: string) => {
@@ -36,4 +36,8 @@ const fetchDatas = async <T>(
 
 export const fetchItems = async () => {
   return await fetchDatas<Item>('/item', itemsSchema);
+};
+
+export const fetchClasses = async () => {
+  return await fetchDatas<Class>('/class', classesSchema);
 };

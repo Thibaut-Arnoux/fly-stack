@@ -4,30 +4,34 @@ import { z } from 'zod';
 const idSchema = z.number().int();
 export const idsSchema = z.array(idSchema);
 
-// items
 const localizedStringSchema = z.object({
   en: z.string(),
-  ar: z.string().optional(),
-  br: z.string().optional(),
-  cns: z.string().optional(),
-  de: z.string().optional(),
-  fi: z.string().optional(),
-  fil: z.string().optional(),
-  fr: z.string().optional(),
-  id: z.string().optional(),
-  it: z.string().optional(),
-  jp: z.string().optional(),
-  kr: z.string().optional(),
-  nl: z.string().optional(),
-  pl: z.string().optional(),
-  ru: z.string().optional(),
-  sp: z.string().optional(),
-  sw: z.string().optional(),
-  th: z.string().optional(),
-  tw: z.string().optional(),
-  vi: z.string().optional(),
+  ar: z.string(),
+  br: z.string(),
+  cns: z.string(),
+  de: z.string(),
+  fi: z.string(),
+  fil: z.string(),
+  fr: z.string(),
+  id: z.string(),
+  it: z.string(),
+  jp: z.string(),
+  kr: z.string(),
+  nl: z.string(),
+  pl: z.string(),
+  ru: z.string(),
+  sp: z.string(),
+  sw: z.string(),
+  th: z.string(),
+  tw: z.string(),
+  vi: z.string(),
 });
 
+const localizedStringOptionalSchema = localizedStringSchema.partial().extend({
+  en: localizedStringSchema.shape.en, // keep "en" required
+});
+
+// items
 const spawnSchema = z.object({
   world: z.number().int(),
   left: z.number().int(),
@@ -43,7 +47,7 @@ export const itemSchema = z.object({
     .int()
     .transform((val) => String(val)),
   name: localizedStringSchema,
-  description: localizedStringSchema,
+  description: localizedStringOptionalSchema,
   icon: z.string(),
   level: z.number().int(),
   element: z.string(),
@@ -63,3 +67,38 @@ export const itemSchema = z.object({
 });
 
 export const itemsSchema = z.array(itemSchema);
+
+// class
+export const classSchema = z.object({
+  id: z
+    .number()
+    .int()
+    .transform((val) => String(val)),
+  name: localizedStringSchema,
+  type: z.string(),
+  tree: z.string(),
+  icon: z.string(),
+  minLevel: z.number(),
+  maxLevel: z.number(),
+  hp: z.number(),
+  maxHP: z.string(),
+  fp: z.number(),
+  maxFP: z.string(),
+  mp: z.number(),
+  maxMP: z.string(),
+  attackSpeed: z.number(),
+  block: z.number(),
+  critical: z.number(),
+  autoAttackFactors: z.object({
+    sword: z.number(),
+    axe: z.number(),
+    staff: z.number(),
+    stick: z.number(),
+    knuckle: z.number(),
+    yoyo: z.number(),
+    bow: z.number(),
+    wand: z.number(),
+  }),
+});
+
+export const classesSchema = z.array(classSchema);
