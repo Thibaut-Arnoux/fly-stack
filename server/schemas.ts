@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ClassTypeEnumList } from './enums.js';
 
 // ids
 const idSchema = z.number().int();
@@ -75,7 +76,7 @@ export const classSchema = z.object({
     .int()
     .transform((val) => String(val)),
   name: localizedStringSchema,
-  type: z.string(),
+  type: z.enum(ClassTypeEnumList as [string, ...string[]]),
   tree: z.string(),
   icon: z.string(),
   minLevel: z.number(),

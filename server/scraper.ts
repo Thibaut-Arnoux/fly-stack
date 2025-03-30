@@ -4,10 +4,10 @@ import { writeObjectToFile } from './utils.js';
 
 (async () => {
   dotenv.config();
-  // TODO: Add logger in file / safe parse and log error
+  // TODO: Add logger in file / safe parse and log error / enums
   const db = {
-    items: await fetchItems(),
     classes: await fetchClasses(),
+    items: await fetchItems(),
   };
 
   writeObjectToFile('server/db.json', db);
