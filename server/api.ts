@@ -1,8 +1,8 @@
 import ky from 'ky';
-import { splitIdsIntoBatches } from './utils.js';
+import type { ZodSchema } from 'zod';
 import { classesSchema, idsSchema, itemsSchema } from './schemas.js';
 import type { Class, Item } from './types.js';
-import type { ZodSchema } from 'zod';
+import { splitIdsIntoBatches } from './utils.js';
 
 const fetchIds = async (endpoint: string) => {
   const response = await ky.get(process.env.FLYFF_API_BASE_URL + endpoint);

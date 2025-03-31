@@ -13,7 +13,8 @@
       "./dist/**",
       "./node_modules/**",
       "./src/index.css",
-      "./src/routeTree.gen.ts"
+      "./src/routeTree.gen.ts",
+      "./server/db.json"
     ]
   },
   "formatter": {

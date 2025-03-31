@@ -1,5 +1,5 @@
-import { fetchClasses, fetchItems } from './api.js';
 import dotenv from 'dotenv';
+import { fetchClasses, fetchItems } from './api.js';
 import { writeObjectToFile } from './utils.js';
 
 (async () => {
