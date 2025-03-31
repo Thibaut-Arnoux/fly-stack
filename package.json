@@ -2,14 +2,15 @@
   "name": "fly-stack",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "format": "biome check --linter-enabled=false --write",
     "lint": "biome lint",
     "ci": "biome ci",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "server": "json-server server/db.json",
+    "server:scrap": "tsc -b tsconfig.server.json && node server/dist/scraper.js"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
@@ -22,11 +23,15 @@
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
     "daisyui": "^5.0.9",
+    "dotenv": "^16.4.7",
     "globals": "^15.15.0",
+    "json-server": "^1.0.0-beta.3",
+    "ky": "^1.7.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwindcss": "^4.0.17",
     "typescript": "~5.7.2",
-    "vite": "^6.2.3"
+    "vite": "^6.2.3",
+    "zod": "^3.24.2"
   }
 }

@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    /* Modules */
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "ES2020",
+
+    /* Emit */
+    "declaration": true,
+    "sourceMap": true,
+    "noEmitOnError": true,
+
+    /* Interop Constraints */
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* Type Checking */
+    "strict": true,
+    "noImplicitAny": true,
+    "noUncheckedIndexedAccess": true,
+    "checkJs": true,
+
+    /* Completeness */
+    "skipLibCheck": true,
+
+    /* Directory */
+    "outDir": "server/dist",
+
+    /* Alias paths */
+    "paths": {
+      "@/*": ["./src/*"], // use to resolve correctly shared dependencies with client
+    }
+  },
+  "include": ["server/**/*"]
+}
