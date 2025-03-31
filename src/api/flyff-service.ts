@@ -1,4 +1,5 @@
 import { HttpClient } from '@/api/http-client';
+import { type Class, classesSchema } from '@/schemas/class';
 
 class FlyffService {
   private _httpClient: HttpClient;
@@ -17,12 +18,11 @@ class FlyffService {
   /**
    * Classes
    */
-  public getClasses = async () => {
+  public getClasses = async (): Promise<Class[]> => {
     try {
-      // TODO: add zod schema + return type
       const data = await this._httpClient.get(FlyffService.ENDPOINTS.CLASSES);
 
-      return data;
+      return classesSchema.parse(data);
     } catch (error: unknown) {
       throw new Error('An error occurred while getting items');
     }

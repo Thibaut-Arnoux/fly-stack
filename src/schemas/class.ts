@@ -3,10 +3,7 @@ import { localizedStringSchema } from '@/schemas/shared';
 import { z } from 'zod';
 
 export const classSchema = z.object({
-  id: z
-    .number()
-    .int()
-    .transform((val) => String(val)),
+  id: z.union([z.string(), z.number().int()]).transform((val) => String(val)),
   name: localizedStringSchema,
   type: z.enum(ClassTypeEnumList as [string, ...string[]]),
   tree: z.string(),
