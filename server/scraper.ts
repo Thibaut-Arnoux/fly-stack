@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
-import { fetchClasses, fetchItems } from './api.js';
-import { writeObjectToFile } from './utils.js';
+import { fetchClasses, fetchItems } from './api';
+import { writeObjectToFile } from './utils';
 
 (async () => {
   dotenv.config();

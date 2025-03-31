@@ -1,29 +1,35 @@
 {
   "compilerOptions": {
     /* Modules */
-    "module": "NodeNext",
-    "moduleResolution": "nodenext",
+    "module": "commonjs",
+    "moduleResolution": "node",
     "target": "ES2020",
 
     /* Emit */
-    "sourceMap": true,                                   /* Create source map files for emitted JavaScript files. */
-    "noEmitOnError": true,                               /* Disable emitting files if any type checking errors are reported. */
+    "declaration": true,
+    "sourceMap": true,
+    "noEmitOnError": true,
 
     /* Interop Constraints */
-    "esModuleInterop": true,                             /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
-    "forceConsistentCasingInFileNames": true,            /* Ensure that casing is correct in imports. */
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
 
     /* Type Checking */
-    "strict": true,                                      /* Enable all strict type-checking options. */
-    "noImplicitAny": true,                               /* Enable error reporting for expressions and declarations with an implied 'any' type. */
-    "noUncheckedIndexedAccess": true,                    /* Add 'undefined' to a type when accessed using an index. */
-    "checkJs": true,                                     /* Enable error reporting in type-checked JavaScript files. */
+    "strict": true,
+    "noImplicitAny": true,
+    "noUncheckedIndexedAccess": true,
+    "checkJs": true,
 
     /* Completeness */
-    "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
+    "skipLibCheck": true,
 
     /* Directory */
     "outDir": "server/dist",
+
+    /* Alias paths */
+    "paths": {
+      "@/*": ["./src/*"], // use to resolve correctly shared dependencies with client
+    }
   },
   "include": ["server/**/*"]
 }
