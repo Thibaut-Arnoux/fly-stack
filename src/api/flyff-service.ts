@@ -1,4 +1,4 @@
-import { HttpClient } from '@api/http-client';
+import { HttpClient } from '@/api/http-client';
 
 class FlyffService {
   private _httpClient: HttpClient;
