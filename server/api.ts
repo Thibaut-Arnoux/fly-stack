@@ -1,4 +1,3 @@
-import ky from 'ky';
 import type { ZodSchema } from 'zod';
 import { type Class, classesSchema } from '../src/schemas/class';
 import { type Item, itemsSchema } from '../src/schemas/item';
@@ -6,7 +5,7 @@ import { idsSchema } from '../src/schemas/shared';
 import { splitIdsIntoBatches } from './utils';
 
 const fetchIds = async (endpoint: string) => {
-  const response = await ky.get(process.env.FLYFF_API_BASE_URL + endpoint);
+  const response = await fetch(process.env.FLYFF_API_BASE_URL + endpoint);
   const data = await response.json();
   const ids = idsSchema.parse(data);
 
@@ -23,7 +22,7 @@ const fetchDatas = async <T>(
 
   for (const batch of batches) {
     const joinedIds = batch.join(',');
-    const response = ky.get(
+    const response = await fetch(
       `${process.env.FLYFF_API_BASE_URL + endpoint}/${joinedIds}`,
     );
     const data = await response.json();

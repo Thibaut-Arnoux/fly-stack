@@ -1,3 +1,6 @@
+const moduleAlias = require('module-alias');
+moduleAlias.addAlias('@', `${__dirname}/../src`);
+
 import dotenv from 'dotenv';
 import { fetchClasses, fetchItems } from './api';
 import { writeObjectToFile } from './utils';
