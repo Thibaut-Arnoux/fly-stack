@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { type ZodSchema, z } from 'zod';
 
 // ids
 const idSchema = z.number().int();
@@ -34,3 +34,16 @@ export const localizedStringOptionalSchema = localizedStringSchema
   .extend({
     en: localizedStringSchema.shape.en, // keep "en" required
   });
+
+// paginated
+export const paginatedSchema = <T extends ZodSchema>(schema: T) => {
+  return z.object({
+    first: z.number(),
+    prev: z.number().nullable(),
+    next: z.number().nullable(),
+    last: z.number(),
+    pages: z.number(),
+    items: z.number(),
+    data: z.array(schema),
+  });
+};

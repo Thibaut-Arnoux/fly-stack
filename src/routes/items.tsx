@@ -20,7 +20,7 @@ function Items() {
   return (
     <div className="p-2">
       <h3>Items :</h3>
-      {items.map((item) => (
+      {items.data.map((item) => (
         <div key={item.id}>
           <h4>{item.name.en}</h4>
         </div>
