@@ -14,10 +14,7 @@ const spawnSchema = z.object({
 });
 
 export const itemSchema = z.object({
-  id: z
-    .number()
-    .int()
-    .transform((val) => String(val)),
+  id: z.union([z.string(), z.number().int()]).transform((val) => String(val)),
   name: localizedStringSchema,
   description: localizedStringOptionalSchema,
   icon: z.string(),

@@ -1,5 +1,6 @@
 import { HttpClient } from '@/api/http-client';
 import { type Class, classesSchema } from '@/schemas/class';
+import { type Item, itemsSchema } from '@/schemas/item';
 
 class FlyffService {
   private _httpClient: HttpClient;
@@ -24,18 +25,18 @@ class FlyffService {
 
       return classesSchema.parse(data);
     } catch (error: unknown) {
-      throw new Error('An error occurred while getting items');
+      throw new Error('An error occurred while getting classes');
     }
   };
 
   /**
    * Items
    */
-  public getItems = async () => {
+  public getItems = async (): Promise<Item[]> => {
     try {
-      // TODO: add zod schema + return type
       const data = await this._httpClient.get(FlyffService.ENDPOINTS.ITEMS);
-      return data;
+
+      return itemsSchema.parse(data);
     } catch (error: unknown) {
       throw new Error('An error occurred while getting items');
     }
