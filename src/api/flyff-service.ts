@@ -1,6 +1,7 @@
 import { HttpClient } from '@/api/http-client';
 import { classesSchema } from '@/schemas/class';
 import { itemSchema } from '@/schemas/item';
+import type { PaginatedOptions } from '@/types/api';
 import { ApiService } from './api-service';
 
 class FlyffService extends ApiService {
@@ -21,8 +22,12 @@ class FlyffService extends ApiService {
     return this._get(FlyffService.ENDPOINTS.CLASSES, classesSchema);
   };
 
-  public getItems = async () => {
-    return this._getPaginated(FlyffService.ENDPOINTS.ITEMS, itemSchema);
+  public getItems = async (options?: PaginatedOptions) => {
+    return this._getPaginated(
+      FlyffService.ENDPOINTS.ITEMS,
+      itemSchema,
+      options,
+    );
   };
 }
 

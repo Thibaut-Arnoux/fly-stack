@@ -3,9 +3,13 @@ import {
   type PaginatedResponse,
   paginatedResponseSchema,
 } from '@/schemas/shared';
+import type { PaginatedOptions } from '@/types/api';
+import type { Options } from 'ky';
 import type { ZodSchema, z } from 'zod';
 
 export class ApiService {
+  static readonly _PER_PAGE = 20;
+
   protected _httpClient: HttpClient;
 
   constructor(httpClient: HttpClient) {
@@ -25,13 +29,25 @@ export class ApiService {
     }
   };
 
+  private _formatPaginatedOptions = (options: PaginatedOptions): Options => {
+    return {
+      searchParams: {
+        _page: options.page,
+        _per_page: options.perPage ?? ApiService._PER_PAGE,
+      },
+    };
+  };
+
   protected _getPaginated = async <T extends ZodSchema>(
     endpoint: string,
     schema: T,
+    options?: PaginatedOptions,
   ): Promise<PaginatedResponse<T>> => {
-    // TODO: map all options params (pages, per_page, sort, etc...)
     try {
-      const data = await this._httpClient.get(`${endpoint}?_page=1`);
+      const data = await this._httpClient.get(
+        `${endpoint}`,
+        this._formatPaginatedOptions(options ?? { page: 1 }),
+      );
 
       return paginatedResponseSchema(schema).parse(data);
     } catch (error: unknown) {
