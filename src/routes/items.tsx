@@ -2,7 +2,7 @@ import { Pagination } from '@/components/pagination';
 import {
   useItemsData,
   useItemsOptions,
-} from '@/hooks/flyff-service/use-item-data';
+} from '@/hooks/flyff-service/use-items-data';
 import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 
