@@ -1,6 +1,10 @@
 import { HttpClient } from '@/api/http-client';
 import { type Class, classesSchema } from '@/schemas/class';
-import { type PaginatedItems, paginatedItemsSchema } from '@/schemas/item';
+import { itemSchema } from '@/schemas/item';
+import {
+  type PaginatedResponse,
+  paginatedResponseSchema,
+} from '@/schemas/shared';
 
 class FlyffService {
   private _httpClient: HttpClient;
@@ -32,14 +36,14 @@ class FlyffService {
   /**
    * Items
    */
-  public getItems = async (): Promise<PaginatedItems> => {
+  public getItems = async (): Promise<PaginatedResponse<typeof itemSchema>> => {
     try {
       // TODO: map all options params (pages, per_page, sort, etc...)
       const data = await this._httpClient.get(
         `${FlyffService.ENDPOINTS.ITEMS}?_page=1`,
       );
 
-      return paginatedItemsSchema.parse(data);
+      return paginatedResponseSchema(itemSchema).parse(data);
     } catch (error: unknown) {
       throw new Error('An error occurred while getting items');
     }

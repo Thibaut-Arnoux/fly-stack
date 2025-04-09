@@ -36,7 +36,7 @@ export const localizedStringOptionalSchema = localizedStringSchema
   });
 
 // paginated
-export const paginatedSchema = <T extends ZodSchema>(schema: T) => {
+export const paginatedResponseSchema = <T extends ZodSchema>(schema: T) => {
   return z.object({
     first: z.number(),
     prev: z.number().nullable(),
@@ -47,3 +47,7 @@ export const paginatedSchema = <T extends ZodSchema>(schema: T) => {
     data: z.array(schema),
   });
 };
+
+export type PaginatedResponse<T extends ZodSchema> = z.infer<
+  ReturnType<typeof paginatedResponseSchema<T>>
+>;

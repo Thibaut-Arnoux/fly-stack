@@ -1,7 +1,6 @@
 import {
   localizedStringOptionalSchema,
   localizedStringSchema,
-  paginatedSchema,
 } from '@/schemas/shared';
 import { z } from 'zod';
 
@@ -39,7 +38,3 @@ export const itemSchema = z.object({
 export type Item = z.infer<typeof itemSchema>;
 
 export const itemsSchema = z.array(itemSchema);
-
-export const paginatedItemsSchema = paginatedSchema(itemSchema);
-
-export type PaginatedItems = z.infer<typeof paginatedItemsSchema>;
