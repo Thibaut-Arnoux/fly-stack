@@ -1,21 +1,23 @@
-import { useItemData } from '@/hooks/flyff-service/use-item-data';
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { Pagination } from '@/components/pagination';
+import {
+  useItemsData,
+  useItemsOptions,
+} from '@/hooks/flyff-service/use-item-data';
 import { createFileRoute } from '@tanstack/react-router';
+import { useState } from 'react';
 
 export const Route = createFileRoute('/items')({
   loader: ({ context: { queryClient } }) => {
-    const { itemsQueryOptions } = useItemData();
+    const itemsQueryOptions = useItemsOptions({ page: 1 });
     queryClient.ensureQueryData(itemsQueryOptions);
   },
   component: Items,
 });
 
 function Items() {
-  const { itemsQueryOptions } = useItemData();
-  const itemsQuery = useSuspenseQuery(itemsQueryOptions);
-  const items = itemsQuery.data;
+  const [page, setPage] = useState(1);
 
-  console.debug(items);
+  const { data: items } = useItemsData({ page: page });
 
   return (
     <div className="p-2">
@@ -25,6 +27,17 @@ function Items() {
           <h4>{item.name.en}</h4>
         </div>
       ))}
+
+      <Pagination
+        page={page}
+        onPageChange={setPage}
+        pageStatus={{
+          first: items.first,
+          prev: items.prev,
+          next: items.next,
+          last: items.last,
+        }}
+      />
     </div>
   );
 }

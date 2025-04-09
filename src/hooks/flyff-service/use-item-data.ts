@@ -1,13 +1,18 @@
 import { flyffService } from '@/api/flyff-service';
-import { queryOptions } from '@tanstack/react-query';
+import type { PaginatedOptions } from '@/types/api';
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 
-export const useItemData = () => {
-  const itemsQueryOptions = queryOptions({
-    queryKey: ['items'],
-    queryFn: () => flyffService.getItems(),
+export const useItemsOptions = ({
+  page,
+}: Omit<PaginatedOptions, 'perPage'>) => {
+  return queryOptions({
+    queryKey: ['items', page],
+    queryFn: () => flyffService.getItems({ page }),
   });
+};
 
-  return {
-    itemsQueryOptions,
-  };
+export const useItemsData = ({ page }: Omit<PaginatedOptions, 'perPage'>) => {
+  const itemsQueryOptions = useItemsOptions({ page });
+
+  return useSuspenseQuery(itemsQueryOptions);
 };
