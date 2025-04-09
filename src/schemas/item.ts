@@ -14,10 +14,7 @@ const spawnSchema = z.object({
 });
 
 export const itemSchema = z.object({
-  id: z
-    .number()
-    .int()
-    .transform((val) => String(val)),
+  id: z.union([z.string(), z.number().int()]).transform((val) => String(val)),
   name: localizedStringSchema,
   description: localizedStringOptionalSchema,
   icon: z.string(),
@@ -37,7 +34,5 @@ export const itemSchema = z.object({
   durationRealTime: z.boolean(),
   spawns: z.array(spawnSchema),
 });
-
-export type Item = z.infer<typeof itemSchema>;
 
 export const itemsSchema = z.array(itemSchema);
