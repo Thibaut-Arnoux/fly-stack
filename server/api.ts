@@ -1,6 +1,6 @@
-import type { ZodSchema } from 'zod';
-import { type Class, classesSchema } from '../src/schemas/class';
-import { type Item, itemsSchema } from '../src/schemas/item';
+import type { ZodArray, ZodSchema, z } from 'zod';
+import { classesSchema } from '../src/schemas/class';
+import { itemsSchema } from '../src/schemas/item';
 import { idsSchema } from '../src/schemas/shared';
 import { splitIdsIntoBatches } from './utils';
 
@@ -12,13 +12,13 @@ const fetchIds = async (endpoint: string) => {
   return ids;
 };
 
-const fetchDatas = async <T>(
+const fetchDatas = async <T extends ZodArray<ZodSchema>>(
   endpoint: string,
-  schema: ZodSchema,
-): Promise<T[]> => {
+  schema: T,
+): Promise<z.infer<T>> => {
   const ids = await fetchIds(endpoint);
   const batches = splitIdsIntoBatches(ids, 100);
-  const datas: T[] = [];
+  const datas: z.infer<T> = [];
 
   for (const batch of batches) {
     const joinedIds = batch.join(',');
@@ -26,7 +26,7 @@ const fetchDatas = async <T>(
       `${process.env.FLYFF_API_BASE_URL + endpoint}/${joinedIds}`,
     );
     const data = await response.json();
-    const parsedData = schema.parse(data);
+    const parsedData: z.infer<T> = schema.parse(data);
 
     datas.push(...parsedData);
   }
@@ -35,9 +35,9 @@ const fetchDatas = async <T>(
 };
 
 export const fetchItems = async () => {
-  return await fetchDatas<Item>('/item', itemsSchema);
+  return await fetchDatas('/item', itemsSchema);
 };
 
 export const fetchClasses = async () => {
-  return await fetchDatas<Class>('/class', classesSchema);
+  return await fetchDatas('/class', classesSchema);
 };

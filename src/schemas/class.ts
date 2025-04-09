@@ -31,6 +31,4 @@ export const classSchema = z.object({
   }),
 });
 
-export type Class = z.infer<typeof classSchema>;
-
 export const classesSchema = z.array(classSchema);
