@@ -5,6 +5,7 @@ import {
 } from '@/hooks/flyff-service/use-items-data';
 import { getItemIconUrl } from '@/utils/image';
 import { createFileRoute } from '@tanstack/react-router';
+import { ArrowUp } from 'lucide-react';
 import { useState } from 'react';
 
 export const Route = createFileRoute('/items')({
@@ -27,7 +28,13 @@ function Items() {
           <thead>
             <tr>
               <th>Icon</th>
-              <th>Name</th>
+              <th className="flex flex-row gap-2 group items-center">
+                <div>Name</div>
+                <ArrowUp
+                  className="cursor-pointer hidden group-hover:block"
+                  size={16}
+                />
+              </th>
               <th>Sex</th>
               <th>Level</th>
               <th>Rarity</th>
