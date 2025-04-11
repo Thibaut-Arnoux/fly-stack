@@ -1,8 +1,8 @@
+import { ApiService } from '@/api/api-service';
 import { HttpClient } from '@/api/http-client';
 import { classesSchema } from '@/schemas/class';
 import { itemSchema } from '@/schemas/item';
 import type { PaginatedOptions } from '@/types/api';
-import { ApiService } from '@/api/api-service';
 
 class FlyffService extends ApiService {
   static readonly ENDPOINTS = {

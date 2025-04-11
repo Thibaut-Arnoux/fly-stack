@@ -3,6 +3,7 @@ import {
   useItemsData,
   useItemsOptions,
 } from '@/hooks/flyff-service/use-items-data';
+import { getItemIconUrl } from '@/utils/image';
 import { createFileRoute } from '@tanstack/react-router';
 import { useState } from 'react';
 
@@ -39,7 +40,9 @@ function Items() {
           <tbody>
             {items.data.map((item) => (
               <tr key={item.id}>
-                <td>{item.icon}</td>
+                <td>
+                  <img src={getItemIconUrl(item.icon)} alt="item-icon" />
+                </td>
                 <td>{item.name.en}</td>
                 <td>{item.sex}</td>
                 <td>{item.level}</td>
