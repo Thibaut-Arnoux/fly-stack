@@ -35,29 +35,35 @@ const fetchDatas = async <T extends ZodArray<ZodSchema>>(
 };
 
 export const fetchItemsIcons = async (items: Item[]) => {
-  for (const item of items) {
+  const icons = items.map((item: Item) => item.icon).filter(Boolean);
+
+  const uniqueIcons = Array.from(new Set(icons));
+
+  for (const icon of uniqueIcons) {
     const res = await fetch(
-      `${process.env.FLYFF_API_BASE_URL}/image/item/${item.icon}`,
+      `${process.env.FLYFF_API_BASE_URL}/image/item/${icon}`,
     );
 
     if (res.ok) {
       const arrayBuffer = await res.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
-      writeBufferToFile(
-        `${process.env.ICONS_FOLDER}/items/${item.icon}`,
-        buffer,
-      );
+      writeBufferToFile(`${process.env.ICONS_FOLDER}/items/${icon}`, buffer);
+    } else {
+      console.log('Failed to fetch icon', icon);
     }
   }
 };
 export const fetchItems = async () => {
+  console.log('Fetching items...');
   const items: Item[] = await fetchDatas('/item', itemsSchema);
 
+  console.log('Fetching items icons...');
   await fetchItemsIcons(items);
 
   return items;
 };
 
 export const fetchClasses = async () => {
+  console.log('Fetching classes...');
   return await fetchDatas('/class', classesSchema);
 };
