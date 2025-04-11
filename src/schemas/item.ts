@@ -35,4 +35,6 @@ export const itemSchema = z.object({
   spawns: z.array(spawnSchema),
 });
 
+export type Item = z.infer<typeof itemSchema>;
+
 export const itemsSchema = z.array(itemSchema);
