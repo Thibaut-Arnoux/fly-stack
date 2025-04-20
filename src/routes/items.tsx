@@ -1,11 +1,11 @@
 import { Pagination } from '@/components/pagination';
+import { Table } from '@/components/table';
 import {
   useItemsData,
   useItemsOptions,
 } from '@/hooks/flyff-service/use-items-data';
 import { getItemIconUrl } from '@/utils/image';
 import { createFileRoute } from '@tanstack/react-router';
-import { ArrowUp } from 'lucide-react';
 import { useState } from 'react';
 
 export const Route = createFileRoute('/items')({
@@ -24,43 +24,37 @@ function Items() {
   return (
     <>
       <div className="flex-1 overflow-y-auto p-2">
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Icon</th>
-              <th className="flex flex-row gap-2 group items-center">
-                <div>Name</div>
-                <ArrowUp
-                  className="cursor-pointer hidden group-hover:block"
-                  size={16}
-                />
-              </th>
-              <th>Sex</th>
-              <th>Level</th>
-              <th>Rarity</th>
-              <th>Category</th>
-              <th>SubCategory</th>
-              <th>Sell</th>
-            </tr>
-          </thead>
+        <Table>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>Icon</Table.HeaderCell>
+              <Table.HeaderCell sortable>Name</Table.HeaderCell>
+              <Table.HeaderCell>Sex</Table.HeaderCell>
+              <Table.HeaderCell>Level</Table.HeaderCell>
+              <Table.HeaderCell>Rarity</Table.HeaderCell>
+              <Table.HeaderCell>Category</Table.HeaderCell>
+              <Table.HeaderCell>SubCategory</Table.HeaderCell>
+              <Table.HeaderCell>Sell</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
 
-          <tbody>
+          <Table.Body>
             {items.data.map((item) => (
-              <tr key={item.id}>
-                <td>
+              <Table.Row key={item.id}>
+                <Table.Cell>
                   <img src={getItemIconUrl(item.icon)} alt="item-icon" />
-                </td>
-                <td>{item.name.en}</td>
-                <td>{item.sex}</td>
-                <td>{item.level}</td>
-                <td>{item.rarity}</td>
-                <td>{item.category}</td>
-                <td>{item.subcategory}</td>
-                <td>{item.sellPrice}</td>
-              </tr>
+                </Table.Cell>
+                <Table.Cell>{item.name.en}</Table.Cell>
+                <Table.Cell>{item.sex}</Table.Cell>
+                <Table.Cell>{item.level}</Table.Cell>
+                <Table.Cell>{item.rarity}</Table.Cell>
+                <Table.Cell>{item.category}</Table.Cell>
+                <Table.Cell>{item.subcategory}</Table.Cell>
+                <Table.Cell>{item.sellPrice}</Table.Cell>
+              </Table.Row>
             ))}
-          </tbody>
-        </table>
+          </Table.Body>
+        </Table>
       </div>
 
       <div className="flex justify-center my-1">
