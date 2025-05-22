@@ -1,5 +1,9 @@
 import { ArrowDown, ArrowUp } from 'lucide-react';
-import type { PropsWithChildren } from 'react';
+import type {
+  PropsWithChildren,
+  TdHTMLAttributes,
+  ThHTMLAttributes,
+} from 'react';
 import { useState } from 'react';
 
 type TableProps = PropsWithChildren<{
@@ -18,15 +22,14 @@ type TableRowProps = PropsWithChildren<{
   className?: string;
 }>;
 
-type TableCellProps = PropsWithChildren<{
-  className?: string;
-}>;
+type TableCellProps = PropsWithChildren<TdHTMLAttributes<HTMLTableCellElement>>;
 
-type TableHeaderCellProps = PropsWithChildren<{
-  className?: string;
-  sortable?: boolean;
-  onSort?: (direction: 'asc' | 'desc' | null) => void;
-}>;
+type TableHeaderCellProps = PropsWithChildren<
+  {
+    sortable?: boolean;
+    onSort?: (direction: 'asc' | 'desc' | null) => void;
+  } & ThHTMLAttributes<HTMLTableCellElement>
+>;
 
 export const Table = ({ children, className = '' }: TableProps) => {
   return <table className={`table ${className}`}>{children}</table>;
@@ -44,15 +47,15 @@ Table.Row = ({ children, className = '' }: TableRowProps) => {
   return <tr className={className}>{children}</tr>;
 };
 
-Table.Cell = ({ children, className = '' }: TableCellProps) => {
-  return <td className={className}>{children}</td>;
+Table.Cell = ({ children, ...props }: TableCellProps) => {
+  return <td {...props}>{children}</td>;
 };
 
 Table.HeaderCell = ({
   children,
-  className = '',
   sortable,
   onSort,
+  ...props
 }: TableHeaderCellProps) => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(
     null,
@@ -75,7 +78,7 @@ Table.HeaderCell = ({
   };
 
   return (
-    <th className={className}>
+    <th {...props}>
       <div
         className={`flex flex-row gap-2 items-center ${sortable && 'group cursor-pointer'}`}
         onClick={handleSort}

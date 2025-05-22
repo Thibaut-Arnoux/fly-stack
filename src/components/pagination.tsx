@@ -9,10 +9,8 @@ import type { Dispatch, SetStateAction } from 'react';
 type PaginationProps = {
   page: number;
   onPageChange: Dispatch<SetStateAction<number>>;
-  pageStatus: {
+  pageData: {
     first: number;
-    prev: number | null;
-    next: number | null;
     last: number;
   };
 };
@@ -20,8 +18,14 @@ type PaginationProps = {
 export const Pagination = ({
   page,
   onPageChange,
-  pageStatus,
+  pageData,
 }: PaginationProps) => {
+  const pageStatus = {
+    ...pageData,
+    prev: page === pageData.first ? null : page - 1,
+    next: page === pageData.last ? null : page + 1,
+  };
+
   const handleFirstPage = () => {
     onPageChange(pageStatus.first);
   };
