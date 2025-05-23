@@ -3,12 +3,19 @@ import {
   type PaginatedResponse,
   paginatedResponseSchema,
 } from '@/schemas/shared';
-import type { PaginatedOptions } from '@/types/api';
+import type {
+  SearchOptions,
+  SearchPaginatedOptions,
+  SearchParams,
+} from '@/types/api';
 import type { Options } from 'ky';
 import type { ZodSchema, z } from 'zod';
 
 export class ApiService {
-  static readonly _PER_PAGE = 20;
+  static readonly SEARCH_PARAMS: SearchParams = {
+    _PER_PAGE: 20,
+    _ORDER: 'asc',
+  };
 
   protected _httpClient: HttpClient;
 
@@ -29,11 +36,28 @@ export class ApiService {
     }
   };
 
-  private _formatPaginatedOptions = (options: PaginatedOptions): Options => {
+  private _formatSearchOptions = (options: SearchOptions): Options => {
     return {
       searchParams: {
+        ...(options.sort !== undefined && { _sort: options.sort }),
+        ...(options.sort !== undefined && {
+          _order: options.order ?? ApiService.SEARCH_PARAMS._ORDER,
+        }),
+      },
+    };
+  };
+
+  private _formatSearchPaginatedOptions = (
+    options: SearchPaginatedOptions,
+  ): Options => {
+    const baseSearchParams = this._formatSearchOptions(options)
+      .searchParams as object;
+
+    return {
+      searchParams: {
+        ...baseSearchParams,
         _page: options.page,
-        _limit: options.perPage ?? ApiService._PER_PAGE,
+        _limit: options.perPage ?? ApiService.SEARCH_PARAMS._PER_PAGE,
       },
     };
   };
@@ -41,12 +65,12 @@ export class ApiService {
   protected _getPaginated = async <T extends ZodSchema>(
     endpoint: string,
     schema: T,
-    options?: PaginatedOptions,
+    options?: SearchPaginatedOptions,
   ): Promise<PaginatedResponse<T>> => {
     try {
       const data = await this._httpClient.get(
         `${endpoint}`,
-        this._formatPaginatedOptions(options ?? { page: 1 }),
+        this._formatSearchPaginatedOptions(options ?? { page: 1 }),
       );
 
       return paginatedResponseSchema(schema).parse(data);
