@@ -1,8 +1,12 @@
 export type OrderOptions = 'asc' | 'desc';
 
-export type SearchOptions = {
-  sort?: string;
+export type SearchSort = {
+  field: string;
   order?: OrderOptions;
+};
+
+export type SearchOptions = {
+  sort?: SearchSort[];
 };
 export type SearchPaginatedOptions = SearchOptions & {
   page: number;

@@ -7,6 +7,7 @@ import type {
   SearchOptions,
   SearchPaginatedOptions,
   SearchParams,
+  SearchSort,
 } from '@/types/api';
 import type { Options } from 'ky';
 import type { ZodSchema, z } from 'zod';
@@ -23,25 +24,20 @@ export class ApiService {
     this._httpClient = httpClient;
   }
 
-  protected _get = async <T extends ZodSchema>(
-    endpoint: string,
-    schema: T,
-  ): Promise<z.infer<T>> => {
-    try {
-      const data = await this._httpClient.get(endpoint);
+  private _formatSearchSort = (sort: SearchSort[]) => {
+    const _sort = sort.map((s) => s.field).join(',');
+    const _order = sort
+      .map((s) => s.order ?? ApiService.SEARCH_PARAMS._ORDER)
+      .join(',');
 
-      return schema.parse(data);
-    } catch (error: unknown) {
-      throw new Error('An error occurred while getting elements');
-    }
+    return { _sort, _order };
   };
 
   private _formatSearchOptions = (options: SearchOptions): Options => {
     return {
       searchParams: {
-        ...(options.sort !== undefined && { _sort: options.sort }),
         ...(options.sort !== undefined && {
-          _order: options.order ?? ApiService.SEARCH_PARAMS._ORDER,
+          ...this._formatSearchSort(options.sort),
         }),
       },
     };
@@ -60,6 +56,19 @@ export class ApiService {
         _limit: options.perPage ?? ApiService.SEARCH_PARAMS._PER_PAGE,
       },
     };
+  };
+
+  protected _get = async <T extends ZodSchema>(
+    endpoint: string,
+    schema: T,
+  ): Promise<z.infer<T>> => {
+    try {
+      const data = await this._httpClient.get(endpoint);
+
+      return schema.parse(data);
+    } catch (error: unknown) {
+      throw new Error('An error occurred while getting elements');
+    }
   };
 
   protected _getPaginated = async <T extends ZodSchema>(
