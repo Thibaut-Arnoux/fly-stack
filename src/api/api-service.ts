@@ -8,6 +8,7 @@ import type {
   SearchOptions,
   SearchPaginatedOptions,
   SearchParams,
+  SearchProperty,
   SearchSort,
 } from '@/types/api';
 import type { Options } from 'ky';
@@ -25,6 +26,14 @@ export class ApiService {
     this._httpClient = httpClient;
   }
 
+  private _formatSearchProperties = (
+    properties: SearchProperty[],
+  ): Record<string, string> => {
+    return Object.fromEntries(
+      properties.map((property) => [property.field, property.value]),
+    );
+  };
+
   private _formatSearchSorts = (sorts: SearchSort[]) => {
     const _sort = sorts.map((s) => s.field).join(',');
     const _order = sorts
@@ -34,7 +43,9 @@ export class ApiService {
     return { _sort, _order };
   };
 
-  private _formatSearchLikes = (likes: SearchLike[]): Record<string, string> => {
+  private _formatSearchLikes = (
+    likes: SearchLike[],
+  ): Record<string, string> => {
     return Object.fromEntries(
       likes.map((like) => [`${like.field}_like`, like.value]),
     );
@@ -43,6 +54,9 @@ export class ApiService {
   private _formatSearchOptions = (options: SearchOptions): Options => {
     return {
       searchParams: {
+        ...(options.properties !== undefined && {
+          ...this._formatSearchProperties(options.properties),
+        }),
         ...(options.sorts !== undefined && {
           ...this._formatSearchSorts(options.sorts),
         }),

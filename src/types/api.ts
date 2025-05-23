@@ -1,5 +1,10 @@
 export type OrderOptions = 'asc' | 'desc';
 
+export type SearchProperty = {
+  field: string;
+  value: string;
+};
+
 export type SearchSort = {
   field: string;
   order?: OrderOptions;
@@ -11,6 +16,7 @@ export type SearchLike = {
 };
 
 export type SearchOptions = {
+  properties?: SearchProperty[];
   sorts?: SearchSort[];
   likes?: SearchLike[];
 };
