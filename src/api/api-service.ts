@@ -4,6 +4,7 @@ import {
   paginatedResponseSchema,
 } from '@/schemas/shared';
 import type {
+  SearchLike,
   SearchOptions,
   SearchPaginatedOptions,
   SearchParams,
@@ -24,13 +25,19 @@ export class ApiService {
     this._httpClient = httpClient;
   }
 
-  private _formatSearchSort = (sort: SearchSort[]) => {
-    const _sort = sort.map((s) => s.field).join(',');
-    const _order = sort
+  private _formatSearchSort = (sorts: SearchSort[]) => {
+    const _sort = sorts.map((s) => s.field).join(',');
+    const _order = sorts
       .map((s) => s.order ?? ApiService.SEARCH_PARAMS._ORDER)
       .join(',');
 
     return { _sort, _order };
+  };
+
+  private _formatSearchLike = (likes: SearchLike[]): Record<string, string> => {
+    return Object.fromEntries(
+      likes.map((like) => [`${like.field}_like`, like.value]),
+    );
   };
 
   private _formatSearchOptions = (options: SearchOptions): Options => {
@@ -38,6 +45,9 @@ export class ApiService {
       searchParams: {
         ...(options.sort !== undefined && {
           ...this._formatSearchSort(options.sort),
+        }),
+        ...(options.like !== undefined && {
+          ...this._formatSearchLike(options.like),
         }),
       },
     };

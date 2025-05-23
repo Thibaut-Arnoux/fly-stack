@@ -5,8 +5,14 @@ export type SearchSort = {
   order?: OrderOptions;
 };
 
+export type SearchLike = {
+  field: string;
+  value: string;
+};
+
 export type SearchOptions = {
   sort?: SearchSort[];
+  like?: SearchLike[];
 };
 export type SearchPaginatedOptions = SearchOptions & {
   page: number;
