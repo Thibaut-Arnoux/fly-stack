@@ -7,7 +7,11 @@ export const useItemsOptions = ({
 }: Omit<SearchPaginatedOptions, 'perPage'>) => {
   return queryOptions({
     queryKey: ['items', page],
-    queryFn: () => flyffService.getItems({ page }),
+    queryFn: () =>
+      flyffService.getItems({
+        page,
+        sort: [{ field: 'level' }],
+      }),
   });
 };
 
