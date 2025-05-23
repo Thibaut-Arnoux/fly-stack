@@ -25,7 +25,7 @@ export class ApiService {
     this._httpClient = httpClient;
   }
 
-  private _formatSearchSort = (sorts: SearchSort[]) => {
+  private _formatSearchSorts = (sorts: SearchSort[]) => {
     const _sort = sorts.map((s) => s.field).join(',');
     const _order = sorts
       .map((s) => s.order ?? ApiService.SEARCH_PARAMS._ORDER)
@@ -34,7 +34,7 @@ export class ApiService {
     return { _sort, _order };
   };
 
-  private _formatSearchLike = (likes: SearchLike[]): Record<string, string> => {
+  private _formatSearchLikes = (likes: SearchLike[]): Record<string, string> => {
     return Object.fromEntries(
       likes.map((like) => [`${like.field}_like`, like.value]),
     );
@@ -43,11 +43,11 @@ export class ApiService {
   private _formatSearchOptions = (options: SearchOptions): Options => {
     return {
       searchParams: {
-        ...(options.sort !== undefined && {
-          ...this._formatSearchSort(options.sort),
+        ...(options.sorts !== undefined && {
+          ...this._formatSearchSorts(options.sorts),
         }),
-        ...(options.like !== undefined && {
-          ...this._formatSearchLike(options.like),
+        ...(options.likes !== undefined && {
+          ...this._formatSearchLikes(options.likes),
         }),
       },
     };

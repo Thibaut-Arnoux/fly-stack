@@ -11,8 +11,8 @@ export type SearchLike = {
 };
 
 export type SearchOptions = {
-  sort?: SearchSort[];
-  like?: SearchLike[];
+  sorts?: SearchSort[];
+  likes?: SearchLike[];
 };
 export type SearchPaginatedOptions = SearchOptions & {
   page: number;

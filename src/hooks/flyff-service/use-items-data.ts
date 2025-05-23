@@ -10,7 +10,7 @@ export const useItemsOptions = ({
     queryFn: () =>
       flyffService.getItems({
         page,
-        sort: [{ field: 'level' }],
+        sorts: [{ field: 'level' }],
       }),
   });
 };
