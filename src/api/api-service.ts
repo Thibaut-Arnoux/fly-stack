@@ -65,12 +65,12 @@ export class ApiService {
   protected _getPaginated = async <T extends ZodSchema>(
     endpoint: string,
     schema: T,
-    options?: SearchPaginatedOptions,
+    options: SearchPaginatedOptions,
   ): Promise<PaginatedResponse<T>> => {
     try {
       const data = await this._httpClient.get(
         `${endpoint}`,
-        this._formatSearchPaginatedOptions(options ?? { page: 1 }),
+        this._formatSearchPaginatedOptions(options),
       );
 
       return paginatedResponseSchema(schema).parse(data);

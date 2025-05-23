@@ -22,7 +22,7 @@ class FlyffService extends ApiService {
     return this._get(FlyffService.ENDPOINTS.CLASSES, classesSchema);
   };
 
-  public getItems = async (options?: SearchPaginatedOptions) => {
+  public getItems = async (options: SearchPaginatedOptions) => {
     return this._getPaginated(
       FlyffService.ENDPOINTS.ITEMS,
       itemSchema,
