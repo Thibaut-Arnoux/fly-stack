@@ -33,7 +33,7 @@ export class ApiService {
     return {
       searchParams: {
         _page: options.page,
-        _per_page: options.perPage ?? ApiService._PER_PAGE,
+        _limit: options.perPage ?? ApiService._PER_PAGE,
       },
     };
   };
