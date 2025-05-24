@@ -66,16 +66,16 @@ export class HttpClient {
     _options: NormalizedOptions,
     response: KyResponse,
   ) => {
+    if (!response.headers.has('x-total-count') || !response.headers.has('link'))
+      return;
+
     const total = response.headers.get('x-total-count');
-
-    if (!total) return;
-
-    const data = await response.json();
     const link = response.headers.get('link');
     const parseLinkHeader = link
       ? this.parseLinkHeader(link)
       : { first: 1, last: 1 };
 
+    const data = await response.json();
     const pagination = {
       prev: null,
       next: null,
