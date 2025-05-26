@@ -1,6 +1,7 @@
 import { Loader } from '@/components/loader';
 import { Table } from '@/components/table';
 import { useItemsData } from '@/hooks/flyff-service/use-items-data';
+import { useDebounceValue } from 'usehooks-ts';
 import {
   useItemActions,
   usePage,
@@ -48,7 +49,7 @@ const ItemTableHeader = () => {
 };
 
 const ItemTableBody = () => {
-  const search = useSearch();
+  const [search] = useDebounceValue(useSearch(), 500);
   const page = usePage();
   const { setFirstPage, setLastPage } = useItemActions();
 
