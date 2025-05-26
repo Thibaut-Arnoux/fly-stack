@@ -20,6 +20,7 @@ export type SearchOptions = {
   sorts?: SearchSort[];
   likes?: SearchLike[];
 };
+
 export type SearchPaginatedOptions = SearchOptions & {
   page: number;
   perPage?: number;

@@ -4,26 +4,27 @@ import {
   ChevronsLeft,
   ChevronsRight,
 } from 'lucide-react';
-import type { Dispatch, SetStateAction } from 'react';
 
 type PaginationProps = {
   page: number;
-  onPageChange: Dispatch<SetStateAction<number>>;
-  pageData: {
-    first: number;
-    last: number;
-  };
+  onPageChange: (page: number) => void;
+  firstPage: number;
+  lastPage: number;
 };
 
 export const Pagination = ({
   page,
   onPageChange,
-  pageData,
+  firstPage,
+  lastPage,
 }: PaginationProps) => {
   const pageStatus = {
-    ...pageData,
-    prev: page === pageData.first ? null : page - 1,
-    next: page === pageData.last ? null : page + 1,
+    first: firstPage,
+    last: lastPage,
+    // derivate prev, next and not using api return due to unnecessary re-render
+    // caused by update of prev, next on each call contrary to first and last
+    prev: page === firstPage ? null : page - 1,
+    next: page === lastPage ? null : page + 1,
   };
 
   const handleFirstPage = () => {

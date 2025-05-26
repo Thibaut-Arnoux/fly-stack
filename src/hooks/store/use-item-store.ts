@@ -1,0 +1,10 @@
+import { itemStore, itemActions } from '@/stores/item-store';
+import { useStore } from '@tanstack/react-store';
+
+export const useSearch = () => useStore(itemStore, (state) => state.search);
+export const usePage = () => useStore(itemStore, (state) => state.page);
+export const useFirstPage = () =>
+  useStore(itemStore, (state) => state.firstPage);
+export const useLastPage = () => useStore(itemStore, (state) => state.lastPage);
+
+export const useItemActions = () => itemActions;
