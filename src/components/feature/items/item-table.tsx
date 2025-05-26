@@ -1,7 +1,6 @@
 import { Loader } from '@/components/loader';
 import { Table } from '@/components/table';
 import { useItemsData } from '@/hooks/flyff-service/use-items-data';
-import { useDebounceValue } from 'usehooks-ts';
 import {
   useItemActions,
   usePage,
@@ -9,6 +8,7 @@ import {
 } from '@/hooks/store/use-item-store';
 import { getItemIconUrl } from '@/utils/image';
 import { Suspense, useEffect } from 'react';
+import { useDebounceValue } from 'usehooks-ts';
 
 export const ItemTable = () => {
   return (

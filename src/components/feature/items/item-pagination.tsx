@@ -1,8 +1,8 @@
 import { Pagination } from '@/components/pagination';
 import {
-  usePage,
   useFirstPage,
   useLastPage,
+  usePage,
 } from '@/hooks/store/use-item-store';
 import { useItemActions } from '@/hooks/store/use-item-store';
 
