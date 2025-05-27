@@ -1,14 +1,9 @@
 import { Loader } from '@/components/loader';
 import { Table } from '@/components/table';
 import { useItemsData } from '@/hooks/flyff-service/use-items-data';
-import {
-  useItemActions,
-  usePage,
-  useSearch,
-} from '@/hooks/store/use-item-store';
+import { usePage, useSearch } from '@/hooks/store/use-item-store';
 import { getItemIconUrl } from '@/utils/image';
-import { Suspense, useEffect } from 'react';
-import { useDebounceValue } from 'usehooks-ts';
+import { Suspense } from 'react';
 
 export const ItemTable = () => {
   return (
@@ -49,21 +44,14 @@ const ItemTableHeader = () => {
 };
 
 const ItemTableBody = () => {
-  const [search] = useDebounceValue(useSearch(), 500);
+  const search = useSearch();
   const page = usePage();
-  const { setFirstPage, setLastPage } = useItemActions();
 
   const { data: items } = useItemsData({
     page,
     likes: [{ field: 'name.en', value: search }],
     sorts: [{ field: 'level' }], // default sort for the moment
   });
-
-  // not found better way to update pagination with updated data
-  useEffect(() => {
-    setFirstPage(items.first);
-    setLastPage(items.last);
-  }, [items.first, items.last, setFirstPage, setLastPage]);
 
   return (
     <>
