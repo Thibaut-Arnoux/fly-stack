@@ -49,7 +49,7 @@ export const itemActions: ItemActions = {
 };
 
 itemStore.subscribe((state) => {
-  if(state.prevVal.search !== state.currentVal.search) {
+  if (state.prevVal.search !== state.currentVal.search) {
     itemActions.setPage(1);
   }
-})
+});
