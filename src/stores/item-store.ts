@@ -8,10 +8,10 @@ type ItemState = {
 };
 
 type ItemActions = {
-  setSearch: (search: string) => void;
-  setPage: (page: number) => void;
-  setFirstPage: (firstPage: number) => void;
-  setLastPage: (lastPage: number) => void;
+  setSearch: (search: ItemState['search']) => void;
+  setPage: (page: ItemState['page']) => void;
+  setFirstPage: (firstPage: ItemState['firstPage']) => void;
+  setLastPage: (lastPage: ItemState['lastPage']) => void;
 };
 
 export const itemStore = new Store<ItemState>({
@@ -22,25 +22,25 @@ export const itemStore = new Store<ItemState>({
 });
 
 export const itemActions: ItemActions = {
-  setSearch: (search: string) => {
+  setSearch: (search: ItemState['search']) => {
     itemStore.setState((state) => ({
       ...state,
       search,
     }));
   },
-  setPage: (page: number) => {
+  setPage: (page: ItemState['page']) => {
     itemStore.setState((state) => ({
       ...state,
       page,
     }));
   },
-  setFirstPage: (firstPage: number) => {
+  setFirstPage: (firstPage: ItemState['firstPage']) => {
     itemStore.setState((state) => ({
       ...state,
       firstPage,
     }));
   },
-  setLastPage: (lastPage: number) => {
+  setLastPage: (lastPage: ItemState['lastPage']) => {
     itemStore.setState((state) => ({
       ...state,
       lastPage,
