@@ -1,11 +1,11 @@
 import { flyffService } from '@/api/flyff-service';
-import { useItemActions } from '@/hooks/store/use-item-store';
+import { useItemActions } from '@/hooks/stores/use-item-store';
 import type { SearchPaginatedOptions } from '@/types/api';
 import { getPaginatedQueryKey } from '@/utils/query';
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
-export const useItemsOptions = (
+export const useItemOptions = (
   searchOptions: Omit<SearchPaginatedOptions, 'perPage'>,
 ) => {
   return queryOptions({
@@ -14,11 +14,11 @@ export const useItemsOptions = (
   });
 };
 
-export const useItemsData = (
+export const useItemData = (
   searchOptions: Omit<SearchPaginatedOptions, 'perPage'>,
 ) => {
   const { setFirstPage, setLastPage } = useItemActions();
-  const itemsQueryOptions = useItemsOptions(searchOptions);
+  const itemsQueryOptions = useItemOptions(searchOptions);
   const suspenseData = useSuspenseQuery(itemsQueryOptions);
 
   useEffect(() => {

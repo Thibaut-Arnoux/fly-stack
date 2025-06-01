@@ -3,8 +3,8 @@ import {
   useFirstPage,
   useLastPage,
   usePage,
-} from '@/hooks/store/use-item-store';
-import { useItemActions } from '@/hooks/store/use-item-store';
+} from '@/hooks/stores/use-item-store';
+import { useItemActions } from '@/hooks/stores/use-item-store';
 
 export const ItemPagination = () => {
   const page = usePage();

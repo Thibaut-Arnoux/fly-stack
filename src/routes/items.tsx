@@ -1,17 +1,17 @@
-import { ItemPagination } from '@/components/feature/items/item-pagination';
-import { ItemSearch } from '@/components/feature/items/item-search';
-import { ItemTable } from '@/components/feature/items/item-table';
-import { useItemsOptions } from '@/hooks/flyff-service/use-items-data';
+import { ItemPagination } from '@/components/features/items/item-pagination';
+import { ItemSearch } from '@/components/features/items/item-search';
+import { ItemTable } from '@/components/features/items/item-table';
+import { useItemOptions } from '@/hooks/flyff-service/use-item-data';
 import { createFileRoute } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/items')({
   loader: ({ context: { queryClient } }) => {
-    const itemsQueryOptions = useItemsOptions({
+    const itemQueryOptions = useItemOptions({
       page: 1,
       sorts: [{ field: 'level' }],
     });
 
-    return queryClient.ensureQueryData(itemsQueryOptions);
+    return queryClient.ensureQueryData(itemQueryOptions);
   },
   component: Items,
 });

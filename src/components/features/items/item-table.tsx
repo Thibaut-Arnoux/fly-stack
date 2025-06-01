@@ -1,7 +1,7 @@
 import { Loader } from '@/components/loader';
 import { Table } from '@/components/table';
-import { useItemsData } from '@/hooks/flyff-service/use-items-data';
-import { usePage, useSearch } from '@/hooks/store/use-item-store';
+import { useItemData } from '@/hooks/flyff-service/use-item-data';
+import { usePage, useSearch } from '@/hooks/stores/use-item-store';
 import { getItemIconUrl } from '@/utils/image';
 import { Suspense } from 'react';
 
@@ -47,7 +47,7 @@ const ItemTableBody = () => {
   const search = useSearch();
   const page = usePage();
 
-  const { data: items } = useItemsData({
+  const { data: items } = useItemData({
     page,
     likes: [{ field: 'name.en', value: search }],
     sorts: [{ field: 'level' }], // default sort for the moment
