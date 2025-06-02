@@ -5,18 +5,14 @@ import { getPaginatedQueryKey } from '@/utils/query';
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
-export const useItemOptions = (
-  searchOptions: Omit<SearchPaginatedOptions, 'perPage'>,
-) => {
+export const useItemOptions = (searchOptions: SearchPaginatedOptions) => {
   return queryOptions({
     queryKey: getPaginatedQueryKey('items', searchOptions),
     queryFn: () => flyffService.getItems(searchOptions),
   });
 };
 
-export const useItemData = (
-  searchOptions: Omit<SearchPaginatedOptions, 'perPage'>,
-) => {
+export const useItemData = (searchOptions: SearchPaginatedOptions) => {
   const { setFirstPage, setLastPage } = useItemActions();
   const itemsQueryOptions = useItemOptions(searchOptions);
   const suspenseData = useSuspenseQuery(itemsQueryOptions);

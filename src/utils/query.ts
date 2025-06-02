@@ -9,7 +9,8 @@ export const getQueryKey = (module: string, params: SearchOptions) => {
     for (const property of params.properties) {
       propertyKeys = { ...propertyKeys, [property.field]: property.value };
     }
-    key.push({ properties: propertyKeys });
+    if (Object.keys(propertyKeys).length)
+      key.push({ properties: propertyKeys });
   }
 
   if (params.sorts) {
@@ -20,7 +21,7 @@ export const getQueryKey = (module: string, params: SearchOptions) => {
         [sort.field]: sort.order ?? ApiService.SEARCH_PARAMS._ORDER,
       };
     }
-    key.push({ sorts: sortKeys });
+    if (Object.keys(sortKeys).length) key.push({ sorts: sortKeys });
   }
 
   if (params.likes) {
@@ -43,7 +44,11 @@ export const getPaginatedQueryKey = (
 ) => {
   const key: unknown[] = getQueryKey(module, params);
 
-  if (params.page) key.push({ page: params.page });
+  key.push({ page: params.page });
+
+  if (params.perPage) {
+    key.push({ perPage: params.perPage });
+  }
 
   return key;
 };
