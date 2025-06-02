@@ -46,11 +46,12 @@ const ItemTableHeader = () => {
 const ItemTableBody = () => {
   const search = useSearch();
   const page = usePage();
+  const sorts = useSorts();
 
   const { data: items } = useItemData({
     page,
     likes: [{ field: 'name.en', value: search }],
-    sorts: [{ field: 'level' }], // default sort for the moment
+    sorts,
   });
 
   return (

@@ -1,3 +1,4 @@
+import type { SearchSort } from '@/types/api';
 import { Store } from '@tanstack/react-store';
 
 type ItemState = {
@@ -5,6 +6,7 @@ type ItemState = {
   page: number;
   firstPage: number;
   lastPage: number;
+  sorts: SearchSort[];
 };
 
 type ItemActions = {
@@ -19,6 +21,7 @@ export const itemStore = new Store<ItemState>({
   page: 1,
   firstPage: 1,
   lastPage: 1,
+  sorts: [{ field: 'level' }],
 });
 
 export const itemActions: ItemActions = {
