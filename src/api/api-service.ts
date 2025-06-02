@@ -47,22 +47,27 @@ export class ApiService {
     likes: SearchLike[],
   ): Record<string, string> => {
     return Object.fromEntries(
-      likes.map((like) => [`${like.field}_like`, like.value]),
+      likes
+        .filter((like) => like.value)
+        .map((like) => [`${like.field}_like`, like.value]),
     );
   };
 
   private _formatSearchOptions = (options: SearchOptions): Options => {
     return {
       searchParams: {
-        ...(options.properties !== undefined && {
-          ...this._formatSearchProperties(options.properties),
-        }),
-        ...(options.sorts !== undefined && {
-          ...this._formatSearchSorts(options.sorts),
-        }),
-        ...(options.likes !== undefined && {
-          ...this._formatSearchLikes(options.likes),
-        }),
+        ...(options.properties !== undefined &&
+          options.properties.length > 0 && {
+            ...this._formatSearchProperties(options.properties),
+          }),
+        ...(options.sorts !== undefined &&
+          options.sorts.length > 0 && {
+            ...this._formatSearchSorts(options.sorts),
+          }),
+        ...(options.likes !== undefined &&
+          options.likes.length > 0 && {
+            ...this._formatSearchLikes(options.likes),
+          }),
       },
     };
   };
