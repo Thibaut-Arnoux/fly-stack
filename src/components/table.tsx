@@ -24,12 +24,15 @@ type TableRowProps = PropsWithChildren<{
 
 type TableCellProps = PropsWithChildren<TdHTMLAttributes<HTMLTableCellElement>>;
 
-type TableHeaderCellProps = PropsWithChildren<
-  {
-    sortable?: boolean;
-    onSort?: (direction: 'asc' | 'desc' | null) => void;
-  } & ThHTMLAttributes<HTMLTableCellElement>
->;
+export type TableHeaderSort = 'asc' | 'desc' | null;
+
+export type TableHeaderCellProps = {
+  field: string;
+  headerName: string;
+  sortable?: boolean;
+  defaultSort?: TableHeaderSort;
+  onSort?: (field: string, order: TableHeaderSort) => void;
+} & ThHTMLAttributes<HTMLTableCellElement>;
 
 export const Table = ({ children, className = '' }: TableProps) => {
   return <table className={`table ${className}`}>{children}</table>;
@@ -52,29 +55,29 @@ Table.Cell = ({ children, ...props }: TableCellProps) => {
 };
 
 Table.HeaderCell = ({
-  children,
+  field,
+  headerName,
   sortable,
+  defaultSort,
   onSort,
   ...props
 }: TableHeaderCellProps) => {
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | null>(
-    null,
-  );
+  const [sort, setSort] = useState<TableHeaderSort>(defaultSort ?? null);
 
   const handleSort = () => {
-    let newDirection: 'asc' | 'desc' | null;
-    switch (sortDirection) {
+    let newSort: TableHeaderSort;
+    switch (sort) {
       case 'asc':
-        newDirection = 'desc';
+        newSort = 'desc';
         break;
       case 'desc':
-        newDirection = null;
+        newSort = null;
         break;
       default:
-        newDirection = 'asc';
+        newSort = 'asc';
     }
-    setSortDirection(newDirection);
-    onSort?.(newDirection);
+    setSort(newSort);
+    onSort?.(field, newSort);
   };
 
   return (
@@ -84,20 +87,13 @@ Table.HeaderCell = ({
         onClick={handleSort}
         onKeyDown={handleSort}
       >
-        {children}
+        {headerName}
         {sortable && (
-          <div
-            className={
-              sortDirection === null ? 'hidden group-hover:block' : 'block'
-            }
-          >
-            {sortDirection === 'desc' ? (
-              <ArrowDown
-                size={18}
-                strokeWidth={sortDirection === null ? 2 : 3}
-              />
+          <div className={sort === null ? 'hidden group-hover:block' : 'block'}>
+            {sort === 'desc' ? (
+              <ArrowDown size={18} strokeWidth={sort === null ? 2 : 3} />
             ) : (
-              <ArrowUp size={18} strokeWidth={sortDirection === null ? 2 : 3} />
+              <ArrowUp size={18} strokeWidth={sort === null ? 2 : 3} />
             )}
           </div>
         )}

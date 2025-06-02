@@ -15,10 +15,12 @@ export const getQueryKey = (module: string, params: SearchOptions) => {
 
   if (params.sorts) {
     let sortKeys: Record<string, string> = {};
-    for (const sort of params.sorts) {
+    for (const [index, sort] of params.sorts.entries()) {
       sortKeys = {
         ...sortKeys,
-        [sort.field]: sort.order ?? ApiService.SEARCH_PARAMS._ORDER,
+        // add index because order is important in multiple sorts (e.g level,subcategoy !== subcategory,level)
+        [`${sort.field}_${index}`]:
+          sort.order ?? ApiService.SEARCH_PARAMS._ORDER,
       };
     }
     if (Object.keys(sortKeys).length) key.push({ sorts: sortKeys });

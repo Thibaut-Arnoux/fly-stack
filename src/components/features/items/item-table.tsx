@@ -1,7 +1,16 @@
 import { Loader } from '@/components/loader';
-import { Table } from '@/components/table';
+import {
+  Table,
+  type TableHeaderCellProps,
+  type TableHeaderSort,
+} from '@/components/table';
 import { useItemData } from '@/hooks/flyff-service/use-item-data';
-import { usePage, useSearch } from '@/hooks/stores/use-item-store';
+import {
+  useItemActions,
+  usePage,
+  useSearch,
+  useSorts,
+} from '@/hooks/stores/use-item-store';
 import { getItemIconUrl } from '@/utils/image';
 import { Suspense } from 'react';
 
@@ -27,17 +36,80 @@ const LoadingRows = () => (
 );
 
 const ItemTableHeader = () => {
+  const { addOrUpdateSort, removeSort } = useItemActions();
+
+  const handleSort = (field: string, order: TableHeaderSort) => {
+    if (order === null) {
+      removeSort(field);
+    } else {
+      addOrUpdateSort({ field, order });
+    }
+  };
+
+  const columns: TableHeaderCellProps[] = [
+    {
+      field: 'icon',
+      headerName: 'Icon',
+      className: 'w-[5%]',
+    },
+    {
+      field: 'name.en',
+      headerName: 'Name',
+      className: 'w-[30%]',
+      sortable: true,
+      onSort: handleSort,
+    },
+    {
+      field: 'sex',
+      headerName: 'Sex',
+      className: 'w-[5%]',
+      sortable: true,
+      onSort: handleSort,
+    },
+    {
+      field: 'level',
+      headerName: 'Level',
+      className: 'w-[5%]',
+      sortable: true,
+      defaultSort: 'asc',
+      onSort: handleSort,
+    },
+    {
+      field: 'rarity',
+      headerName: 'Rarity',
+      className: 'w-[15%]',
+      sortable: true,
+      onSort: handleSort,
+    },
+    {
+      field: 'category',
+      headerName: 'Category',
+      className: 'w-[15%]',
+      sortable: true,
+      onSort: handleSort,
+    },
+    {
+      field: 'subcategory',
+      headerName: 'SubCategory',
+      className: 'w-[15%]',
+      sortable: true,
+      onSort: handleSort,
+    },
+    {
+      field: 'sellPrice',
+      headerName: 'Sell',
+      className: 'w-[10%]',
+      sortable: true,
+      onSort: handleSort,
+    },
+  ];
+
   return (
     <Table.Header>
       <Table.Row>
-        <Table.HeaderCell className="w-[5%]">Icon</Table.HeaderCell>
-        <Table.HeaderCell className="w-[30%]">Name</Table.HeaderCell>
-        <Table.HeaderCell className="w-[5%]">Sex</Table.HeaderCell>
-        <Table.HeaderCell className="w-[5%]">Level</Table.HeaderCell>
-        <Table.HeaderCell className="w-[15%]">Rarity</Table.HeaderCell>
-        <Table.HeaderCell className="w-[15%]">Category</Table.HeaderCell>
-        <Table.HeaderCell className="w-[15%]">SubCategory</Table.HeaderCell>
-        <Table.HeaderCell className="w-[10%]">Sell</Table.HeaderCell>
+        {columns.map((column) => (
+          <Table.HeaderCell key={column.field} {...column} />
+        ))}
       </Table.Row>
     </Table.Header>
   );
@@ -54,6 +126,7 @@ const ItemTableBody = () => {
     sorts,
   });
 
+  // TODO : use fields defined in columns to respect DRY principle
   return (
     <>
       {items.data.map((item) => (
