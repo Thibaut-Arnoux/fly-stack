@@ -14,8 +14,8 @@ type ItemActions = {
   setPage: (page: ItemState['page']) => void;
   setFirstPage: (firstPage: ItemState['firstPage']) => void;
   setLastPage: (lastPage: ItemState['lastPage']) => void;
-  addOrUpdateSort: (sort: SearchSort) => void;
-  removeSort: (field: SearchSort['field']) => void;
+  addOrUpdateSort: (sort: ItemState['sorts'][number]) => void;
+  removeSort: (field: ItemState['sorts'][number]['field']) => void;
 };
 
 export const itemStore = new Store<ItemState>({
@@ -51,7 +51,7 @@ export const itemActions: ItemActions = {
       lastPage,
     }));
   },
-  addOrUpdateSort: (sort: SearchSort) => {
+  addOrUpdateSort: (sort: ItemState['sorts'][number]) => {
     itemStore.setState((state) => {
       const existingSortIndex = state.sorts.findIndex(
         (s) => s.field === sort.field,
@@ -73,7 +73,7 @@ export const itemActions: ItemActions = {
       };
     });
   },
-  removeSort: (field: SearchSort['field']) => {
+  removeSort: (field: ItemState['sorts'][number]['field']) => {
     itemStore.setState((state) => ({
       ...state,
       sorts: state.sorts.filter((sort) => sort.field !== field),

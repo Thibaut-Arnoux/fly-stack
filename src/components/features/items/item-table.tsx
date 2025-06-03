@@ -29,11 +29,19 @@ export const ItemTable = () => {
 
 const LoadingRows = () => (
   <Table.Row>
-    <Table.Cell colSpan={8}>
+    <Table.Cell>
       <Loader />
     </Table.Cell>
   </Table.Row>
 );
+
+const NoDataRows = () => (
+  <Table.Row>
+    <Table.Cell className="fixed inset-0 flex items-center justify-center">
+      <span>No Data</span>
+    </Table.Cell>
+  </Table.Row>
+)
 
 const ItemTableHeader = () => {
   const { addOrUpdateSort, removeSort } = useItemActions();
@@ -129,7 +137,7 @@ const ItemTableBody = () => {
   // TODO : use fields defined in columns to respect DRY principle
   return (
     <>
-      {items.data.map((item) => (
+      {items.data.length === 0 ? <NoDataRows /> : items.data.map((item) => (
         <Table.Row key={item.id}>
           <Table.Cell>
             <img src={getItemIconUrl(item.icon)} alt="item-icon" />
