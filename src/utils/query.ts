@@ -48,9 +48,7 @@ export const getPaginatedQueryKey = (
 
   key.push({ page: params.page });
 
-  if (params.perPage) {
-    key.push({ perPage: params.perPage });
-  }
+  key.push({ perPage: params.perPage ?? ApiService.SEARCH_PARAMS._PER_PAGE });
 
   return key;
 };

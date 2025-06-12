@@ -11,39 +11,14 @@ import {
   useSearch,
   useSorts,
 } from '@/hooks/stores/use-item-store';
+import type { Item } from '@/schemas/item';
+import type { ColumnsConfiguration } from '@/types/table';
 import { getItemIconUrl } from '@/utils/image';
 import { Suspense } from 'react';
 
+type ItemColumns = ColumnsConfiguration<Item>;
+
 export const ItemTable = () => {
-  return (
-    <Table>
-      <ItemTableHeader />
-      <Table.Body>
-        <Suspense fallback={<LoadingRows />}>
-          <ItemTableBody />
-        </Suspense>
-      </Table.Body>
-    </Table>
-  );
-};
-
-const LoadingRows = () => (
-  <Table.Row>
-    <Table.Cell>
-      <Loader />
-    </Table.Cell>
-  </Table.Row>
-);
-
-const NoDataRows = () => (
-  <Table.Row>
-    <Table.Cell className="fixed inset-0 flex items-center justify-center">
-      <span>No Data</span>
-    </Table.Cell>
-  </Table.Row>
-)
-
-const ItemTableHeader = () => {
   const { addOrUpdateSort, removeSort } = useItemActions();
 
   const handleSort = (field: string, order: TableHeaderSort) => {
@@ -54,11 +29,12 @@ const ItemTableHeader = () => {
     }
   };
 
-  const columns: TableHeaderCellProps[] = [
+  const columns: ItemColumns = [
     {
       field: 'icon',
       headerName: 'Icon',
       className: 'w-[5%]',
+      renderCell: (row) => <img src={getItemIconUrl(row.icon)} alt="icon" />,
     },
     {
       field: 'name.en',
@@ -66,6 +42,7 @@ const ItemTableHeader = () => {
       className: 'w-[30%]',
       sortable: true,
       onSort: handleSort,
+      renderCell: (row) => <>{row.name.en}</>,
     },
     {
       field: 'sex',
@@ -73,6 +50,7 @@ const ItemTableHeader = () => {
       className: 'w-[5%]',
       sortable: true,
       onSort: handleSort,
+      renderCell: (row) => <>{row.sex}</>,
     },
     {
       field: 'level',
@@ -81,6 +59,7 @@ const ItemTableHeader = () => {
       sortable: true,
       defaultSort: 'asc',
       onSort: handleSort,
+      renderCell: (row) => <>{row.level}</>,
     },
     {
       field: 'rarity',
@@ -88,6 +67,7 @@ const ItemTableHeader = () => {
       className: 'w-[15%]',
       sortable: true,
       onSort: handleSort,
+      renderCell: (row) => <>{row.rarity}</>,
     },
     {
       field: 'category',
@@ -95,6 +75,7 @@ const ItemTableHeader = () => {
       className: 'w-[15%]',
       sortable: true,
       onSort: handleSort,
+      renderCell: (row) => <>{row.category}</>,
     },
     {
       field: 'subcategory',
@@ -102,6 +83,7 @@ const ItemTableHeader = () => {
       className: 'w-[15%]',
       sortable: true,
       onSort: handleSort,
+      renderCell: (row) => <>{row.subcategory}</>,
     },
     {
       field: 'sellPrice',
@@ -109,21 +91,58 @@ const ItemTableHeader = () => {
       className: 'w-[10%]',
       sortable: true,
       onSort: handleSort,
+      renderCell: (row) => <>{row.sellPrice}</>,
     },
   ];
 
   return (
-    <Table.Header>
-      <Table.Row>
-        {columns.map((column) => (
-          <Table.HeaderCell key={column.field} {...column} />
-        ))}
-      </Table.Row>
-    </Table.Header>
+    <Table>
+      <Table.Header>
+        <ItemTableHeaderRow columns={columns} />
+      </Table.Header>
+      <Table.Body>
+        <Suspense fallback={<LoadingRow />}>
+          <ItemTableBodyRow columns={columns} />
+        </Suspense>
+      </Table.Body>
+    </Table>
   );
 };
 
-const ItemTableBody = () => {
+const LoadingRow = () => (
+  <Table.Row>
+    <Table.Cell>
+      <Loader />
+    </Table.Cell>
+  </Table.Row>
+);
+
+const NoDataRow = () => (
+  <Table.Row>
+    <Table.Cell className="fixed inset-0 flex items-center justify-center">
+      <span>No Data</span>
+    </Table.Cell>
+  </Table.Row>
+);
+
+const ItemTableHeaderRow = ({ columns }: { columns: ItemColumns }) => {
+  const headers: TableHeaderCellProps[] = columns.map((column) => {
+    // properies to exclude from initial configuration, e.g. renderCell
+    const { renderCell, ...header } = column;
+
+    return header;
+  });
+
+  return (
+    <Table.Row>
+      {headers.map((header) => (
+        <Table.HeaderCell key={header.field} {...header} />
+      ))}
+    </Table.Row>
+  );
+};
+
+const ItemTableBodyRow = ({ columns }: { columns: ItemColumns }) => {
   const search = useSearch();
   const page = usePage();
   const sorts = useSorts();
@@ -134,23 +153,23 @@ const ItemTableBody = () => {
     sorts,
   });
 
-  // TODO : use fields defined in columns to respect DRY principle
   return (
     <>
-      {items.data.length === 0 ? <NoDataRows /> : items.data.map((item) => (
-        <Table.Row key={item.id}>
-          <Table.Cell>
-            <img src={getItemIconUrl(item.icon)} alt="item-icon" />
-          </Table.Cell>
-          <Table.Cell>{item.name.en}</Table.Cell>
-          <Table.Cell>{item.sex}</Table.Cell>
-          <Table.Cell>{item.level}</Table.Cell>
-          <Table.Cell>{item.rarity}</Table.Cell>
-          <Table.Cell>{item.category}</Table.Cell>
-          <Table.Cell>{item.subcategory}</Table.Cell>
-          <Table.Cell>{item.sellPrice}</Table.Cell>
-        </Table.Row>
-      ))}
+      {items.data.length === 0 ? (
+        <NoDataRow />
+      ) : (
+        items.data.map((item) => (
+          <Table.Row key={item.id}>
+            {columns.map((column) => {
+              return (
+                <Table.Cell key={column.field}>
+                  {column.renderCell(item)}
+                </Table.Cell>
+              );
+            })}
+          </Table.Row>
+        ))
+      )}
     </>
   );
 };
