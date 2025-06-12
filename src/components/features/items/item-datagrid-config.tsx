@@ -1,0 +1,84 @@
+import type { TableHeaderSort } from '@/components/table';
+import { useItemActions } from '@/hooks/stores/use-item-store';
+import type { Item } from '@/schemas/item';
+import type { ColumnsConfiguration } from '@/types/table';
+import { getItemIconUrl } from '@/utils/image';
+
+export const useItemDatagridConfig = () => {
+  const { addOrUpdateSort, removeSort } = useItemActions();
+  const handleSort = (field: string, order: TableHeaderSort) => {
+    if (order === null) {
+      removeSort(field);
+    } else {
+      addOrUpdateSort({ field, order });
+    }
+  };
+
+  const columns: ColumnsConfiguration<Item> = [
+    {
+      field: 'icon',
+      headerName: 'Icon',
+      className: 'w-[5%]',
+      renderCell: (row) => <img src={getItemIconUrl(row.icon)} alt="icon" />,
+    },
+    {
+      field: 'name.en',
+      headerName: 'Name',
+      className: 'w-[30%]',
+      sortable: true,
+      onSort: handleSort,
+      renderCell: (row) => <>{row.name.en}</>,
+    },
+    {
+      field: 'sex',
+      headerName: 'Sex',
+      className: 'w-[5%]',
+      sortable: true,
+      onSort: handleSort,
+      renderCell: (row) => <>{row.sex}</>,
+    },
+    {
+      field: 'level',
+      headerName: 'Level',
+      className: 'w-[5%]',
+      sortable: true,
+      defaultSort: 'asc',
+      onSort: handleSort,
+      renderCell: (row) => <>{row.level}</>,
+    },
+    {
+      field: 'rarity',
+      headerName: 'Rarity',
+      className: 'w-[15%]',
+      sortable: true,
+      onSort: handleSort,
+      renderCell: (row) => <>{row.rarity}</>,
+    },
+    {
+      field: 'category',
+      headerName: 'Category',
+      className: 'w-[15%]',
+      sortable: true,
+      onSort: handleSort,
+      renderCell: (row) => <>{row.category}</>,
+    },
+    {
+      field: 'subcategory',
+      headerName: 'SubCategory',
+      className: 'w-[15%]',
+      sortable: true,
+      onSort: handleSort,
+      renderCell: (row) => <>{row.subcategory}</>,
+    },
+    {
+      field: 'sellPrice',
+      headerName: 'Sell',
+      className: 'w-[10%]',
+      sortable: true,
+      onSort: handleSort,
+      renderCell: (row) => <>{row.sellPrice}</>,
+    },
+  ];
+
+  return { columns };
+};
