@@ -8,7 +8,6 @@ export const ItemDatagrid = () => {
   const page = usePage();
   const sorts = useSorts();
   const { columns } = useItemDatagridConfig();
-
   const { data: items } = useItemData({
     page,
     likes: [{ field: 'name.en', value: search }],

@@ -5,15 +5,11 @@ import type { ColumnsConfiguration } from '@/types/table';
 type DatagridProps<T extends object & { id: string }> = {
   columns: ColumnsConfiguration<T>;
   rows: T[];
-  loading?: boolean;
 };
-
-// TODO : add datagrid skeleton
 
 export const Datagrid = <T extends object & { id: string }>({
   columns,
   rows,
-  loading,
 }: DatagridProps<T>) => {
   return (
     <Table>
@@ -21,11 +17,29 @@ export const Datagrid = <T extends object & { id: string }>({
         <TableHeaderRow columns={columns} />
       </Table.Header>
       <Table.Body>
-        {loading ? (
-          <LoadingRow />
-        ) : (
-          <TableBodyRow columns={columns} rows={rows} />
-        )}
+        <TableBodyRow columns={columns} rows={rows} />
+      </Table.Body>
+    </Table>
+  );
+};
+
+export const DatagridSkeleton = <T extends object & { id: string }>({
+  columns,
+}: Omit<DatagridProps<T>, 'rows'>) => {
+  const skeletonColumns = columns.map((column) => {
+    // not display sort arrow to only keep header's name
+    const { defaultSort, ...skeletonColumn } = column;
+
+    return skeletonColumn;
+  });
+
+  return (
+    <Table>
+      <Table.Header>
+        <TableHeaderRow columns={skeletonColumns} />
+      </Table.Header>
+      <Table.Body>
+        <LoadingRow />
       </Table.Body>
     </Table>
   );
