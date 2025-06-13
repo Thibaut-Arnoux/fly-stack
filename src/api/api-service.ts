@@ -95,7 +95,7 @@ export class ApiService {
       const data = await this._httpClient.get(endpoint);
 
       return schema.parse(data);
-    } catch (error: unknown) {
+    } catch (_error: unknown) {
       throw new Error('An error occurred while getting elements');
     }
   };
@@ -112,7 +112,7 @@ export class ApiService {
       );
 
       return paginatedResponseSchema(schema).parse(data);
-    } catch (error: unknown) {
+    } catch (_error: unknown) {
       throw new Error('An error occurred while getting paginated elements');
     }
   };

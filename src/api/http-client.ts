@@ -101,7 +101,7 @@ export class HttpClient {
       const newUrl = new URL(url);
 
       return newUrl.protocol === 'http:' || newUrl.protocol === 'https:';
-    } catch (err) {
+    } catch (_err) {
       return false;
     }
   }
