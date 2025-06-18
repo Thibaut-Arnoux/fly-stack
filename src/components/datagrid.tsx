@@ -25,7 +25,7 @@ export const Datagrid = <T extends object & { id: string }>({
 
 export const DatagridSkeleton = <T extends object & { id: string }>({
   columns,
-}: Omit<DatagridProps<T>, 'rows'>) => {
+}: Pick<DatagridProps<T>, 'columns'>) => {
   const skeletonColumns = columns.map((column) => {
     // not display sort arrow to only keep header's name
     const skeletonColumn = (({ defaultSort, ...rest }) => rest)(column);
