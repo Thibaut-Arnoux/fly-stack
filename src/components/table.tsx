@@ -30,7 +30,7 @@ export type TableHeaderCellProps = {
   field: string;
   headerName: string;
   sortable?: boolean;
-  defaultSort?: TableHeaderSort;
+  sort?: TableHeaderSort;
   onSort?: (field: string, order: TableHeaderSort) => void;
 } & ThHTMLAttributes<HTMLTableCellElement>;
 
@@ -58,7 +58,7 @@ Table.HeaderCell = ({
   field,
   headerName,
   sortable,
-  defaultSort,
+  sort: defaultSort,
   onSort,
   ...props
 }: TableHeaderCellProps) => {
