@@ -5,5 +5,5 @@ export const ItemSearch = () => {
   const search = useSearch();
   const { setSearch } = useItemActions();
 
-  return <Search search={search} onSearchChange={setSearch} />;
+  return <Search className="mt-2" search={search} onSearchChange={setSearch} />;
 };

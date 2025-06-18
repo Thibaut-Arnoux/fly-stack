@@ -12,6 +12,7 @@ export const Search = ({
   label = 'Search',
   search,
   onSearchChange,
+  className,
   ...props
 }: SearchProps) => {
   const [value, setValue] = useState(search);
@@ -22,7 +23,7 @@ export const Search = ({
   };
 
   return (
-    <label className="input" {...props}>
+    <label className={`input ${className}`} {...props}>
       <SearchIcon />
       <input
         type="search"
