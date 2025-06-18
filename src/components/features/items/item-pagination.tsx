@@ -1,10 +1,10 @@
 import { Pagination } from '@/components/pagination';
 import {
   useFirstPage,
+  useItemActions,
   useLastPage,
   usePage,
 } from '@/hooks/stores/use-item-store';
-import { useItemActions } from '@/hooks/stores/use-item-store';
 
 export const ItemPagination = () => {
   const page = usePage();

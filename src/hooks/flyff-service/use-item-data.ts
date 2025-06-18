@@ -1,9 +1,9 @@
+import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { flyffService } from '@/api/flyff-service';
 import { useItemActions } from '@/hooks/stores/use-item-store';
 import type { SearchPaginatedOptions } from '@/types/api';
 import { getPaginatedQueryKey } from '@/utils/query';
-import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
 
 export const useItemOptions = (searchOptions: SearchPaginatedOptions) => {
   return queryOptions({

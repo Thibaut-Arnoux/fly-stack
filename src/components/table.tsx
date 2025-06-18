@@ -82,8 +82,9 @@ Table.HeaderCell = ({
 
   return (
     <th {...props}>
-      <div
-        className={`flex flex-row gap-2 items-center ${sortable && 'group cursor-pointer'}`}
+      <button
+        type="button"
+        className={`w-full flex flex-row gap-2 items-center ${sortable && 'group cursor-pointer'}`}
         onClick={handleSort}
         onKeyDown={handleSort}
       >
@@ -97,7 +98,7 @@ Table.HeaderCell = ({
             )}
           </div>
         )}
-      </div>
+      </button>
     </th>
   );
 };

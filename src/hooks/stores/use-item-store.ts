@@ -1,5 +1,5 @@
-import { itemActions, itemStore } from '@/stores/item-store';
 import { useStore } from '@tanstack/react-store';
+import { itemActions, itemStore } from '@/stores/item-store';
 
 export const useSearch = () => useStore(itemStore, (state) => state.search);
 export const usePage = () => useStore(itemStore, (state) => state.page);

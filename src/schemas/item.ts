@@ -1,8 +1,8 @@
+import { z } from 'zod';
 import {
   localizedStringOptionalSchema,
   localizedStringSchema,
 } from '@/schemas/shared';
-import { z } from 'zod';
 
 const spawnSchema = z.object({
   world: z.number().int(),

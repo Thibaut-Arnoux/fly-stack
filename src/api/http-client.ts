@@ -1,4 +1,3 @@
-import type { LinkHeader } from '@/types/api';
 import ky, {
   type KyInstance,
   type KyRequest,
@@ -6,6 +5,7 @@ import ky, {
   type NormalizedOptions,
   type Options,
 } from 'ky';
+import type { LinkHeader } from '@/types/api';
 
 export class HttpClient {
   private _baseUrl: URL;

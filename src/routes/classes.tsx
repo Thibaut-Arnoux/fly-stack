@@ -1,6 +1,6 @@
-import { useClassData } from '@/hooks/flyff-service/use-class-data';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
+import { useClassData } from '@/hooks/flyff-service/use-class-data';
 
 export const Route = createFileRoute('/classes')({
   loader: ({ context: { queryClient } }) => {

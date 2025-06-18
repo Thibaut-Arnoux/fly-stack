@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
   "vcs": {
     "enabled": false,
     "clientKind": "git",
@@ -7,14 +7,15 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": [
-      "./.vscode",
-      "./tsconfig.*",
-      "./dist/**",
-      "./node_modules/**",
-      "./src/index.css",
-      "./src/routeTree.gen.ts",
-      "./server/db.json"
+    "includes": [
+      "**",
+      "!.vscode",
+      "!tsconfig.*",
+      "!dist/**",
+      "!node_modules/**",
+      "!src/index.css",
+      "!src/routeTree.gen.ts",
+      "!server/db.json"
     ]
   },
   "formatter": {
@@ -22,22 +23,11 @@
     "indentStyle": "space",
     "indentWidth": 2
   },
-  "organizeImports": {
-    "enabled": true
-  },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
-      "correctness": {
-        "noUnusedFunctionParameters": "error",
-        "noUnusedImports": "error",
-        "noUnusedPrivateClassMembers": "error",
-        "noUnusedVariables": "error"
-      },
-      "a11y": {
-        "useValidAnchor": "off"
-      }
+      "recommended": true
     }
   },
   "javascript": {

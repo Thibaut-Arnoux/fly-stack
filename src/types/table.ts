@@ -1,5 +1,5 @@
-import type { TableHeaderCellProps } from '@/components/table';
 import type { ReactNode } from 'react';
+import type { TableHeaderCellProps } from '@/components/table';
 
 export type NestedKeyOf<ObjectType extends object> = {
   [Key in keyof ObjectType & (string | number)]: ObjectType[Key] extends object

@@ -1,5 +1,5 @@
-import type { SearchSort } from '@/types/api';
 import { Store } from '@tanstack/react-store';
+import type { SearchSort } from '@/types/api';
 
 type ItemState = {
   search: string;

@@ -28,7 +28,7 @@ export const DatagridSkeleton = <T extends object & { id: string }>({
 }: Omit<DatagridProps<T>, 'rows'>) => {
   const skeletonColumns = columns.map((column) => {
     // not display sort arrow to only keep header's name
-    const { defaultSort, ...skeletonColumn } = column;
+    const skeletonColumn = (({ defaultSort, ...rest }) => rest)(column);
 
     return skeletonColumn;
   });
@@ -63,10 +63,12 @@ const NoDataRow = () => (
 
 const TableHeaderRow = <T extends object & { id: string }>({
   columns,
-}: { columns: ColumnsConfiguration<T> }) => {
+}: {
+  columns: ColumnsConfiguration<T>;
+}) => {
   const headers = columns.map((column) => {
     // properies to exclude from initial configuration, e.g. renderCell
-    const { renderCell, ...header } = column;
+    const header = (({ renderCell, ...rest }) => rest)(column);
 
     return header;
   });
@@ -83,7 +85,10 @@ const TableHeaderRow = <T extends object & { id: string }>({
 const TableBodyRow = <T extends object & { id: string }>({
   columns,
   rows,
-}: { columns: ColumnsConfiguration<T>; rows: T[] }) => {
+}: {
+  columns: ColumnsConfiguration<T>;
+  rows: T[];
+}) => {
   return (
     <>
       {rows.length === 0 ? (

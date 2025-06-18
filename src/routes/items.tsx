@@ -1,11 +1,11 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { Suspense } from 'react';
 import { ItemDatagrid } from '@/components/features/items/item-datagrid';
 import { ItemDatagridSkeleton } from '@/components/features/items/item-datagrid-skeleton';
 import { ItemPagination } from '@/components/features/items/item-pagination';
 import { ItemSearch } from '@/components/features/items/item-search';
 import { useItemOptions } from '@/hooks/flyff-service/use-item-data';
 import { itemStore } from '@/stores/item-store';
-import { createFileRoute } from '@tanstack/react-router';
-import { Suspense } from 'react';
 
 export const Route = createFileRoute('/items')({
   loader: ({ context: { queryClient } }) => {

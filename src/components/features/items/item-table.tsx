@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Loader } from '@/components/loader';
 import {
   Table,
@@ -14,7 +15,6 @@ import {
 import type { Item } from '@/schemas/item';
 import type { ColumnsConfiguration } from '@/types/table';
 import { getItemIconUrl } from '@/utils/image';
-import { Suspense } from 'react';
 
 type ItemColumns = ColumnsConfiguration<Item>;
 
@@ -128,7 +128,7 @@ const NoDataRow = () => (
 const ItemTableHeaderRow = ({ columns }: { columns: ItemColumns }) => {
   const headers: TableHeaderCellProps[] = columns.map((column) => {
     // properies to exclude from initial configuration, e.g. renderCell
-    const { renderCell, ...header } = column;
+    const header = (({ renderCell, ...rest }) => rest)(column);
 
     return header;
   });

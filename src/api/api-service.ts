@@ -1,3 +1,5 @@
+import type { Options } from 'ky';
+import type { ZodSchema, z } from 'zod';
 import type { HttpClient } from '@/api/http-client';
 import {
   type PaginatedResponse,
@@ -11,8 +13,6 @@ import type {
   SearchProperty,
   SearchSort,
 } from '@/types/api';
-import type { Options } from 'ky';
-import type { ZodSchema, z } from 'zod';
 
 export class ApiService {
   static readonly SEARCH_PARAMS: SearchParams = {
