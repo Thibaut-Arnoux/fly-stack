@@ -26,17 +26,10 @@ export const Datagrid = <T extends object & { id: string }>({
 export const DatagridSkeleton = <T extends object & { id: string }>({
   columns,
 }: Pick<DatagridProps<T>, 'columns'>) => {
-  const skeletonColumns = columns.map((column) => {
-    // not display sort arrow to only keep header's name
-    const skeletonColumn = (({ defaultSort, ...rest }) => rest)(column);
-
-    return skeletonColumn;
-  });
-
   return (
     <Table>
       <Table.Header>
-        <TableHeaderRow columns={skeletonColumns} />
+        <TableHeaderRow columns={columns} />
       </Table.Header>
       <Table.Body>
         <LoadingRow />

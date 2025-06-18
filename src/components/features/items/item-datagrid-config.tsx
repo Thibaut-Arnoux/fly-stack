@@ -1,10 +1,11 @@
 import type { TableHeaderSort } from '@/components/table';
-import { useItemActions } from '@/hooks/stores/use-item-store';
+import { useItemActions, useSorts } from '@/hooks/stores/use-item-store';
 import type { Item } from '@/schemas/item';
 import type { ColumnsConfiguration } from '@/types/table';
 import { getItemIconUrl } from '@/utils/image';
 
 export const useItemDatagridConfig = () => {
+  const sorts = useSorts();
   const { addOrUpdateSort, removeSort } = useItemActions();
   const handleSort = (field: string, order: TableHeaderSort) => {
     if (order === null) {
@@ -12,6 +13,11 @@ export const useItemDatagridConfig = () => {
     } else {
       addOrUpdateSort({ field, order });
     }
+  };
+
+  const getSort = (field: string) => {
+    const match = sorts.find((item) => item.field === field);
+    return match ? (match.order ?? 'asc') : null;
   };
 
   const columns: ColumnsConfiguration<Item> = [
@@ -26,6 +32,7 @@ export const useItemDatagridConfig = () => {
       headerName: 'Name',
       className: 'w-[30%]',
       sortable: true,
+      defaultSort: getSort('name.en'),
       onSort: handleSort,
       renderCell: (row) => <>{row.name.en}</>,
     },
@@ -34,6 +41,7 @@ export const useItemDatagridConfig = () => {
       headerName: 'Sex',
       className: 'w-[5%]',
       sortable: true,
+      defaultSort: getSort('sex'),
       onSort: handleSort,
       renderCell: (row) => <>{row.sex}</>,
     },
@@ -42,7 +50,7 @@ export const useItemDatagridConfig = () => {
       headerName: 'Level',
       className: 'w-[5%]',
       sortable: true,
-      defaultSort: 'asc',
+      defaultSort: getSort('level'),
       onSort: handleSort,
       renderCell: (row) => <>{row.level}</>,
     },
@@ -51,6 +59,7 @@ export const useItemDatagridConfig = () => {
       headerName: 'Rarity',
       className: 'w-[15%]',
       sortable: true,
+      defaultSort: getSort('rarity'),
       onSort: handleSort,
       renderCell: (row) => <>{row.rarity}</>,
     },
@@ -59,6 +68,7 @@ export const useItemDatagridConfig = () => {
       headerName: 'Category',
       className: 'w-[15%]',
       sortable: true,
+      defaultSort: getSort('category'),
       onSort: handleSort,
       renderCell: (row) => <>{row.category}</>,
     },
@@ -67,6 +77,7 @@ export const useItemDatagridConfig = () => {
       headerName: 'SubCategory',
       className: 'w-[15%]',
       sortable: true,
+      defaultSort: getSort('subcategory'),
       onSort: handleSort,
       renderCell: (row) => <>{row.subcategory}</>,
     },
@@ -75,6 +86,7 @@ export const useItemDatagridConfig = () => {
       headerName: 'Sell',
       className: 'w-[10%]',
       sortable: true,
+      defaultSort: getSort('sellPrice'),
       onSort: handleSort,
       renderCell: (row) => <>{row.sellPrice}</>,
     },
