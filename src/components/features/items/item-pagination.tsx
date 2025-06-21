@@ -1,23 +1,20 @@
 import { Pagination } from '@/components/pagination';
-import {
-  useFirstPage,
-  useItemActions,
-  useLastPage,
-  usePage,
-} from '@/hooks/stores/use-item-store';
+import { useApiOptions } from '@/hooks/providers/use-api-provider';
 
 export const ItemPagination = () => {
-  const page = usePage();
-  const firstPage = useFirstPage();
-  const lastPage = useLastPage();
-  const { setPage } = useItemActions();
+  const { state, dispatch } = useApiOptions();
 
   return (
     <Pagination
-      page={page}
-      onPageChange={setPage}
-      firstPage={firstPage}
-      lastPage={lastPage}
+      page={state.page}
+      onPageChange={(page) =>
+        dispatch({
+          type: 'setPage',
+          page,
+        })
+      }
+      firstPage={state.pageLimit.first}
+      lastPage={state.pageLimit.last}
     />
   );
 };

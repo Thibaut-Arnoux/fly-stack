@@ -5,15 +5,16 @@ import { ItemDatagridSkeleton } from '@/components/features/items/item-datagrid-
 import { ItemPagination } from '@/components/features/items/item-pagination';
 import { ItemSearch } from '@/components/features/items/item-search';
 import { useItemOptions } from '@/hooks/flyff-service/use-item-data';
-import { itemStore } from '@/stores/item-store';
+import { ApiOptionsProvider } from '@/providers/api-options-provider';
+
+const initialItemOptions = {
+  page: 1,
+  sorts: [{ field: 'level' }],
+};
 
 export const Route = createFileRoute('/items')({
   loader: ({ context: { queryClient } }) => {
-    const itemQueryOptions = useItemOptions({
-      page: itemStore.state.page,
-      likes: [{ field: 'name.en', value: itemStore.state.search }],
-      sorts: itemStore.state.sorts,
-    });
+    const itemQueryOptions = useItemOptions(initialItemOptions);
 
     return queryClient.ensureQueryData(itemQueryOptions);
   },
@@ -22,7 +23,7 @@ export const Route = createFileRoute('/items')({
 
 function Items() {
   return (
-    <>
+    <ApiOptionsProvider initialState={initialItemOptions}>
       <div className="flex justify-end mr-2">
         <ItemSearch />
       </div>
@@ -35,6 +36,6 @@ function Items() {
       <div className="flex justify-center my-1">
         <ItemPagination />
       </div>
-    </>
+    </ApiOptionsProvider>
   );
 }

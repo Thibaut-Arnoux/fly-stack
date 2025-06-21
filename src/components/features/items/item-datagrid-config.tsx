@@ -1,22 +1,21 @@
 import type { TableHeaderSort } from '@/components/table';
-import { useItemActions, useSorts } from '@/hooks/stores/use-item-store';
+import { useApiOptions } from '@/hooks/providers/use-api-provider';
 import type { Item } from '@/schemas/item';
 import type { ColumnsConfiguration } from '@/types/table';
 import { getItemIconUrl } from '@/utils/image';
 
 export const useItemDatagridConfig = () => {
-  const sorts = useSorts();
-  const { addOrUpdateSort, removeSort } = useItemActions();
+  const { state, dispatch } = useApiOptions();
   const handleSort = (field: string, order: TableHeaderSort) => {
     if (order === null) {
-      removeSort(field);
+      dispatch({ type: 'removeSort', field });
     } else {
-      addOrUpdateSort({ field, order });
+      dispatch({ type: 'upsertSort', sort: { field, order } });
     }
   };
 
   const getSort = (field: string) => {
-    const match = sorts.find((item) => item.field === field);
+    const match = state.sorts.find((item) => item.field === field);
     return match ? (match.order ?? 'asc') : null;
   };
 
