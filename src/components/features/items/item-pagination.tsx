@@ -1,5 +1,5 @@
 import { Pagination } from '@/components/pagination';
-import { useApiOptions } from '@/hooks/providers/use-api-provider';
+import { useApiOptions } from '@/hooks/providers/use-api-options';
 
 export const ItemPagination = () => {
   const { state, dispatch } = useApiOptions();

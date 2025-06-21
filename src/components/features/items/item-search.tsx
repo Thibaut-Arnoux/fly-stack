@@ -1,8 +1,7 @@
 import { Search } from '@/components/search';
-import { useApiOptions } from '@/hooks/providers/use-api-provider';
+import { useApiOptions } from '@/hooks/providers/use-api-options';
 
 export const ItemSearch = () => {
-  console.debug('ItemSearch');
   const { state, dispatch } = useApiOptions();
   const search =
     state.likes.find((like) => like.field === 'name.en')?.value ?? '';

@@ -1,5 +1,5 @@
 import type { TableHeaderSort } from '@/components/table';
-import { useApiOptions } from '@/hooks/providers/use-api-provider';
+import { useApiOptions } from '@/hooks/providers/use-api-options';
 import type { Item } from '@/schemas/item';
 import type { ColumnsConfiguration } from '@/types/table';
 import { getItemIconUrl } from '@/utils/image';

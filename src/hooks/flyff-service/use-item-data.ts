@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { flyffService } from '@/api/flyff-service';
 import type { SearchPaginatedOptions } from '@/types/api';
 import { getPaginatedQueryKey } from '@/utils/query';
-import { useApiOptions } from '../providers/use-api-provider';
+import { useApiOptions } from '../providers/use-api-options';
 
 export const useItemOptions = (searchOptions: SearchPaginatedOptions) => {
   return queryOptions({
