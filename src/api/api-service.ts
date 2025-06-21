@@ -1,20 +1,91 @@
+import type { Options } from 'ky';
+import type { ZodSchema, z } from 'zod';
 import type { HttpClient } from '@/api/http-client';
 import {
   type PaginatedResponse,
   paginatedResponseSchema,
 } from '@/schemas/shared';
-import type { PaginatedOptions } from '@/types/api';
-import type { Options } from 'ky';
-import type { ZodSchema, z } from 'zod';
+import type {
+  SearchLike,
+  SearchOptions,
+  SearchPaginatedOptions,
+  SearchParams,
+  SearchProperty,
+  SearchSort,
+} from '@/types/api';
 
 export class ApiService {
-  static readonly _PER_PAGE = 20;
+  static readonly SEARCH_PARAMS: SearchParams = {
+    _PER_PAGE: 20,
+    _ORDER: 'asc',
+  };
 
   protected _httpClient: HttpClient;
 
   constructor(httpClient: HttpClient) {
     this._httpClient = httpClient;
   }
+
+  private _formatSearchProperties = (
+    properties: SearchProperty[],
+  ): Record<string, string> => {
+    return Object.fromEntries(
+      properties.map((property) => [property.field, property.value]),
+    );
+  };
+
+  private _formatSearchSorts = (sorts: SearchSort[]) => {
+    const _sort = sorts.map((s) => s.field).join(',');
+    const _order = sorts
+      .map((s) => s.order ?? ApiService.SEARCH_PARAMS._ORDER)
+      .join(',');
+
+    return { _sort, _order };
+  };
+
+  private _formatSearchLikes = (
+    likes: SearchLike[],
+  ): Record<string, string> => {
+    return Object.fromEntries(
+      likes
+        .filter((like) => like.value)
+        .map((like) => [`${like.field}_like`, like.value]),
+    );
+  };
+
+  private _formatSearchOptions = (options: SearchOptions): Options => {
+    return {
+      searchParams: {
+        ...(options.properties !== undefined &&
+          options.properties.length > 0 && {
+            ...this._formatSearchProperties(options.properties),
+          }),
+        ...(options.sorts !== undefined &&
+          options.sorts.length > 0 && {
+            ...this._formatSearchSorts(options.sorts),
+          }),
+        ...(options.likes !== undefined &&
+          options.likes.length > 0 && {
+            ...this._formatSearchLikes(options.likes),
+          }),
+      },
+    };
+  };
+
+  private _formatSearchPaginatedOptions = (
+    options: SearchPaginatedOptions,
+  ): Options => {
+    const baseSearchParams = this._formatSearchOptions(options)
+      .searchParams as object;
+
+    return {
+      searchParams: {
+        ...baseSearchParams,
+        _page: options.page,
+        _limit: options.perPage ?? ApiService.SEARCH_PARAMS._PER_PAGE,
+      },
+    };
+  };
 
   protected _get = async <T extends ZodSchema>(
     endpoint: string,
@@ -24,33 +95,24 @@ export class ApiService {
       const data = await this._httpClient.get(endpoint);
 
       return schema.parse(data);
-    } catch (error: unknown) {
+    } catch (_error: unknown) {
       throw new Error('An error occurred while getting elements');
     }
-  };
-
-  private _formatPaginatedOptions = (options: PaginatedOptions): Options => {
-    return {
-      searchParams: {
-        _page: options.page,
-        _per_page: options.perPage ?? ApiService._PER_PAGE,
-      },
-    };
   };
 
   protected _getPaginated = async <T extends ZodSchema>(
     endpoint: string,
     schema: T,
-    options?: PaginatedOptions,
+    options: SearchPaginatedOptions,
   ): Promise<PaginatedResponse<T>> => {
     try {
       const data = await this._httpClient.get(
         `${endpoint}`,
-        this._formatPaginatedOptions(options ?? { page: 1 }),
+        this._formatSearchPaginatedOptions(options),
       );
 
       return paginatedResponseSchema(schema).parse(data);
-    } catch (error: unknown) {
+    } catch (_error: unknown) {
       throw new Error('An error occurred while getting paginated elements');
     }
   };

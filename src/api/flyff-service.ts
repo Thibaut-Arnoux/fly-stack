@@ -1,8 +1,8 @@
+import { ApiService } from '@/api/api-service';
 import { HttpClient } from '@/api/http-client';
 import { classesSchema } from '@/schemas/class';
 import { itemSchema } from '@/schemas/item';
-import type { PaginatedOptions } from '@/types/api';
-import { ApiService } from '@/api/api-service';
+import type { SearchPaginatedOptions } from '@/types/api';
 
 class FlyffService extends ApiService {
   static readonly ENDPOINTS = {
@@ -22,7 +22,7 @@ class FlyffService extends ApiService {
     return this._get(FlyffService.ENDPOINTS.CLASSES, classesSchema);
   };
 
-  public getItems = async (options?: PaginatedOptions) => {
+  public getItems = async (options: SearchPaginatedOptions) => {
     return this._getPaginated(
       FlyffService.ENDPOINTS.ITEMS,
       itemSchema,

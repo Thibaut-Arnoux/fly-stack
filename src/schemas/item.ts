@@ -1,8 +1,8 @@
+import { z } from 'zod';
 import {
   localizedStringOptionalSchema,
   localizedStringSchema,
 } from '@/schemas/shared';
-import { z } from 'zod';
 
 const spawnSchema = z.object({
   world: z.number().int(),
@@ -34,5 +34,7 @@ export const itemSchema = z.object({
   durationRealTime: z.boolean(),
   spawns: z.array(spawnSchema),
 });
+
+export type Item = z.infer<typeof itemSchema>;
 
 export const itemsSchema = z.array(itemSchema);

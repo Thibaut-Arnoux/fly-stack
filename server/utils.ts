@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import path from 'node:path';
 
 export const splitIdsIntoBatches = (ids: number[], batchSize = 100) => {
   const batches: number[][] = [];
@@ -10,5 +11,11 @@ export const splitIdsIntoBatches = (ids: number[], batchSize = 100) => {
 };
 
 export const writeObjectToFile = (filePath: string, data: object): void => {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
   fs.writeFileSync(filePath, JSON.stringify(data), 'utf-8');
+};
+
+export const writeBufferToFile = (filePath: string, data: Buffer): void => {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  fs.writeFileSync(filePath, data);
 };

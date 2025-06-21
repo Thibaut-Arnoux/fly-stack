@@ -1,43 +1,40 @@
-import { Pagination } from '@/components/pagination';
-import {
-  useItemsData,
-  useItemsOptions,
-} from '@/hooks/flyff-service/use-items-data';
 import { createFileRoute } from '@tanstack/react-router';
-import { useState } from 'react';
+import { Suspense } from 'react';
+import { ItemDatagrid } from '@/components/features/items/item-datagrid';
+import { ItemDatagridSkeleton } from '@/components/features/items/item-datagrid-skeleton';
+import { ItemPagination } from '@/components/features/items/item-pagination';
+import { ItemSearch } from '@/components/features/items/item-search';
+import { useItemOptions } from '@/hooks/flyff-service/use-item-data';
+import { itemStore } from '@/stores/item-store';
 
 export const Route = createFileRoute('/items')({
   loader: ({ context: { queryClient } }) => {
-    const itemsQueryOptions = useItemsOptions({ page: 1 });
-    queryClient.ensureQueryData(itemsQueryOptions);
+    const itemQueryOptions = useItemOptions({
+      page: itemStore.state.page,
+      likes: [{ field: 'name.en', value: itemStore.state.search }],
+      sorts: itemStore.state.sorts,
+    });
+
+    return queryClient.ensureQueryData(itemQueryOptions);
   },
   component: Items,
 });
 
 function Items() {
-  const [page, setPage] = useState(1);
-
-  const { data: items } = useItemsData({ page: page });
-
   return (
-    <div className="p-2">
-      <h3>Items :</h3>
-      {items.data.map((item) => (
-        <div key={item.id}>
-          <h4>{item.name.en}</h4>
-        </div>
-      ))}
+    <>
+      <div className="flex justify-end mr-2">
+        <ItemSearch />
+      </div>
+      <div className="flex-1 overflow-y-auto p-2">
+        <Suspense fallback={<ItemDatagridSkeleton />}>
+          <ItemDatagrid />
+        </Suspense>
+      </div>
 
-      <Pagination
-        page={page}
-        onPageChange={setPage}
-        pageStatus={{
-          first: items.first,
-          prev: items.prev,
-          next: items.next,
-          last: items.last,
-        }}
-      />
-    </div>
+      <div className="flex justify-center my-1">
+        <ItemPagination />
+      </div>
+    </>
   );
 }
