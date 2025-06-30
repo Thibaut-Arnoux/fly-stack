@@ -9,7 +9,7 @@ type ApiOptionsState = {
   sorts: SearchSort[];
 };
 
-type ApiOptionsAction = {
+type ApiOptionsActions = {
   upsertLike: (like: ApiOptionsState['likes'][number]) => void;
   setPage: (page: ApiOptionsState['page']) => void;
   setPageLimit: (pageLimit: ApiOptionsState['pageLimit']) => void;
@@ -24,7 +24,7 @@ export const apiOptionsStore = new Store<ApiOptionsState>({
   sorts: [{ field: 'level' }],
 });
 
-export const apiOptionsActions: ApiOptionsAction = {
+export const apiOptionsActions: ApiOptionsActions = {
   upsertLike: (like: ApiOptionsState['likes'][number]) => {
     upsert(apiOptionsStore, 'likes', like, (l) => l.field === like.field);
   },
