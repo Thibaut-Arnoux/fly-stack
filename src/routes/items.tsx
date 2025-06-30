@@ -5,14 +5,14 @@ import { ItemDatagridSkeleton } from '@/components/features/items/item-datagrid-
 import { ItemPagination } from '@/components/features/items/item-pagination';
 import { ItemSearch } from '@/components/features/items/item-search';
 import { useItemOptions } from '@/hooks/flyff-service/use-item-data';
-import { itemStore } from '@/stores/item-store';
+import { apiOptionsStore } from '@/stores/api-options-store';
 
 export const Route = createFileRoute('/items')({
   loader: ({ context: { queryClient } }) => {
     const itemQueryOptions = useItemOptions({
-      page: itemStore.state.page,
-      likes: [{ field: 'name.en', value: itemStore.state.search }],
-      sorts: itemStore.state.sorts,
+      page: apiOptionsStore.state.page,
+      likes: apiOptionsStore.state.likes,
+      sorts: apiOptionsStore.state.sorts,
     });
 
     return queryClient.ensureQueryData(itemQueryOptions);

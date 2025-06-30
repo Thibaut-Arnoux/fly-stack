@@ -1,7 +1,7 @@
 import { queryOptions, useSuspenseQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { flyffService } from '@/api/flyff-service';
-import { useItemActions } from '@/hooks/stores/use-item-store';
+import { useItemActions } from '@/hooks/stores/use-api-options';
 import type { SearchPaginatedOptions } from '@/types/api';
 import { getPaginatedQueryKey } from '@/utils/query';
 

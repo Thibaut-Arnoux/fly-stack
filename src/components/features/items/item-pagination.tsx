@@ -4,7 +4,7 @@ import {
   useItemActions,
   useLastPage,
   usePage,
-} from '@/hooks/stores/use-item-store';
+} from '@/hooks/stores/use-api-options';
 
 export const ItemPagination = () => {
   const page = usePage();
