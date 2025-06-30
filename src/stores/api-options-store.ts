@@ -31,7 +31,7 @@ type ApiOptionsAction = {
   setPage: (page: ApiOptionsState['page']) => void;
   setFirstPage: (firstPage: ApiOptionsState['firstPage']) => void;
   setLastPage: (lastPage: ApiOptionsState['lastPage']) => void;
-  addOrUpdateSort: (sort: ApiOptionsState['sorts'][number]) => void;
+  upsertSort: (sort: ApiOptionsState['sorts'][number]) => void;
   removeSort: (field: ApiOptionsState['sorts'][number]['field']) => void;
 };
 
@@ -65,27 +65,8 @@ export const itemActions: ApiOptionsAction = {
       lastPage,
     }));
   },
-  addOrUpdateSort: (sort: ApiOptionsState['sorts'][number]) => {
-    apiOptionsStore.setState((state) => {
-      const existingSortIndex = state.sorts.findIndex(
-        (s) => s.field === sort.field,
-      );
-      // update
-      if (existingSortIndex !== -1) {
-        return {
-          ...state,
-          sorts: state.sorts.map((s, index) =>
-            index === existingSortIndex ? sort : s,
-          ),
-        };
-      }
-
-      // create
-      return {
-        ...state,
-        sorts: state.sorts.concat([sort]),
-      };
-    });
+  upsertSort: (sort: ApiOptionsState['sorts'][number]) => {
+    upsert(apiOptionsStore, 'sorts', sort, (s) => s.field === sort.field);
   },
   removeSort: (field: ApiOptionsState['sorts'][number]['field']) => {
     apiOptionsStore.setState((state) => ({
