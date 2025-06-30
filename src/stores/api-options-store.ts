@@ -1,19 +1,19 @@
 import { Store } from '@tanstack/react-store';
 import type { SearchLike, SearchSort } from '@/types/api';
 
-
 function upsert<T, S extends Record<K, T[]>, K extends keyof S>(
   store: Store<S>,
   key: K,
   value: T,
-  matchFn: (existingItem: T) => boolean
+  matchFn: (existingItem: T) => boolean,
 ) {
   const list = store.state[key];
   const index = list.findIndex(matchFn);
 
-  const updated = index !== -1
-    ? list.map((v, i) => (i === index ? value : v))
-    : [...list, value];
+  const updated =
+    index !== -1
+      ? list.map((v, i) => (i === index ? value : v))
+      : [...list, value];
 
   store.setState({ ...store.state, [key]: updated });
 }
@@ -21,16 +21,14 @@ function upsert<T, S extends Record<K, T[]>, K extends keyof S>(
 type ApiOptionsState = {
   likes: SearchLike[];
   page: number;
-  firstPage: number;
-  lastPage: number;
+  pageLimit: { firstPage: number; lastPage: number };
   sorts: SearchSort[];
 };
 
 type ApiOptionsAction = {
   upsertLike: (like: ApiOptionsState['likes'][number]) => void;
   setPage: (page: ApiOptionsState['page']) => void;
-  setFirstPage: (firstPage: ApiOptionsState['firstPage']) => void;
-  setLastPage: (lastPage: ApiOptionsState['lastPage']) => void;
+  setPageLimit: (pageLimit: ApiOptionsState['pageLimit']) => void;
   upsertSort: (sort: ApiOptionsState['sorts'][number]) => void;
   removeSort: (field: ApiOptionsState['sorts'][number]['field']) => void;
 };
@@ -38,8 +36,7 @@ type ApiOptionsAction = {
 export const apiOptionsStore = new Store<ApiOptionsState>({
   likes: [],
   page: 1,
-  firstPage: 1,
-  lastPage: 1,
+  pageLimit: { firstPage: 1, lastPage: 1 },
   sorts: [{ field: 'level' }],
 });
 
@@ -53,16 +50,10 @@ export const itemActions: ApiOptionsAction = {
       page,
     }));
   },
-  setFirstPage: (firstPage: ApiOptionsState['firstPage']) => {
+  setPageLimit: (pageLimit: ApiOptionsState['pageLimit']) => {
     apiOptionsStore.setState((state) => ({
       ...state,
-      firstPage,
-    }));
-  },
-  setLastPage: (lastPage: ApiOptionsState['lastPage']) => {
-    apiOptionsStore.setState((state) => ({
-      ...state,
-      lastPage,
+      pageLimit,
     }));
   },
   upsertSort: (sort: ApiOptionsState['sorts'][number]) => {
