@@ -1,14 +1,14 @@
 import { Pagination } from '@/components/pagination';
 import {
+  useApiOptionsActions,
+  useApiOptionsPage,
   useApiOptionsPageLimit,
-  useItemActions,
-  usePage,
 } from '@/hooks/stores/use-api-options';
 
 export const ItemPagination = () => {
-  const page = usePage();
+  const page = useApiOptionsPage();
   const pageLimit = useApiOptionsPageLimit();
-  const { setPage } = useItemActions();
+  const { setPage } = useApiOptionsActions();
 
   return (
     <Pagination

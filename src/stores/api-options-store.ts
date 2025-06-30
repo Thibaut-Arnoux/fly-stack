@@ -40,7 +40,7 @@ export const apiOptionsStore = new Store<ApiOptionsState>({
   sorts: [{ field: 'level' }],
 });
 
-export const itemActions: ApiOptionsAction = {
+export const apiOptionsActions: ApiOptionsAction = {
   upsertLike: (like: ApiOptionsState['likes'][number]) => {
     upsert(apiOptionsStore, 'likes', like, (l) => l.field === like.field);
   },
@@ -72,6 +72,6 @@ apiOptionsStore.subscribe((state) => {
     state.prevVal.likes !== state.currentVal.likes ||
     state.prevVal.sorts !== state.currentVal.sorts
   ) {
-    itemActions.setPage(1);
+    apiOptionsActions.setPage(1);
   }
 });
