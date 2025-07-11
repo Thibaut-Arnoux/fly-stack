@@ -1,10 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import { ItemDatagrid } from '@/components/features/items/item-datagrid';
 import { ItemDatagridSkeleton } from '@/components/features/items/item-datagrid-skeleton';
 import { ItemPagination } from '@/components/features/items/item-pagination';
 import { ItemSearch } from '@/components/features/items/item-search';
 import { useItemOptions } from '@/hooks/flyff-service/use-item-data';
+import { useApiOptionsActions } from '@/hooks/stores/use-api-options';
 import { apiOptionsStore } from '@/stores/api-options-store';
 
 export const Route = createFileRoute('/items')({
@@ -21,6 +22,14 @@ export const Route = createFileRoute('/items')({
 });
 
 function Items() {
+  const { reset } = useApiOptionsActions();
+
+  useEffect(() => {
+    return () => {
+      reset();
+    };
+  }, [reset]);
+
   return (
     <>
       <div className="flex justify-end mr-2">

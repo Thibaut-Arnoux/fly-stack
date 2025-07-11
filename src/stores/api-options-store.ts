@@ -15,14 +15,17 @@ type ApiOptionsActions = {
   setPageLimit: (pageLimit: ApiOptionsState['pageLimit']) => void;
   upsertSort: (sort: ApiOptionsState['sorts'][number]) => void;
   removeSort: (field: ApiOptionsState['sorts'][number]['field']) => void;
+  reset: () => void;
 };
 
-export const apiOptionsStore = new Store<ApiOptionsState>({
+const initialState: ApiOptionsState = {
   likes: [],
   page: 1,
   pageLimit: { firstPage: 1, lastPage: 1 },
   sorts: [{ field: 'level' }],
-});
+};
+
+export const apiOptionsStore = new Store<ApiOptionsState>(initialState);
 
 export const apiOptionsActions: ApiOptionsActions = {
   upsertLike: (like: ApiOptionsState['likes'][number]) => {
@@ -48,6 +51,9 @@ export const apiOptionsActions: ApiOptionsActions = {
       ...state,
       sorts: state.sorts.filter((sort) => sort.field !== field),
     }));
+  },
+  reset: () => {
+    apiOptionsStore.setState(initialState);
   },
 };
 

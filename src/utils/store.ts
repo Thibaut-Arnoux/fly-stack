@@ -1,4 +1,4 @@
-import { Store } from '@tanstack/react-store';
+import type { Store } from '@tanstack/react-store';
 
 export const upsert = <T, S extends Record<K, T[]>, K extends keyof S>(
   store: Store<S>,
