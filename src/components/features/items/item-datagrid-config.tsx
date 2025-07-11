@@ -28,7 +28,9 @@ export const useItemDatagridConfig = () => {
       field: 'icon',
       headerName: 'Icon',
       className: 'w-[5%]',
-      renderCell: (row) => <img src={getItemIconUrl(row.icon)} alt="icon" />,
+      renderCell: (row) => (
+        <img width={32} height={32} src={getItemIconUrl(row.icon)} alt="icon" />
+      ),
     },
     {
       field: 'name.en',

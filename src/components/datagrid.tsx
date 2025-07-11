@@ -48,7 +48,7 @@ const LoadingRow = () => (
 
 const NoDataRow = () => (
   <Table.Row>
-    <Table.Cell className="fixed inset-0 flex items-center justify-center">
+    <Table.Cell className="fixed inset-0 flex items-center justify-center pointer-events-none">
       <span>No Data</span>
     </Table.Cell>
   </Table.Row>
