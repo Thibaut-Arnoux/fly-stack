@@ -8,7 +8,7 @@ import { getPaginatedQueryKey } from '@/utils/query';
 export const itemsQueryOptions = (searchOptions: SearchPaginatedOptions) => {
   return queryOptions({
     queryKey: getPaginatedQueryKey('items', searchOptions),
-    queryFn: async ({ signal }) => flyffService.getItems(searchOptions, signal),
+    queryFn: ({ signal }) => flyffService.getItems(searchOptions, signal),
   });
 };
 
