@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { ItemDatagrid } from '@/components/features/items/item-datagrid';
 import { ItemPagination } from '@/components/features/items/item-pagination';
 import { ItemSearch } from '@/components/features/items/item-search';
-import { itemsQueryOptions } from '@/hooks/flyff-service/use-item-data';
+import { itemsQueryOptions } from '@/hooks/flyff-service/use-items-query';
 import { useApiOptionsActions } from '@/hooks/stores/use-api-options';
 import { apiOptionsStore } from '@/stores/api-options-store';
 

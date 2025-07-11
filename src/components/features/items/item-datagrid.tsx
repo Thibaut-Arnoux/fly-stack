@@ -1,6 +1,6 @@
 import { Datagrid, DatagridSkeleton } from '@/components/datagrid';
 import type { TableHeaderSort } from '@/components/table';
-import { useItemsQuery } from '@/hooks/flyff-service/use-item-data';
+import { useItemsQuery } from '@/hooks/flyff-service/use-items-query';
 import {
   useApiOptionsActions,
   useApiOptionsLikes,
