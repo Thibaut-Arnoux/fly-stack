@@ -1,4 +1,4 @@
-import type { Options } from 'ky';
+import type { SearchParamsOption } from 'ky';
 import type { ZodSchema, z } from 'zod';
 import type { HttpClient } from '@/api/http-client';
 import {
@@ -53,37 +53,34 @@ export class ApiService {
     );
   };
 
-  private _formatSearchOptions = (options: SearchOptions): Options => {
+  private _formatSearchOptions = (
+    options: SearchOptions,
+  ): SearchParamsOption => {
     return {
-      searchParams: {
-        ...(options.properties !== undefined &&
-          options.properties.length > 0 && {
-            ...this._formatSearchProperties(options.properties),
-          }),
-        ...(options.sorts !== undefined &&
-          options.sorts.length > 0 && {
-            ...this._formatSearchSorts(options.sorts),
-          }),
-        ...(options.likes !== undefined &&
-          options.likes.length > 0 && {
-            ...this._formatSearchLikes(options.likes),
-          }),
-      },
+      ...(options.properties !== undefined &&
+        options.properties.length > 0 && {
+          ...this._formatSearchProperties(options.properties),
+        }),
+      ...(options.sorts !== undefined &&
+        options.sorts.length > 0 && {
+          ...this._formatSearchSorts(options.sorts),
+        }),
+      ...(options.likes !== undefined &&
+        options.likes.length > 0 && {
+          ...this._formatSearchLikes(options.likes),
+        }),
     };
   };
 
   private _formatSearchPaginatedOptions = (
     options: SearchPaginatedOptions,
-  ): Options => {
-    const baseSearchParams = this._formatSearchOptions(options)
-      .searchParams as object;
+  ): SearchParamsOption => {
+    const baseSearchParams = this._formatSearchOptions(options) as object;
 
     return {
-      searchParams: {
-        ...baseSearchParams,
-        _page: options.page,
-        _limit: options.perPage ?? ApiService.SEARCH_PARAMS._PER_PAGE,
-      },
+      ...baseSearchParams,
+      _page: options.page,
+      _limit: options.perPage ?? ApiService.SEARCH_PARAMS._PER_PAGE,
     };
   };
 
@@ -103,13 +100,14 @@ export class ApiService {
   protected _getPaginated = async <T extends ZodSchema>(
     endpoint: string,
     schema: T,
-    options: SearchPaginatedOptions,
+    searchOptions: SearchPaginatedOptions,
+    signal?: AbortSignal,
   ): Promise<PaginatedResponse<T>> => {
     try {
-      const data = await this._httpClient.get(
-        `${endpoint}`,
-        this._formatSearchPaginatedOptions(options),
-      );
+      const data = await this._httpClient.get(`${endpoint}`, {
+        searchParams: this._formatSearchPaginatedOptions(searchOptions),
+        signal,
+      });
 
       return paginatedResponseSchema(schema).parse(data);
     } catch (_error: unknown) {
