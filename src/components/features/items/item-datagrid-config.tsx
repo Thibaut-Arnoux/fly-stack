@@ -1,17 +1,20 @@
 import type { TableHeaderSort } from '@/components/table';
-import { useItemActions, useSorts } from '@/hooks/stores/use-item-store';
+import {
+  useApiOptionsActions,
+  useApiOptionsSorts,
+} from '@/hooks/stores/use-api-options';
 import type { Item } from '@/schemas/item';
 import type { ColumnsConfiguration } from '@/types/table';
 import { getItemIconUrl } from '@/utils/image';
 
 export const useItemDatagridConfig = () => {
-  const sorts = useSorts();
-  const { addOrUpdateSort, removeSort } = useItemActions();
+  const sorts = useApiOptionsSorts();
+  const { upsertSort, removeSort } = useApiOptionsActions();
   const handleSort = (field: string, order: TableHeaderSort) => {
     if (order === null) {
       removeSort(field);
     } else {
-      addOrUpdateSort({ field, order });
+      upsertSort({ field, order });
     }
   };
 

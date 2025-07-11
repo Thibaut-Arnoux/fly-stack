@@ -1,23 +1,21 @@
 import { Pagination } from '@/components/pagination';
 import {
-  useFirstPage,
-  useItemActions,
-  useLastPage,
-  usePage,
-} from '@/hooks/stores/use-item-store';
+  useApiOptionsActions,
+  useApiOptionsPage,
+  useApiOptionsPageLimit,
+} from '@/hooks/stores/use-api-options';
 
 export const ItemPagination = () => {
-  const page = usePage();
-  const firstPage = useFirstPage();
-  const lastPage = useLastPage();
-  const { setPage } = useItemActions();
+  const page = useApiOptionsPage();
+  const pageLimit = useApiOptionsPageLimit();
+  const { setPage } = useApiOptionsActions();
 
   return (
     <Pagination
       page={page}
       onPageChange={setPage}
-      firstPage={firstPage}
-      lastPage={lastPage}
+      firstPage={pageLimit.firstPage}
+      lastPage={pageLimit.lastPage}
     />
   );
 };
