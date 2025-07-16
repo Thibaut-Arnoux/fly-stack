@@ -60,7 +60,8 @@ export const apiOptionsActions: ApiOptionsActions = {
 apiOptionsStore.subscribe((state) => {
   if (
     state.prevVal.likes !== state.currentVal.likes ||
-    state.prevVal.sorts !== state.currentVal.sorts
+    state.prevVal.sorts !== state.currentVal.sorts ||
+    state.prevVal.pageLimit !== state.currentVal.pageLimit
   ) {
     apiOptionsActions.setPage(1);
   }

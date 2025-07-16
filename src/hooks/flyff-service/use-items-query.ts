@@ -1,0 +1,43 @@
+import { queryOptions, useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { flyffService } from '@/api/flyff-service';
+import {
+  useApiOptionsActions,
+  useApiOptionsPageLimit,
+} from '@/hooks/stores/use-api-options';
+import type { SearchPaginatedOptions } from '@/types/api';
+import { getPaginatedQueryKey } from '@/utils/query';
+
+export const itemsQueryOptions = (searchOptions: SearchPaginatedOptions) => {
+  return queryOptions({
+    queryKey: getPaginatedQueryKey('items', searchOptions),
+    queryFn: ({ signal }) => flyffService.getItems(searchOptions, signal),
+  });
+};
+
+export const useItemsQuery = (searchOptions: SearchPaginatedOptions) => {
+  const pageLimit = useApiOptionsPageLimit();
+  const { setPageLimit } = useApiOptionsActions();
+  const itemsQuery = useQuery(itemsQueryOptions(searchOptions));
+
+  useEffect(() => {
+    if (
+      itemsQuery.isSuccess &&
+      (pageLimit.firstPage !== itemsQuery.data.first ||
+        pageLimit.lastPage !== itemsQuery.data.last)
+    ) {
+      setPageLimit({
+        firstPage: itemsQuery.data.first,
+        lastPage: itemsQuery.data.last,
+      });
+    }
+  }, [
+    itemsQuery.isSuccess,
+    itemsQuery.data?.first,
+    itemsQuery.data?.last,
+    pageLimit,
+    setPageLimit,
+  ]);
+
+  return itemsQuery;
+};

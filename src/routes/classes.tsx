@@ -1,19 +1,18 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { useClassData } from '@/hooks/flyff-service/use-class-data';
+import {
+  classesQueryOptions,
+  useClassesQuery,
+} from '@/hooks/flyff-service/use-classes-query';
 
 export const Route = createFileRoute('/classes')({
   loader: ({ context: { queryClient } }) => {
-    const { classesQueryOptions } = useClassData();
     queryClient.ensureQueryData(classesQueryOptions);
   },
   component: Classes,
 });
 
 function Classes() {
-  const { classesQueryOptions } = useClassData();
-  const classesQuery = useSuspenseQuery(classesQueryOptions);
-  const classes = classesQuery.data;
+  const { data: classes } = useClassesQuery();
 
   return (
     <div className="p-2">

@@ -7,6 +7,7 @@ export const Navbar = () => {
     <div className="navbar bg-base-100 shadow-sm">
       <div className="dropdown">
         <button tabIndex={0} type="button" className="btn btn-ghost lg:hidden">
+          {/* TODO remove svg and use lucide-react */}
           <svg
             role="img"
             aria-label="mobile_menu"

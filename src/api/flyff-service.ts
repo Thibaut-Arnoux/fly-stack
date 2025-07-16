@@ -22,11 +22,15 @@ class FlyffService extends ApiService {
     return this._get(FlyffService.ENDPOINTS.CLASSES, classesSchema);
   };
 
-  public getItems = async (options: SearchPaginatedOptions) => {
+  public getItems = async (
+    searchOptions: SearchPaginatedOptions,
+    signal?: AbortSignal,
+  ) => {
     return this._getPaginated(
       FlyffService.ENDPOINTS.ITEMS,
       itemSchema,
-      options,
+      searchOptions,
+      signal,
     );
   };
 }

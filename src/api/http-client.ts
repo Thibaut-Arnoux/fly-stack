@@ -21,7 +21,7 @@ export class HttpClient {
     baseUrl: string;
     headers?: HeadersInit;
   }) {
-    if (!this.isValidHttpUrl(baseUrl)) throw new Error('Invalid base url');
+    if (!this._isValidHttpUrl(baseUrl)) throw new Error('Invalid base url');
 
     this._baseUrl = new URL(baseUrl);
     this._headers = headers || {};
@@ -29,7 +29,7 @@ export class HttpClient {
       prefixUrl: this._baseUrl,
       headers: this._headers,
       hooks: {
-        afterResponse: [this.handlePagination, this.handleError],
+        afterResponse: [this._handlePagination, this._handleError],
       },
     });
   }
@@ -41,7 +41,7 @@ export class HttpClient {
   /**
    * @see https://joshgoestoflatiron.medium.com/february-10-pagination-in-a-json-server-api-with-the-link-header-dea63eb0a835
    */
-  private parseLinkHeader = (linkHeader: string): LinkHeader => {
+  private _parseLinkHeader = (linkHeader: string): LinkHeader => {
     const linkHeadersArray = linkHeader
       .split(', ')
       .map((header) => header.split('; '));
@@ -61,7 +61,7 @@ export class HttpClient {
    * Many things does not work on the beta version sort, like, ...
    * This allow to keep the same format provided in version 1.0
    */
-  private handlePagination = async (
+  private _handlePagination = async (
     _request: KyRequest,
     _options: NormalizedOptions,
     response: KyResponse,
@@ -72,7 +72,7 @@ export class HttpClient {
     const total = response.headers.get('x-total-count');
     const link = response.headers.get('link');
     const parseLinkHeader = link
-      ? this.parseLinkHeader(link)
+      ? this._parseLinkHeader(link)
       : { first: 1, last: 1 };
 
     const data = await response.json();
@@ -87,7 +87,7 @@ export class HttpClient {
     return new Response(JSON.stringify({ data, ...pagination }), response);
   };
 
-  private handleError = (
+  private _handleError = (
     _request: KyRequest,
     _options: NormalizedOptions,
     response: KyResponse,
@@ -96,7 +96,7 @@ export class HttpClient {
       throw new Error(`Request failed with status: ${response.status}`);
   };
 
-  private isValidHttpUrl(url: string) {
+  private _isValidHttpUrl(url: string) {
     try {
       const newUrl = new URL(url);
 
