@@ -22,7 +22,7 @@ type TableRowProps = PropsWithChildren<{
   className?: string;
 }>;
 
-type TableCellProps = PropsWithChildren<TdHTMLAttributes<HTMLTableCellElement>>;
+type TableCellProps = TdHTMLAttributes<HTMLTableCellElement>;
 
 export type TableHeaderSort = 'asc' | 'desc' | null;
 

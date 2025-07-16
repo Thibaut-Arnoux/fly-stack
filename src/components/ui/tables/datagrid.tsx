@@ -1,6 +1,25 @@
-import { Loader } from '@/components/loader';
-import { Table } from '@/components/table';
-import type { ColumnsConfiguration } from '@/types/table';
+import type { ReactNode } from 'react';
+import { Loader } from '@/components/ui/loaders/loader';
+import type { TableHeaderCellProps } from '@/components/ui/tables/table';
+import { Table } from '@/components/ui/tables/table';
+
+type NestedKeyOf<ObjectType extends object> = {
+  [Key in keyof ObjectType & (string | number)]: ObjectType[Key] extends object
+    ? Key | `${Key}.${NestedKeyOf<ObjectType[Key]>}`
+    : Key;
+}[keyof ObjectType & (string | number)];
+
+type ColumnConfiguration<
+  T extends object & { id: string },
+  K extends NestedKeyOf<T> & string,
+> = Omit<TableHeaderCellProps, 'field'> & {
+  field: K;
+  renderCell: (row: T) => ReactNode;
+};
+
+export type ColumnsConfiguration<T extends object & { id: string }> = Array<
+  ColumnConfiguration<T, NestedKeyOf<T> & string>
+>;
 
 type DatagridProps<T extends object & { id: string }> = {
   columns: ColumnsConfiguration<T>;

@@ -1,5 +1,9 @@
-import { Datagrid, DatagridSkeleton } from '@/components/datagrid';
-import type { TableHeaderSort } from '@/components/table';
+import {
+  type ColumnsConfiguration,
+  Datagrid,
+  DatagridSkeleton,
+} from '@/components/ui/tables/datagrid';
+import type { TableHeaderSort } from '@/components/ui/tables/table';
 import { useItemsQuery } from '@/hooks/flyff-service/use-items-query';
 import {
   useApiOptionsActions,
@@ -8,7 +12,6 @@ import {
   useApiOptionsSorts,
 } from '@/hooks/stores/use-api-options';
 import type { Item } from '@/schemas/item';
-import type { ColumnsConfiguration } from '@/types/table';
 import { getItemIconUrl } from '@/utils/image';
 
 export const ItemDatagrid = () => {

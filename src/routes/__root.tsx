@@ -1,7 +1,7 @@
 import type { QueryClient } from '@tanstack/react-query';
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
-import { Navbar } from '@/components/navbar';
+import { Navbar } from '@/components/ui/navigations/navbar';
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;

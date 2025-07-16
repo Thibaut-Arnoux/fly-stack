@@ -3,13 +3,13 @@ import { type LabelHTMLAttributes, useState } from 'react';
 import { useDebounceCallback } from 'usehooks-ts';
 
 type SearchProps = {
-  label?: string;
+  placeholder?: string;
   search: string;
   onSearchChange: (value: string) => void;
 } & LabelHTMLAttributes<HTMLLabelElement>;
 
-export const Search = ({
-  label = 'Search',
+export const SearchBar = ({
+  placeholder = 'Search',
   search,
   onSearchChange,
   className,
@@ -27,7 +27,7 @@ export const Search = ({
       <SearchIcon />
       <input
         type="search"
-        placeholder={label}
+        placeholder={placeholder}
         value={value}
         onChange={handleChange}
       />

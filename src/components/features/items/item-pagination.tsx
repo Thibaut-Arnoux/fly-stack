@@ -1,4 +1,4 @@
-import { Pagination } from '@/components/pagination';
+import { Pagination } from '@/components/ui/navigations/pagination';
 import {
   useApiOptionsActions,
   useApiOptionsPage,

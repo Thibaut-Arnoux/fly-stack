@@ -1,4 +1,4 @@
-import { Search } from '@/components/search';
+import { SearchBar } from '@/components/ui/inputs/search-bar';
 import {
   useApiOptionsActions,
   useApiOptionsLikes,
@@ -10,8 +10,7 @@ export const ItemSearch = () => {
   const { upsertLike } = useApiOptionsActions();
 
   return (
-    <Search
-      className="mt-2"
+    <SearchBar
       search={search}
       onSearchChange={(value) => {
         upsertLike({ field: 'name.en', value });
