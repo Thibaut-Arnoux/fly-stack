@@ -31,6 +31,7 @@ function Items() {
 
   return (
     <>
+      <div className="flex justify-end mr-2">
         <SearchItem />
       </div>
       <div className="flex-1 overflow-y-auto p-2">
