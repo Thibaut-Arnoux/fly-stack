@@ -4,7 +4,7 @@ import {
   useApiOptionsLikes,
 } from '@/hooks/stores/use-api-options';
 
-export const ItemSearch = () => {
+export const SearchItem = () => {
   const likes = useApiOptionsLikes();
   const search = likes.find((like) => like.field === 'name.en')?.value ?? '';
   const { upsertLike } = useApiOptionsActions();

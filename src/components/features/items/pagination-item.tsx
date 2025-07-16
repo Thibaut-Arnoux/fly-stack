@@ -5,7 +5,7 @@ import {
   useApiOptionsPageLimit,
 } from '@/hooks/stores/use-api-options';
 
-export const ItemPagination = () => {
+export const PaginationItem = () => {
   const page = useApiOptionsPage();
   const pageLimit = useApiOptionsPageLimit();
   const { setPage } = useApiOptionsActions();
