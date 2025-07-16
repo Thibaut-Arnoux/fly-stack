@@ -4,6 +4,8 @@ import {
   ChevronsLeft,
   ChevronsRight,
 } from 'lucide-react';
+import { Button } from '@/components/ui/buttons/button';
+import { IconButton } from '@/components/ui/buttons/icon-button';
 
 type PaginationProps = {
   page: number;
@@ -45,41 +47,31 @@ export const Pagination = ({
 
   return (
     <div className="join">
-      <button
-        type="button"
-        className="join-item btn"
+      <IconButton
+        className="join-item"
         disabled={page === pageStatus.first}
+        icon={<ChevronsLeft size={16} />}
         onClick={handleFirstPage}
-      >
-        <ChevronsLeft size={16} />
-      </button>
-      <button
-        type="button"
-        className="join-item btn"
+      />
+      <IconButton
+        className="join-item"
         disabled={pageStatus.prev === null}
+        icon={<ChevronLeft size={16} />}
         onClick={handlePrevPage}
-      >
-        <ChevronLeft size={16} />
-      </button>
-      <button type="button" className="join-item btn">
-        {page}
-      </button>
-      <button
-        type="button"
-        className="join-item btn"
+      />
+      <Button className="join-item">{page}</Button>
+      <IconButton
+        className="join-item"
         disabled={pageStatus.next === null}
+        icon={<ChevronRight size={16} />}
         onClick={handleNextPage}
-      >
-        <ChevronRight size={16} />
-      </button>
-      <button
-        type="button"
-        className="join-item btn"
+      />
+      <IconButton
+        className="join-item"
         disabled={page === pageStatus.last}
+        icon={<ChevronsRight size={16} />}
         onClick={handleLastPage}
-      >
-        <ChevronsRight size={16} />
-      </button>
+      />
     </div>
   );
 };

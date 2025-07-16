@@ -1,5 +1,5 @@
 import { createRouter } from '@tanstack/react-router';
-import { Loader } from '@/components/loader';
+import { Loader } from '@/components/ui/loaders/loader';
 import { queryClient } from '@/query-client';
 import { routeTree } from '@/routeTree.gen';
 

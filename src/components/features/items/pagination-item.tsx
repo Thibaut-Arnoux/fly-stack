@@ -1,11 +1,11 @@
-import { Pagination } from '@/components/pagination';
+import { Pagination } from '@/components/ui/navigations/pagination';
 import {
   useApiOptionsActions,
   useApiOptionsPage,
   useApiOptionsPageLimit,
 } from '@/hooks/stores/use-api-options';
 
-export const ItemPagination = () => {
+export const PaginationItem = () => {
   const page = useApiOptionsPage();
   const pageLimit = useApiOptionsPageLimit();
   const { setPage } = useApiOptionsActions();
