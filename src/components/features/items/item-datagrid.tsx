@@ -9,6 +9,7 @@ import {
   useApiOptionsActions,
   useApiOptionsLikes,
   useApiOptionsPage,
+  useApiOptionsRanges,
   useApiOptionsSorts,
 } from '@/hooks/stores/use-api-options';
 import type { Item } from '@/schemas/item';
@@ -17,10 +18,12 @@ import { getItemIconUrl } from '@/utils/image';
 export const ItemDatagrid = () => {
   const likes = useApiOptionsLikes();
   const page = useApiOptionsPage();
+  const ranges = useApiOptionsRanges();
   const sorts = useApiOptionsSorts();
   const { data: items } = useItemsQuery({
-    page,
     likes,
+    page,
+    ranges,
     sorts,
   });
   const { upsertSort, removeSort } = useApiOptionsActions();

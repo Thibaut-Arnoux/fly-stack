@@ -1,11 +1,12 @@
 import { Store } from '@tanstack/react-store';
-import type { SearchLike, SearchSort } from '@/types/api';
+import type { SearchLike, SearchRange, SearchSort } from '@/types/api';
 import { upsert } from '@/utils/store';
 
 type ApiOptionsState = {
   likes: SearchLike[];
   page: number;
   pageLimit: { firstPage: number; lastPage: number };
+  ranges: SearchRange[];
   sorts: SearchSort[];
 };
 
@@ -22,6 +23,7 @@ const initialState: ApiOptionsState = {
   likes: [],
   page: 1,
   pageLimit: { firstPage: 1, lastPage: 1 },
+  ranges: [{ field: 'level', min: 1, max: 160 }],
   sorts: [{ field: 'level' }],
 };
 
