@@ -6,7 +6,6 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useRef } from 'react';
 import z from 'zod';
-import { Loader } from '@/components/ui/loaders/loader';
 
 const userSchema = z.object({
   id: z.number().positive().int(),
@@ -19,7 +18,7 @@ const userCollection = createCollection(
   electricCollectionOptions<User>({
     id: 'users',
     shapeOptions: {
-      url: 'http://localhost:3000/v1/shape',
+      url: 'http://localhost:8000/proxy/v1/shape', // use vite port to proxy on 8000 and avoid CORS
       params: {
         table: 'users',
         columns: ['id', 'name'],
@@ -44,16 +43,12 @@ const userCollection = createCollection(
 // );
 
 export const Route = createFileRoute('/users')({
+  loader: () => userCollection.preload(),
   component: Users,
 });
 
 function Users() {
-  const { data: users, isLoading } = useLiveQuery((q) =>
-    q
-      .from({ user: userCollection })
-      .limit(100)
-      .orderBy(({ user }) => user.id, 'asc'),
-  );
+  const { data: users } = useLiveQuery((q) => q.from({ user: userCollection }));
   // The scrollable element for your list
   const parentRef = useRef(null);
 
@@ -63,10 +58,6 @@ function Users() {
     getScrollElement: () => parentRef.current,
     estimateSize: () => 25,
   });
-
-  if (isLoading) {
-    return <Loader />;
-  }
 
   return (
     <div className="p-2">
