@@ -18,9 +18,8 @@ const userCollection = createCollection(
   electricCollectionOptions<User>({
     id: 'users',
     shapeOptions: {
-      url: 'http://localhost:8000/proxy/v1/shape', // use vite port to proxy on 8000 and avoid CORS
+      url: 'http://localhost:8000/api/v1/shape/users',
       params: {
-        table: 'users',
         columns: ['id', 'name'],
       },
     },
