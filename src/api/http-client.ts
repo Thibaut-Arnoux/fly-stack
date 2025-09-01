@@ -28,14 +28,27 @@ export class HttpClient {
     this._httpClient = ky.create({
       prefixUrl: this._baseUrl,
       headers: this._headers,
+      credentials: 'include',
+      timeout: 30_000, // higher than electric pulling 20s
       hooks: {
+        beforeRequest: [this._handleXSRFToken],
         afterResponse: [this._handlePagination, this._handleError],
       },
     });
   }
 
+  public asFetch: typeof fetch = (input, init) => {
+    // @see : https://github.com/sindresorhus/ky?tab=readme-ov-file#input
+    if (typeof input === 'string') input = new Request(input);
+    return this._httpClient(input, init);
+  };
+
   public get = async <T>(endpoint: string, options?: Options) => {
     return this._httpClient.get<T>(endpoint, options).json();
+  };
+
+  public post = async <T>(endpoint: string, options?: Options) => {
+    return this._httpClient.post<T>(endpoint, options).json();
   };
 
   /**
@@ -54,6 +67,19 @@ export class HttpClient {
     });
 
     return Object.fromEntries(linkHeadersMap);
+  };
+
+  private _getCookie(name: string): string | null {
+    const m = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
+    return m ? decodeURIComponent(m[1]) : null;
+  }
+
+  private _handleXSRFToken = async (
+    request: KyRequest,
+    options: NormalizedOptions,
+  ) => {
+    const token = this._getCookie('XSRF-TOKEN');
+    if (token) request.headers.set('X-XSRF-TOKEN', decodeURIComponent(token));
   };
 
   /**
@@ -87,13 +113,24 @@ export class HttpClient {
     return new Response(JSON.stringify({ data, ...pagination }), response);
   };
 
-  private _handleError = (
+  private _handleError = async (
     _request: KyRequest,
     _options: NormalizedOptions,
     response: KyResponse,
   ) => {
     if (!response.ok)
-      throw new Error(`Request failed with status: ${response.status}`);
+      switch (response.status) {
+        case 401:
+          await this._httpClient.post('login');
+
+          return this._httpClient(_request, _options);
+        case 419:
+          await this._httpClient.get('sanctum/csrf-cookie');
+
+          return this._httpClient(_request, _options);
+        default:
+          throw new Error(`Request failed with status: ${response.status}`);
+      }
   };
 
   private _isValidHttpUrl(url: string) {

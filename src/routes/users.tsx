@@ -6,6 +6,11 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useRef } from 'react';
 import z from 'zod';
+import { HttpClient } from '@/api/http-client';
+
+const httpClient = new HttpClient({
+  baseUrl: 'http://localhost:8000',
+});
 
 const userSchema = z.object({
   id: z.number().positive().int(),
@@ -22,6 +27,7 @@ const userCollection = createCollection(
       params: {
         columns: ['id', 'name'],
       },
+      fetchClient: httpClient.asFetch,
     },
     getKey: (item) => item.id,
   }),
