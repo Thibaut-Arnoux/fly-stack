@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UsersRouteImport } from './routes/users'
+import { Route as Items_electricRouteImport } from './routes/items_electric'
 import { Route as ItemsRouteImport } from './routes/items'
 import { Route as ClassesRouteImport } from './routes/classes'
 import { Route as IndexRouteImport } from './routes/index'
@@ -17,6 +18,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const UsersRoute = UsersRouteImport.update({
   id: '/users',
   path: '/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Items_electricRoute = Items_electricRouteImport.update({
+  id: '/items_electric',
+  path: '/items_electric',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ItemsRoute = ItemsRouteImport.update({
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/classes': typeof ClassesRoute
   '/items': typeof ItemsRoute
+  '/items_electric': typeof Items_electricRoute
   '/users': typeof UsersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/classes': typeof ClassesRoute
   '/items': typeof ItemsRoute
+  '/items_electric': typeof Items_electricRoute
   '/users': typeof UsersRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,22 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/classes': typeof ClassesRoute
   '/items': typeof ItemsRoute
+  '/items_electric': typeof Items_electricRoute
   '/users': typeof UsersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/classes' | '/items' | '/users'
+  fullPaths: '/' | '/classes' | '/items' | '/items_electric' | '/users'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/classes' | '/items' | '/users'
-  id: '__root__' | '/' | '/classes' | '/items' | '/users'
+  to: '/' | '/classes' | '/items' | '/items_electric' | '/users'
+  id: '__root__' | '/' | '/classes' | '/items' | '/items_electric' | '/users'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ClassesRoute: typeof ClassesRoute
   ItemsRoute: typeof ItemsRoute
+  Items_electricRoute: typeof Items_electricRoute
   UsersRoute: typeof UsersRoute
 }
 
@@ -76,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/users'
       fullPath: '/users'
       preLoaderRoute: typeof UsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/items_electric': {
+      id: '/items_electric'
+      path: '/items_electric'
+      fullPath: '/items_electric'
+      preLoaderRoute: typeof Items_electricRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/items': {
@@ -106,6 +123,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ClassesRoute: ClassesRoute,
   ItemsRoute: ItemsRoute,
+  Items_electricRoute: Items_electricRoute,
   UsersRoute: UsersRoute,
 }
 export const routeTree = rootRouteImport

@@ -35,6 +35,9 @@ export const Navbar = () => {
           <li>
             <Link to="/items">Items</Link>
           </li>
+          <li>
+            <Link to="/items_electric">Items Electric</Link>
+          </li>
         </ul>
       </div>
       <Link className="btn btn-ghost text-xl" to="/">
@@ -49,6 +52,9 @@ export const Navbar = () => {
         </li>
         <li>
           <Link to="/items">Items</Link>
+        </li>
+        <li>
+          <Link to="/items_electric">Items Electric</Link>
         </li>
       </ul>
     </div>
