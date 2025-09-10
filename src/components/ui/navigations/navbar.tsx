@@ -36,7 +36,7 @@ export const Navbar = () => {
             <Link to="/items">Items</Link>
           </li>
           <li>
-            <Link to="/items_electric">Items Electric</Link>
+            <Link to="/items-electric">Items Electric</Link>
           </li>
         </ul>
       </div>
@@ -54,7 +54,7 @@ export const Navbar = () => {
           <Link to="/items">Items</Link>
         </li>
         <li>
-          <Link to="/items_electric">Items Electric</Link>
+          <Link to="/items-electric">Items Electric</Link>
         </li>
       </ul>
     </div>

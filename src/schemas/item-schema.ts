@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import z from "zod";
 import {
   localizedStringOptionalSchema,
   localizedStringSchema,
@@ -13,12 +13,14 @@ const spawnSchema = z.object({
   continent: z.number().int().optional(),
 });
 
-export const itemSchema = z.object({
-  id: z.union([z.string(), z.number().int()]).transform((val) => String(val)),
+// TODO : update schema with snake case and new properties
+export const itemElectricSchema = z.object({
+  id: z.string().uuid(),
+  item_id: z.number().int().positive(),
   name: localizedStringSchema,
   description: localizedStringOptionalSchema,
   icon: z.string(),
-  level: z.number().int(),
+  level: z.number().int().positive(),
   element: z.string(),
   category: z.string(),
   subcategory: z.string().optional(),
@@ -35,6 +37,6 @@ export const itemSchema = z.object({
   spawns: z.array(spawnSchema),
 });
 
-export type Item = z.infer<typeof itemSchema>;
+export type ItemElectric = z.infer<typeof itemElectricSchema>;
 
-export const itemsSchema = z.array(itemSchema);
+export const itemsElectricSchema = z.array(itemElectricSchema);

@@ -8,22 +8,32 @@ import ky, {
 import type { LinkHeader } from '@/types/api';
 
 export class HttpClient {
-  private _baseUrl: URL;
+  protected _baseUrl: URL;
 
-  private _headers: HeadersInit;
+  protected _redirectUnauthorizedEndpoint?: string;
 
-  private _httpClient: KyInstance;
+  protected _redirectCSRFEndpoint?: string;
+
+  protected _headers: HeadersInit;
+
+  protected _httpClient: KyInstance;
 
   constructor({
     baseUrl,
+    redirectUnauthorizedEndpoint,
+    redirectCSRFEndpoint,
     headers,
   }: {
     baseUrl: string;
+    redirectUnauthorizedEndpoint?: string;
+    redirectCSRFEndpoint?: string;
     headers?: HeadersInit;
   }) {
     if (!this._isValidHttpUrl(baseUrl)) throw new Error('Invalid base url');
 
     this._baseUrl = new URL(baseUrl);
+    this._redirectUnauthorizedEndpoint = redirectUnauthorizedEndpoint;
+    this._redirectCSRFEndpoint = redirectCSRFEndpoint;
     this._headers = headers || {};
     this._httpClient = ky.create({
       prefixUrl: this._baseUrl,
@@ -121,13 +131,21 @@ export class HttpClient {
     if (!response.ok)
       switch (response.status) {
         case 401:
-          await this._httpClient.post('login');
+          if (this._redirectUnauthorizedEndpoint) {
+            await this._httpClient.post(this._redirectUnauthorizedEndpoint);
 
-          return this._httpClient(_request, _options);
+            return this._httpClient(_request, _options);
+          }
+
+          break;
         case 419:
-          await this._httpClient.get('sanctum/csrf-cookie');
+          if (this._redirectCSRFEndpoint) {
+            await this._httpClient.get(this._redirectCSRFEndpoint);
 
-          return this._httpClient(_request, _options);
+            return this._httpClient(_request, _options);
+          }
+
+          break;
         default:
           throw new Error(`Request failed with status: ${response.status}`);
       }

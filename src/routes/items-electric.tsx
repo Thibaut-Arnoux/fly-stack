@@ -1,28 +1,11 @@
-import { electricCollectionOptions } from '@tanstack/electric-db-collection';
-import { createCollection, useLiveQuery } from '@tanstack/react-db';
+import { useLiveQuery } from '@tanstack/react-db';
 import { createFileRoute } from '@tanstack/react-router';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useRef } from 'react';
-import { HttpClient } from '@/api/http-client';
-import type { ItemElectric } from '@/schemas/item';
+import { itemCollection } from '@/collections/item-collection';
 
-const httpClient = new HttpClient({
-  baseUrl: 'http://localhost:8000',
-});
-
-const itemCollection = createCollection(
-  electricCollectionOptions<ItemElectric>({
-    id: 'items',
-    shapeOptions: {
-      url: 'http://localhost:8000/api/v1/shape/items',
-      fetchClient: httpClient.asFetch,
-    },
-    getKey: (item) => item.id,
-  }),
-);
-
-export const Route = createFileRoute('/items_electric')({
-  loader: () => itemCollection.preload(),
+export const Route = createFileRoute('/items-electric')({
+  // loader: () => itemCollection.preload(),
   component: Users,
 });
 
