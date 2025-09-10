@@ -5,7 +5,7 @@ import { useRef } from 'react';
 import { itemCollection } from '@/collections/item-collection';
 
 export const Route = createFileRoute('/items-electric')({
-  // loader: () => itemCollection.preload(),
+  loader: () => itemCollection.preload(),
   component: Users,
 });
 

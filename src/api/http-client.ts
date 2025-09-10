@@ -86,7 +86,7 @@ export class HttpClient {
 
   private _handleXSRFToken = async (
     request: KyRequest,
-    options: NormalizedOptions,
+    _options: NormalizedOptions,
   ) => {
     const token = this._getCookie('XSRF-TOKEN');
     if (token) request.headers.set('X-XSRF-TOKEN', decodeURIComponent(token));

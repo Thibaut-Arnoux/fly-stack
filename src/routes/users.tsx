@@ -1,6 +1,4 @@
 import { electricCollectionOptions } from '@tanstack/electric-db-collection';
-import { QueryClient } from '@tanstack/query-core';
-import { queryCollectionOptions } from '@tanstack/query-db-collection';
 import { createCollection, useLiveQuery } from '@tanstack/react-db';
 import { createFileRoute } from '@tanstack/react-router';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -32,20 +30,6 @@ const userCollection = createCollection(
     getKey: (item) => item.id,
   }),
 );
-
-// const queryClient = new QueryClient()
-
-// const userCollection = createCollection(
-//   queryCollectionOptions<User>({
-//     queryClient,
-//     queryKey: ['todos'],
-//     queryFn: async () => {
-//       const response = await fetch('http://localhost:8000/api/users')
-//       return response.json()
-//     },
-//     getKey: (item) => item.id,
-//   }),
-// );
 
 export const Route = createFileRoute('/users')({
   loader: () => userCollection.preload(),
