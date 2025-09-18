@@ -5,9 +5,12 @@ import {
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   type PaginationState,
+  type SortingState,
   useReactTable,
 } from '@tanstack/react-table';
+import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { itemCollection } from '@/collections/item-collection';
 import { Pagination } from '@/components/ui/navigations/pagination';
@@ -37,6 +40,13 @@ function ItemsElectric() {
     pageIndex: 0,
     pageSize: 20,
   });
+  const [sorting, setSorting] = useState<SortingState>([
+    {
+      id: 'level',
+      desc: false,
+    },
+  ]);
+
   const columnHelper = createColumnHelper<DisplayItem>();
   const columns = useMemo(
     () => [
@@ -45,76 +55,100 @@ function ItemsElectric() {
         header: 'Icon',
         cell: (props) => (
           <img
-            width={28}
-            height={28}
+            width={32}
+            height={32}
+            className="min-w-[32px]" // avoid shrink img size on reduced window
             src={`${import.meta.env.VITE_FLYFF_API_BASE_URL}/image/item/${props.row.original.icon}`}
             alt={props.row.original.icon}
           />
         ),
-        size: 30,
+        size: 50,
+        enableSorting: false,
       }),
-      columnHelper.accessor((row) => row.name.en, {
+      columnHelper.accessor((row) => row.name?.en ?? undefined, {
         id: 'name',
-        cell: (props) => props.renderValue(),
         header: 'Name',
-        size: 100,
+        cell: (props) => props.renderValue() ?? '-',
+        size: 150,
+        sortingFn: 'alphanumeric',
       }),
-      columnHelper.accessor('description.en', {
-        id: 'description',
-        header: 'Description',
-        cell: (props) =>
-          props.renderValue() === 'null' ? '-' : props.renderValue(),
-        size: 250,
-      }),
-      columnHelper.accessor('sex', {
+      columnHelper.accessor(
+        (row) =>
+          (row.description.en ?? 'null') === 'null'
+            ? undefined
+            : row.description.en,
+        {
+          id: 'description',
+          header: 'Description',
+          cell: (props) => props.renderValue() ?? '-',
+          size: 350,
+          sortingFn: 'alphanumeric',
+          sortDescFirst: false,
+        },
+      ),
+      columnHelper.accessor((row) => row.sex ?? undefined, {
         id: 'sex',
-        cell: (props) => props.renderValue(),
         header: 'Sex',
-        size: 40,
+        cell: (props) => props.renderValue() ?? '-',
+        size: 50,
+        sortingFn: 'text',
       }),
       columnHelper.accessor('rarity', {
         id: 'rarity',
-        cell: (props) => props.renderValue(),
         header: 'Rarity',
+        cell: (props) => props.renderValue(),
         size: 80,
+        sortingFn: 'text',
       }),
       columnHelper.accessor('category', {
         id: 'category',
-        cell: (props) => props.renderValue(),
         header: 'Category',
-        size: 80,
-      }),
-      columnHelper.accessor('subcategory', {
-        id: 'subcategory',
         cell: (props) => props.renderValue(),
-        header: 'Subcategory',
         size: 80,
+        sortingFn: 'text',
+      }),
+      columnHelper.accessor((row) => row.subcategory ?? undefined, {
+        id: 'subcategory',
+        header: 'Subcategory',
+        cell: (props) => props.renderValue() ?? '-',
+        size: 80,
+        sortingFn: 'text',
       }),
       columnHelper.accessor('level', {
         id: 'level',
         cell: (props) => props.renderValue(),
         header: 'Level',
-        size: 20,
+        size: 50,
+        sortingFn: 'alphanumeric',
+        sortDescFirst: false,
       }),
     ],
     [columnHelper],
   );
 
   const table = useReactTable({
-    columns,
     data: items,
+    columns,
+    defaultColumn: {
+      sortUndefined: 'last', // global behavior to manage undefined
+    },
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     onPaginationChange: setPagination,
+    onSortingChange: setSorting,
     state: {
       pagination,
+      sorting,
     },
+    autoResetPageIndex: false,
+    enableMultiSort: false,
   });
 
   return (
     <>
       <div className="flex-1 overflow-y-auto p-2">
-        <table className="w-full table-fixed">
+        <table className="w-full table-fixed table">
           <thead>
             <tr>
               {table.getFlatHeaders().map((header) => (
@@ -122,12 +156,34 @@ function ItemsElectric() {
                   key={header.id}
                   colSpan={header.colSpan}
                   style={{ width: header.getSize() }}
-                  className="text-left pr-2"
                 >
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext(),
-                  )}
+                  <button
+                    type="button"
+                    className={`w-full flex items-center gap-2
+                      ${
+                        header.column.getCanSort()
+                          ? 'group cursor-pointer select-none'
+                          : ''
+                      }`}
+                    onClick={header.column.getToggleSortingHandler()}
+                    onKeyDown={header.column.getToggleSortingHandler()}
+                  >
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext(),
+                    )}
+                    {
+                      {
+                        asc: <ArrowUp size={18} className="min-w-[18px]" />,
+                        desc: <ArrowDown size={18} className="min-w-[18px]" />,
+                        false: header.column.getCanSort() ? (
+                          <span className="hidden group-hover:inline-flex">
+                            <ArrowUpDown size={18} className="min-w-[18px]" />
+                          </span>
+                        ) : null,
+                      }[String(header.column.getIsSorted())]
+                    }
+                  </button>
                 </th>
               ))}
             </tr>
@@ -137,7 +193,7 @@ function ItemsElectric() {
               <tr key={row.id}>
                 {row.getVisibleCells().map((cell) => {
                   return (
-                    <td key={cell.id} className="py-2">
+                    <td key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext(),
