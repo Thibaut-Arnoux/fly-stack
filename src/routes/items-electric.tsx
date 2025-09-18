@@ -1,9 +1,11 @@
 import { useLiveQuery } from '@tanstack/react-db';
 import { createFileRoute } from '@tanstack/react-router';
 import {
+  type ColumnFiltersState,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   type PaginationState,
@@ -13,6 +15,7 @@ import {
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { itemCollection } from '@/collections/item-collection';
+import { SearchBar } from '@/components/ui/inputs/search-bar';
 import { Pagination } from '@/components/ui/navigations/pagination';
 import type { ItemElectric } from '@/schemas/item-schema';
 
@@ -46,6 +49,7 @@ function ItemsElectric() {
       desc: false,
     },
   ]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const columnHelper = createColumnHelper<DisplayItem>();
   const columns = useMemo(
@@ -71,6 +75,7 @@ function ItemsElectric() {
         cell: (props) => props.renderValue() ?? '-',
         size: 150,
         sortingFn: 'alphanumeric',
+        filterFn: 'includesString',
       }),
       columnHelper.accessor(
         (row) =>
@@ -135,11 +140,14 @@ function ItemsElectric() {
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     onPaginationChange: setPagination,
     onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
     state: {
       pagination,
       sorting,
+      columnFilters,
     },
     autoResetPageIndex: false,
     enableMultiSort: false,
@@ -147,8 +155,16 @@ function ItemsElectric() {
 
   return (
     <>
+      <div className="flex justify-end gap-2 mr-2 mt-2">
+        <SearchBar
+          search={String(table.getColumn('name')?.getFilterValue() ?? '')}
+          onSearchChange={(value) =>
+            table.getColumn('name')?.setFilterValue(value)
+          }
+        />
+      </div>
       <div className="flex-1 overflow-y-auto p-2">
-        <table className="w-full table-fixed table">
+        <table className="w-full table table-fixed table-zebra">
           <thead>
             <tr>
               {table.getFlatHeaders().map((header) => (
