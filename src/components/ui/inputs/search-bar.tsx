@@ -1,6 +1,6 @@
 import { Search as SearchIcon } from 'lucide-react';
-import { type LabelHTMLAttributes, useState } from 'react';
-import { useDebounceCallback } from 'usehooks-ts';
+import { type LabelHTMLAttributes, useId } from 'react';
+import { Input } from '@/components/ui/inputs/input';
 
 type SearchProps = {
   placeholder?: string;
@@ -15,21 +15,18 @@ export const SearchBar = ({
   className,
   ...props
 }: SearchProps) => {
-  const [value, setValue] = useState(search);
-  const debounced = useDebounceCallback(onSearchChange, 500);
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value);
-    debounced(e.target.value);
-  };
+  const id = useId();
 
   return (
-    <label className={`input ${className}`} {...props}>
+    <label htmlFor={id} className={`input ${className}`} {...props}>
       <SearchIcon />
-      <input
+      <Input
+        id={id}
         type="search"
         placeholder={placeholder}
-        value={value}
-        onChange={handleChange}
+        defaultValue={search}
+        onChange={(e) => onSearchChange(e.target.value)}
+        delay={500}
       />
     </label>
   );
