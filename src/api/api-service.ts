@@ -11,6 +11,7 @@ import type {
   SearchPaginatedOptions,
   SearchParams,
   SearchProperty,
+  SearchRange,
   SearchSort,
 } from '@/types/api';
 
@@ -53,6 +54,17 @@ export class ApiService {
     );
   };
 
+  private _formatSearchRanges = (
+    ranges: SearchRange[],
+  ): Record<string, number> => {
+    return Object.fromEntries(
+      ranges.flatMap((range) => [
+        [`${range.field}_gte`, range.min],
+        [`${range.field}_lte`, range.max],
+      ]),
+    );
+  };
+
   private _formatSearchOptions = (
     options: SearchOptions,
   ): SearchParamsOption => {
@@ -68,6 +80,10 @@ export class ApiService {
       ...(options.likes !== undefined &&
         options.likes.length > 0 && {
           ...this._formatSearchLikes(options.likes),
+        }),
+      ...(options.ranges !== undefined &&
+        options.ranges.length > 0 && {
+          ...this._formatSearchRanges(options.ranges),
         }),
     };
   };

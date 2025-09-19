@@ -37,6 +37,14 @@ export const getQueryKey = (module: string, params: SearchOptions) => {
     if (Object.keys(likeKeys).length) key.push({ likes: likeKeys });
   }
 
+  if (params.ranges) {
+    let rangeKeys: Record<string, string> = {};
+    for (const range of params.ranges) {
+      rangeKeys = { ...rangeKeys, [range.field]: `${range.min},${range.max}` };
+    }
+    if (Object.keys(rangeKeys).length) key.push({ ranges: rangeKeys });
+  }
+
   return key;
 };
 
@@ -45,9 +53,7 @@ export const getPaginatedQueryKey = (
   params: SearchPaginatedOptions,
 ) => {
   const key: unknown[] = getQueryKey(module, params);
-
   key.push({ page: params.page });
-
   key.push({ perPage: params.perPage ?? ApiService.SEARCH_PARAMS._PER_PAGE });
 
   return key;

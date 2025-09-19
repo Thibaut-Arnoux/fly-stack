@@ -15,10 +15,17 @@ export type SearchLike = {
   value: string;
 };
 
+export type SearchRange = {
+  field: string;
+  min: number;
+  max: number;
+};
+
 export type SearchOptions = {
   properties?: SearchProperty[];
   sorts?: SearchSort[];
   likes?: SearchLike[];
+  ranges?: SearchRange[];
 };
 
 export type SearchPaginatedOptions = SearchOptions & {

@@ -7,6 +7,8 @@ export const useApiOptionsPage = () =>
   useStore(apiOptionsStore, (state) => state.page);
 export const useApiOptionsPageLimit = () =>
   useStore(apiOptionsStore, (state) => state.pageLimit);
+export const useApiOptionsRanges = () =>
+  useStore(apiOptionsStore, (state) => state.ranges);
 export const useApiOptionsSorts = () =>
   useStore(apiOptionsStore, (state) => state.sorts);
 

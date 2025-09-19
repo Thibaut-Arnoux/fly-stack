@@ -1,11 +1,13 @@
 import { Store } from '@tanstack/react-store';
-import type { SearchLike, SearchSort } from '@/types/api';
+import type { SearchLike, SearchRange, SearchSort } from '@/types/api';
+import { ITEM_CONSTANTS } from '@/utils/constants';
 import { upsert } from '@/utils/store';
 
 type ApiOptionsState = {
   likes: SearchLike[];
   page: number;
   pageLimit: { firstPage: number; lastPage: number };
+  ranges: SearchRange[];
   sorts: SearchSort[];
 };
 
@@ -13,15 +15,24 @@ type ApiOptionsActions = {
   upsertLike: (like: ApiOptionsState['likes'][number]) => void;
   setPage: (page: ApiOptionsState['page']) => void;
   setPageLimit: (pageLimit: ApiOptionsState['pageLimit']) => void;
+  upsertRange: (range: ApiOptionsState['ranges'][number]) => void;
   upsertSort: (sort: ApiOptionsState['sorts'][number]) => void;
   removeSort: (field: ApiOptionsState['sorts'][number]['field']) => void;
   reset: () => void;
 };
 
 const initialState: ApiOptionsState = {
-  likes: [],
+  // likes: [],
+  likes: [{ field: 'name.en', value: 'shuran' }],
   page: 1,
   pageLimit: { firstPage: 1, lastPage: 1 },
+  ranges: [
+    {
+      field: 'level',
+      min: ITEM_CONSTANTS.LEVEL.MIN,
+      max: ITEM_CONSTANTS.LEVEL.MAX,
+    },
+  ],
   sorts: [{ field: 'level' }],
 };
 
@@ -42,6 +53,9 @@ export const apiOptionsActions: ApiOptionsActions = {
       ...state,
       pageLimit,
     }));
+  },
+  upsertRange: (range: ApiOptionsState['ranges'][number]) => {
+    upsert(apiOptionsStore, 'ranges', range, (r) => r.field === range.field);
   },
   upsertSort: (sort: ApiOptionsState['sorts'][number]) => {
     upsert(apiOptionsStore, 'sorts', sort, (s) => s.field === sort.field);
