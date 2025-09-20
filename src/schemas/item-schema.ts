@@ -40,3 +40,16 @@ export const itemElectricSchema = z.object({
 export type ItemElectric = z.infer<typeof itemElectricSchema>;
 
 export const itemsElectricSchema = z.array(itemElectricSchema);
+
+export type DisplayItemElectric = Pick<
+  ItemElectric,
+  | 'id'
+  | 'icon'
+  | 'name'
+  | 'description'
+  | 'sex'
+  | 'rarity'
+  | 'category'
+  | 'subcategory'
+  | 'level'
+>;

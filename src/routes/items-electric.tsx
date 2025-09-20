@@ -4,26 +4,16 @@ import { createColumnHelper, type SortingState } from '@tanstack/react-table';
 import { useMemo } from 'react';
 import { itemCollection } from '@/collections/item-collection';
 import { SearchItemElectric } from '@/components/features/items-electric/search-item-electric';
-import { DataTable, DataTableProvider } from '@/components/ui/tables/datatable';
-import type { ItemElectric } from '@/schemas/item-schema';
+import {
+  DataTable,
+  DataTableProvider,
+} from '@/components/ui/tables/data-table';
+import type { DisplayItemElectric } from '@/schemas/item-schema';
 
 export const Route = createFileRoute('/items-electric')({
   loader: () => itemCollection.preload(),
   component: ItemsElectric,
 });
-
-type DisplayItem = Pick<
-  ItemElectric,
-  | 'id'
-  | 'icon'
-  | 'name'
-  | 'description'
-  | 'sex'
-  | 'rarity'
-  | 'category'
-  | 'subcategory'
-  | 'level'
->;
 
 function ItemsElectric() {
   const { data: items } = useLiveQuery((q) =>
@@ -47,7 +37,7 @@ function ItemsElectric() {
     },
   ];
 
-  const columnHelper = createColumnHelper<DisplayItem>();
+  const columnHelper = createColumnHelper<DisplayItemElectric>();
   const columns = useMemo(
     () => [
       columnHelper.display({
