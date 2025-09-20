@@ -3,12 +3,12 @@ import { createFileRoute } from '@tanstack/react-router';
 import { createColumnHelper, type SortingState } from '@tanstack/react-table';
 import { useMemo } from 'react';
 import { itemCollection } from '@/collections/item-collection';
-import { SearchTable } from '@/components/ui/tables/search-table';
 import {
   DataTable,
   DataTableProvider,
 } from '@/components/ui/tables/data-table';
 import { PaginationTable } from '@/components/ui/tables/pagination-table';
+import { SearchTable } from '@/components/ui/tables/search-table';
 import type { DisplayItemElectric } from '@/schemas/item-schema';
 
 export const Route = createFileRoute('/items-electric')({
