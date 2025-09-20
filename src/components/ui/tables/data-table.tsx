@@ -18,7 +18,6 @@ import {
   useContext,
   useState,
 } from 'react';
-import { Pagination } from '@/components/ui/navigations/pagination';
 
 type DataTableContextType<TData> = {
   table: Table<TData>;
@@ -98,92 +97,72 @@ export const DataTable = <TData,>() => {
   const { table } = useDataTableContext<TData>();
 
   return (
-    <>
-      <div className="flex-1 overflow-y-auto p-2">
-        <table className="w-full table table-fixed table-zebra">
-          <thead>
-            <tr>
-              {table.getFlatHeaders().map((header) => (
-                <th
-                  key={header.id}
-                  colSpan={header.colSpan}
-                  style={{ width: header.getSize() }}
-                >
-                  <button
-                    type="button"
-                    className={`w-full flex items-center gap-2
+    <table className="w-full table table-fixed table-zebra">
+      <thead>
+        <tr>
+          {table.getFlatHeaders().map((header) => (
+            <th
+              key={header.id}
+              colSpan={header.colSpan}
+              style={{ width: header.getSize() }}
+            >
+              <button
+                type="button"
+                className={`w-full flex items-center gap-2
                               ${
                                 header.column.getCanSort()
                                   ? 'group cursor-pointer select-none'
                                   : ''
                               }`}
-                    onClick={header.column.getToggleSortingHandler()}
-                    onKeyDown={header.column.getToggleSortingHandler()}
-                  >
-                    {flexRender(
-                      header.column.columnDef.header,
-                      header.getContext(),
-                    )}
-                    {
-                      {
-                        asc: <ArrowUp size={18} className="min-w-[18px]" />,
-                        desc: <ArrowDown size={18} className="min-w-[18px]" />,
-                        false: header.column.getCanSort() ? (
-                          <span className="hidden group-hover:inline-flex">
-                            <ArrowUpDown size={18} className="min-w-[18px]" />
-                          </span>
-                        ) : null,
-                      }[String(header.column.getIsSorted())]
-                    }
-                  </button>
-                </th>
-              ))}
+                onClick={header.column.getToggleSortingHandler()}
+                onKeyDown={header.column.getToggleSortingHandler()}
+              >
+                {flexRender(
+                  header.column.columnDef.header,
+                  header.getContext(),
+                )}
+                {
+                  {
+                    asc: <ArrowUp size={18} className="min-w-[18px]" />,
+                    desc: <ArrowDown size={18} className="min-w-[18px]" />,
+                    false: header.column.getCanSort() ? (
+                      <span className="hidden group-hover:inline-flex">
+                        <ArrowUpDown size={18} className="min-w-[18px]" />
+                      </span>
+                    ) : null,
+                  }[String(header.column.getIsSorted())]
+                }
+              </button>
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {table.getRowModel().rows.length > 0 ? (
+          table.getRowModel().rows.map((row) => (
+            <tr key={row.id}>
+              {row.getVisibleCells().map((cell) => {
+                return (
+                  <td key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                );
+              })}
             </tr>
-          </thead>
-          <tbody>
-            {table.getRowModel().rows.length > 0 ? (
-              table.getRowModel().rows.map((row) => (
-                <tr key={row.id}>
-                  {row.getVisibleCells().map((cell) => {
-                    return (
-                      <td key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={table.getAllColumns().length}>
-                  <div className="flex flex-col items-center justify-center h-96">
-                    <div className="text-lg font-medium">No data available</div>
-                    <div className="text-sm mt-1">
-                      Try adjusting your search or filter criteria
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-      <div className="flex justify-center my-1">
-        <Pagination
-          page={table.getState().pagination.pageIndex + 1}
-          onPageChange={(page) => {
-            table.setPagination((prev) => ({
-              ...prev,
-              pageIndex: page - 1,
-            }));
-          }}
-          firstPage={1}
-          lastPage={table.getPageCount()}
-        />
-      </div>
-    </>
+          ))
+        ) : (
+          <tr>
+            <td colSpan={table.getAllColumns().length}>
+              <div className="flex flex-col items-center justify-center h-96">
+                <div className="text-lg font-medium">No data available</div>
+                <div className="text-sm mt-1">
+                  Try adjusting your search or filter criteria
+                </div>
+              </div>
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
   );
 };

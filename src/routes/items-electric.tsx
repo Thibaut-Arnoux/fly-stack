@@ -9,6 +9,7 @@ import {
   DataTableProvider,
 } from '@/components/ui/tables/data-table';
 import type { DisplayItemElectric } from '@/schemas/item-schema';
+import { PaginationTable } from '@/components/ui/tables/pagination-table';
 
 export const Route = createFileRoute('/items-electric')({
   loader: () => itemCollection.preload(),
@@ -126,7 +127,12 @@ function ItemsElectric() {
       <div className="flex justify-end gap-2 mr-2 mt-2">
         <SearchItemElectric />
       </div>
-      <DataTable />
+      <div className="flex-1 overflow-y-auto ">
+        <DataTable />
+      </div>
+      <div className="flex justify-center my-1">
+        <PaginationTable />
+      </div>
     </DataTableProvider>
   );
 }
