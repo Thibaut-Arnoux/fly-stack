@@ -14,6 +14,7 @@ import {
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 import {
   createContext,
+  type HtmlHTMLAttributes,
   type PropsWithChildren,
   useContext,
   useState,
@@ -93,11 +94,14 @@ export const DataTableProvider = <TData,>({
   );
 };
 
-export const DataTable = <TData,>() => {
+export const DataTable = <TData,>({
+  className = '',
+  ...props
+}: HtmlHTMLAttributes<HTMLTableElement>) => {
   const { table } = useDataTableContext<TData>();
 
   return (
-    <table className="w-full table table-fixed table-zebra">
+    <table {...props} className={`table ${className}`}>
       <thead>
         <tr>
           {table.getFlatHeaders().map((header) => (
