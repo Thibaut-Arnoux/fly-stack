@@ -20,11 +20,11 @@ import {
 } from 'react';
 import { Pagination } from '@/components/ui/navigations/pagination';
 
-type DataTableContextType<TData = unknown> = {
+type DataTableContextType<TData> = {
   table: Table<TData>;
 };
 
-function createDataTableContext<TData = unknown>() {
+function createDataTableContext<TData>() {
   return createContext<DataTableContextType<TData> | null>(null);
 }
 
@@ -94,8 +94,8 @@ export const DataTableProvider = <TData,>({
   );
 };
 
-export const DataTable = () => {
-  const { table } = useDataTableContext();
+export const DataTable = <TData,>() => {
+  const { table } = useDataTableContext<TData>();
 
   return (
     <>
