@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { createColumnHelper, type SortingState } from '@tanstack/react-table';
 import { useMemo } from 'react';
 import { itemCollection } from '@/collections/item-collection';
-import { SearchItemElectric } from '@/components/features/items-electric/search-item-electric';
+import { SearchTable } from '@/components/ui/tables/search-table';
 import {
   DataTable,
   DataTableProvider,
@@ -125,7 +125,7 @@ function ItemsElectric() {
       sortingState={sortingState}
     >
       <div className="flex justify-end gap-2 mr-2 mt-2">
-        <SearchItemElectric />
+        <SearchTable column="name" />
       </div>
       <div className="flex-1 overflow-y-auto ">
         <DataTable className="table-fixed table-zebra" />
