@@ -8,7 +8,10 @@ export const SearchItemElectric = () => {
   return (
     <SearchBar
       search={String(table.getColumn('name')?.getFilterValue() ?? '')}
-      onSearchChange={(value) => table.getColumn('name')?.setFilterValue(value)}
+      onSearchChange={(value) => {
+        table.firstPage();
+        table.getColumn('name')?.setFilterValue(value);
+      }}
     />
   );
 };
