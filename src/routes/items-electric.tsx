@@ -1,8 +1,11 @@
 import { useLiveQuery } from '@tanstack/react-db';
 import { createFileRoute } from '@tanstack/react-router';
 import { createColumnHelper, type SortingState } from '@tanstack/react-table';
+import { ListFilter } from 'lucide-react';
 import { useMemo } from 'react';
 import { itemCollection } from '@/collections/item-collection';
+import { FilterItemElectric } from '@/components/features/items-electric/filter-item-electric';
+import { Drawer } from '@/components/ui/layouts/drawer';
 import {
   DataTable,
   DataTableProvider,
@@ -73,7 +76,7 @@ function ItemsElectric() {
           id: 'description',
           header: 'Description',
           cell: (props) => props.renderValue() ?? '-',
-          size: 350,
+          size: 250,
           sortingFn: 'alphanumeric',
           sortDescFirst: false,
         },
@@ -124,10 +127,19 @@ function ItemsElectric() {
       columns={columns}
       sortingState={sortingState}
     >
-      <div className="flex justify-end gap-2 mr-2 mt-2">
-        <SearchTable column="name" />
-      </div>
-      <div className="flex-1 overflow-y-auto ">
+      <Drawer className="drawer-end">
+        <Drawer.Content className="flex justify-end gap-2 mr-2 mt-2">
+          <SearchTable column="name" />
+          <Drawer.Trigger className="btn btn-square">
+            <ListFilter size={16} />
+          </Drawer.Trigger>
+        </Drawer.Content>
+        <Drawer.Side className="w-80">
+          <FilterItemElectric />
+        </Drawer.Side>
+      </Drawer>
+
+      <div className="flex-1 overflow-y-auto">
         <DataTable className="table-fixed table-zebra" />
       </div>
       <div className="flex justify-center my-1">

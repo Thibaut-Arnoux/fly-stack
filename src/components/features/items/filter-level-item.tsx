@@ -24,8 +24,6 @@ export const FilterLevelItem = () => {
         max={ITEM_CONSTANTS.LEVEL.MAX}
         defaultValue={range.min}
         onBlur={(e) => {
-          console.debug('NumberInput', e.target.value);
-
           upsertRange({
             field: 'level',
             min: Number(e.target.value),

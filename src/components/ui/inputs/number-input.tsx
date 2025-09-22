@@ -17,5 +17,7 @@ export const NumberInput = ({
     onBlur?.(e);
   };
 
-  return <Input type="number" onBlur={handleBlur} {...props} />;
+  return (
+    <Input type="number" min={min} max={max} {...props} onBlur={handleBlur} />
+  );
 };
