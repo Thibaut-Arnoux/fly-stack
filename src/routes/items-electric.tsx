@@ -10,8 +10,8 @@ import {
   DataTable,
   DataTableProvider,
 } from '@/components/ui/tables/data-table';
+import { SearchFilter } from '@/components/ui/tables/filters/search-filter';
 import { PaginationTable } from '@/components/ui/tables/pagination-table';
-import { SearchTable } from '@/components/ui/tables/search-table';
 import type { DisplayItemElectric } from '@/schemas/item-schema';
 
 export const Route = createFileRoute('/items-electric')({
@@ -116,6 +116,7 @@ function ItemsElectric() {
         size: 50,
         sortingFn: 'alphanumeric',
         sortDescFirst: false,
+        filterFn: 'inNumberRange',
       }),
     ],
     [columnHelper],
@@ -129,7 +130,7 @@ function ItemsElectric() {
     >
       <Drawer className="drawer-end">
         <Drawer.Content className="flex justify-end gap-2 mr-2 mt-2">
-          <SearchTable column="name" />
+          <SearchFilter column="name" />
           <Drawer.Trigger className="btn btn-square">
             <ListFilter size={16} />
           </Drawer.Trigger>

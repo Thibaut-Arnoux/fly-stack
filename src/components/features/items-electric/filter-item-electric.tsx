@@ -1,7 +1,11 @@
+import { FilterLevelItemElectric } from '@/components/features/items-electric/filter-level-item-electric';
+
 export const FilterItemElectric = () => {
   return (
     <ul className="menu rounded-box w-full">
       <li className="w-full">
+        <h2 className="menu-title">Filter</h2>
+        <FilterLevelItemElectric />
         <ul>
           <li>
             <a>

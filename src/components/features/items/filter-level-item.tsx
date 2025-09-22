@@ -18,8 +18,7 @@ export const FilterLevelItem = () => {
     <div className="flex flex-row items-center">
       <span>Level</span>
       <NumberInput
-        className="input input-sm"
-        type="number"
+        className="input-sm"
         min={ITEM_CONSTANTS.LEVEL.MIN}
         max={ITEM_CONSTANTS.LEVEL.MAX}
         defaultValue={range.min}
@@ -34,7 +33,6 @@ export const FilterLevelItem = () => {
       <span>-</span>
       <NumberInput
         className="input-sm"
-        type="number"
         min={ITEM_CONSTANTS.LEVEL.MIN}
         max={ITEM_CONSTANTS.LEVEL.MAX}
         defaultValue={range.max}

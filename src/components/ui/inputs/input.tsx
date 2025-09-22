@@ -21,5 +21,5 @@ export const Input = ({ delay, onChange, ...props }: InputProps) => {
     debouncedOnChange(e);
   };
 
-  return <input ref={inputRef} onChange={handleChange} {...props} />;
+  return <input {...props} ref={inputRef} onChange={handleChange} />;
 };
