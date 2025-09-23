@@ -1,4 +1,8 @@
 import z from 'zod';
+import { ItemCategoryEnum } from '@/enums/item-category-enum';
+import { ItemRarityEnum } from '@/enums/item-rarity-enum';
+import { ItemSubcategoryEnum } from '@/enums/item-subcategory-enum';
+import { SexEnum } from '@/enums/sex-enum';
 import {
   localizedStringOptionalSchema,
   localizedStringSchema,
@@ -13,27 +17,27 @@ const spawnSchema = z.object({
   continent: z.number().int().optional(),
 });
 
-// TODO : update schema with snake case and new properties
+// TODO : update schema with missing new properties
 export const itemElectricSchema = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
   item_id: z.number().int().positive(),
   name: localizedStringSchema,
   description: localizedStringOptionalSchema,
   icon: z.string(),
   level: z.number().int().positive(),
   element: z.string(),
-  category: z.string(),
-  subcategory: z.string().optional(),
-  rarity: z.string(),
-  sex: z.string().optional(),
-  stack: z.number().int(),
-  sellPrice: z.number().int(),
+  category: z.enum(ItemCategoryEnum),
+  subcategory: z.enum(ItemSubcategoryEnum).optional(),
+  rarity: z.enum(ItemRarityEnum),
+  sex: z.enum(SexEnum).optional(),
+  stack: z.number().int().positive(),
+  sell_price: z.number().int().positive(),
   consumable: z.boolean(),
   premium: z.boolean(),
   shining: z.boolean(),
   tradable: z.boolean(),
   deletable: z.boolean(),
-  durationRealTime: z.boolean(),
+  duration_real_time: z.boolean(),
   spawns: z.array(spawnSchema),
 });
 

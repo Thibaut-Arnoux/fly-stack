@@ -1,11 +1,11 @@
 import { z } from 'zod';
-import { ClassTypeEnumList } from '@/enums/class';
+import { ClassTypeEnum } from '@/enums/class-enum';
 import { localizedStringSchema } from '@/schemas/shared';
 
 export const classSchema = z.object({
   id: z.union([z.string(), z.number().int()]).transform((val) => String(val)),
   name: localizedStringSchema,
-  type: z.enum(ClassTypeEnumList as [string, ...string[]]),
+  type: z.enum(ClassTypeEnum),
   tree: z.string(),
   icon: z.string(),
   minLevel: z.number(),
