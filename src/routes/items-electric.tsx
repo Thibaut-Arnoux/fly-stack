@@ -109,6 +109,7 @@ function ItemsElectric() {
         cell: (props) => props.renderValue() ?? '-',
         size: 80,
         sortingFn: 'text',
+        filterFn: 'arrIncludesSome',
       }),
       columnHelper.accessor('level', {
         id: 'level',

@@ -28,7 +28,7 @@ export const CheckboxListFilter = ({
   return (
     <div className="flex">
       {columns.map((col) => (
-        <div key={col.id} className="flex-1">
+        <div key={col.id} className="flex-1 min-w-0">
           {col.items.map((cat) => (
             <label
               key={cat}
