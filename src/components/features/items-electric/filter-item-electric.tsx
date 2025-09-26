@@ -1,4 +1,6 @@
 import { FilterLevelItemElectric } from '@/components/features/items-electric/filter-level-item-electric';
+import { CheckboxListFilter } from '@/components/ui/tables/filters/checkbox-list-filter';
+import { ItemCategoryEnumList } from '@/enums/item-category-enum';
 
 export const FilterItemElectric = () => {
   return (
@@ -6,6 +8,12 @@ export const FilterItemElectric = () => {
       <li className="w-full">
         <h2 className="menu-title">Filter</h2>
         <FilterLevelItemElectric />
+        <details>
+          <summary>Category</summary>
+          <ul>
+            <CheckboxListFilter data={ItemCategoryEnumList} column="category" />
+          </ul>
+        </details>
         <ul>
           <li>
             <a>
