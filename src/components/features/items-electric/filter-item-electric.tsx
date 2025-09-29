@@ -1,27 +1,23 @@
-import { FilterLevelItemElectric } from '@/components/features/items-electric/filter-level-item-electric';
-import { CheckboxListFilter } from '@/components/ui/tables/filters/checkbox-list-filter';
-import { ItemCategoryEnumList } from '@/enums/item-category-enum';
-import { ItemSubcategoryEnumList } from '@/enums/item-subcategory-enum';
+import { FilterLevel } from '@/components/features/items-electric/filter-level';
+import { FilterCategory } from './filter-category';
+import { FilterSubcategory } from './filter-subcategory';
 
 export const FilterItemElectric = () => {
   return (
     <ul className="menu rounded-box w-full">
       <li className="w-full">
         <h2 className="menu-title">Filter</h2>
-        <FilterLevelItemElectric />
+        <FilterLevel />
         <details>
           <summary>Category</summary>
           <ul>
-            <CheckboxListFilter data={ItemCategoryEnumList} column="category" />
+            <FilterCategory />
           </ul>
         </details>
         <details>
           <summary>Subcategory</summary>
           <ul>
-            <CheckboxListFilter
-              data={ItemSubcategoryEnumList}
-              column="subcategory"
-            />
+            <FilterSubcategory />
           </ul>
         </details>
         <ul>
