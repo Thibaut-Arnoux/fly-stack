@@ -17,11 +17,11 @@ export const CheckboxListFilter = ({
   const selected =
     (table.getColumn(column)?.getFilterValue() as string[] | undefined) ?? [];
 
-  const toggleCategory = (cat: string) => {
+  const toggleItem = (item: string) => {
     table.firstPage();
-    const newSelected = selected.includes(cat)
-      ? selected.filter((c) => c !== cat)
-      : [...selected, cat];
+    const newSelected = selected.includes(item)
+      ? selected.filter((c) => c !== item)
+      : [...selected, item];
     table.getColumn(column)?.setFilterValue(newSelected);
   };
 
@@ -29,19 +29,19 @@ export const CheckboxListFilter = ({
     <div className="flex">
       {columns.map((col) => (
         <div key={col.id} className="flex-1 min-w-0">
-          {col.items.map((cat) => (
+          {col.items.map((item) => (
             <label
-              key={cat}
-              htmlFor={cat}
+              key={item}
+              htmlFor={item}
               className="flex items-center gap-2 p-1 cursor-pointer"
             >
               <Checkbox
-                id={cat}
-                checked={selected.includes(cat)}
-                onChange={() => toggleCategory(cat)}
+                id={item}
+                checked={selected.includes(item)}
+                onChange={() => toggleItem(item)}
                 className="checkbox-sm"
               />
-              <span>{cat}</span>
+              <span className="overflow-hidden text-ellipsis whitespace-nowrap">{item}</span>
             </label>
           ))}
         </div>

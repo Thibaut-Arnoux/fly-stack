@@ -20,15 +20,6 @@ export const FilterItemElectric = () => {
             <FilterSubcategory />
           </ul>
         </details>
-        <ul>
-          <li>
-            <a>
-              <span className="overflow-hidden text-ellipsis whitespace-nowrap">
-                Childssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
-              </span>
-            </a>
-          </li>
-        </ul>
       </li>
     </ul>
   );
