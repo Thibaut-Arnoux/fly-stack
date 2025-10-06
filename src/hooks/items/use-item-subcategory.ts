@@ -1,6 +1,6 @@
 import { useLiveQuery } from '@tanstack/react-db';
 import { itemCollection } from '@/collections/item-collection';
-import { ItemSubcategory } from '@/enums/item-subcategory-enum';
+import type { ItemSubcategory } from '@/enums/item-subcategory-enum';
 
 export const useItemSubcategory = () => {
   const { data: subcategories } = useLiveQuery((q) =>
@@ -13,5 +13,7 @@ export const useItemSubcategory = () => {
       .orderBy(({ item }) => item.subcategory, 'asc'),
   );
 
-  return (subcategories ?? []).map((r) => r.subcategory).filter((v): v is ItemSubcategory => v !== null);
+  return (subcategories ?? [])
+    .map((r) => r.subcategory)
+    .filter((v): v is ItemSubcategory => v !== null);
 };

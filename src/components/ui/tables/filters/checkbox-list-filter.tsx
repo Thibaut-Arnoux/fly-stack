@@ -41,7 +41,9 @@ export const CheckboxListFilter = ({
                 onChange={() => toggleItem(item)}
                 className="checkbox-sm"
               />
-              <span className="overflow-hidden text-ellipsis whitespace-nowrap">{item}</span>
+              <span className="overflow-hidden text-ellipsis whitespace-nowrap">
+                {item}
+              </span>
             </label>
           ))}
         </div>
