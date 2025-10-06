@@ -10,6 +10,7 @@ import {
   DataTable,
   DataTableProvider,
 } from '@/components/ui/tables/data-table';
+import { arrEqualsSome } from '@/components/ui/tables/filters/fn/arr-equals-some';
 import { SearchFilter } from '@/components/ui/tables/filters/search-filter';
 import { PaginationTable } from '@/components/ui/tables/pagination-table';
 import type { DisplayItemElectric } from '@/schemas/item-schema';
@@ -94,6 +95,7 @@ function ItemsElectric() {
         cell: (props) => props.renderValue(),
         size: 80,
         sortingFn: 'text',
+        filterFn: arrEqualsSome,
       }),
       columnHelper.accessor('category', {
         id: 'category',

@@ -1,6 +1,7 @@
+import { FilterCategory } from '@/components/features/items-electric/filter-category';
 import { FilterLevel } from '@/components/features/items-electric/filter-level';
-import { FilterCategory } from './filter-category';
-import { FilterSubcategory } from './filter-subcategory';
+import { FilterRarity } from '@/components/features/items-electric/filter-rarity';
+import { FilterSubcategory } from '@/components/features/items-electric/filter-subcategory';
 
 export const FilterItemElectric = () => {
   return (
@@ -18,6 +19,12 @@ export const FilterItemElectric = () => {
           <summary>Subcategory</summary>
           <ul>
             <FilterSubcategory />
+          </ul>
+        </details>
+        <details>
+          <summary>Rarity</summary>
+          <ul>
+            <FilterRarity />
           </ul>
         </details>
       </li>
