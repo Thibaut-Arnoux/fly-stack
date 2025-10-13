@@ -132,24 +132,25 @@ function ItemsElectric() {
       columns={columns}
       sortingState={sortingState}
     >
-      <Drawer className="drawer-end">
-        <Drawer.Content className="flex justify-end gap-2 mr-2 mt-2">
-          <SearchFilter column="name" />
-          <Drawer.Trigger className="btn btn-square">
-            <ListFilter size={16} />
-          </Drawer.Trigger>
+      <Drawer className="drawer-end h-full min-h-0">
+        <Drawer.Content className="h-full flex flex-col min-h-0">
+          <div className="flex justify-end gap-2 mr-2 mt-2">
+            <SearchFilter column="name" />
+            <Drawer.Trigger className="btn btn-square">
+              <ListFilter size={16} />
+            </Drawer.Trigger>
+          </div>
+          <div className="flex-1 overflow-y-auto">
+            <DataTable className="table-fixed table-zebra" />
+          </div>
+          <div className="flex justify-center my-1">
+            <PaginationTable />
+          </div>
         </Drawer.Content>
         <Drawer.Side className="w-80">
           <FilterItemElectric />
         </Drawer.Side>
       </Drawer>
-
-      <div className="flex-1 overflow-y-auto">
-        <DataTable className="table-fixed table-zebra" />
-      </div>
-      <div className="flex justify-center my-1">
-        <PaginationTable />
-      </div>
     </DataTableProvider>
   );
 }
