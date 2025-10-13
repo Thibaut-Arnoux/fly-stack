@@ -72,7 +72,7 @@ Drawer.Side = ({
         className="drawer-overlay"
       ></label>
       <div
-        className={`bg-base-200 text-base-content min-h-full ${className}`}
+        className={`bg-base-200 text-base-content h-full overflow-y-auto ${className}`}
         {...props}
       >
         {children}
