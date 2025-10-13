@@ -20,7 +20,7 @@ const useDrawerContext = () => {
  */
 export const Drawer = ({
   children,
-  className,
+  className = '',
   ...props
 }: HTMLAttributes<HTMLDivElement>) => {
   const id = useId();
@@ -37,7 +37,7 @@ export const Drawer = ({
 
 Drawer.Content = ({
   children,
-  className,
+  className = '',
   ...props
 }: HTMLAttributes<HTMLDivElement>) => {
   return (
@@ -59,7 +59,7 @@ Drawer.Trigger = ({ children, ...props }: HTMLAttributes<HTMLLabelElement>) => {
 
 Drawer.Side = ({
   children,
-  className,
+  className = '',
   ...props
 }: HTMLAttributes<HTMLDivElement>) => {
   const { id } = useDrawerContext();

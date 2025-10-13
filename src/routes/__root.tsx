@@ -11,10 +11,10 @@ export const Route = createRootRouteWithContext<{
 
 function RootComponent() {
   return (
-    <>
+    <div className="h-screen flex flex-col">
       <Navbar />
       <Outlet />
       <TanStackRouterDevtools />
-    </>
+    </div>
   );
 }
