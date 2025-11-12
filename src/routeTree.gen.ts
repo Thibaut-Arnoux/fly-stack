@@ -9,17 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as UsersRouteImport } from './routes/users'
 import { Route as ItemsElectricRouteImport } from './routes/items-electric'
 import { Route as ItemsRouteImport } from './routes/items'
 import { Route as ClassesRouteImport } from './routes/classes'
 import { Route as IndexRouteImport } from './routes/index'
 
-const UsersRoute = UsersRouteImport.update({
-  id: '/users',
-  path: '/users',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ItemsElectricRoute = ItemsElectricRouteImport.update({
   id: '/items-electric',
   path: '/items-electric',
@@ -46,14 +40,12 @@ export interface FileRoutesByFullPath {
   '/classes': typeof ClassesRoute
   '/items': typeof ItemsRoute
   '/items-electric': typeof ItemsElectricRoute
-  '/users': typeof UsersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/classes': typeof ClassesRoute
   '/items': typeof ItemsRoute
   '/items-electric': typeof ItemsElectricRoute
-  '/users': typeof UsersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -61,14 +53,13 @@ export interface FileRoutesById {
   '/classes': typeof ClassesRoute
   '/items': typeof ItemsRoute
   '/items-electric': typeof ItemsElectricRoute
-  '/users': typeof UsersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/classes' | '/items' | '/items-electric' | '/users'
+  fullPaths: '/' | '/classes' | '/items' | '/items-electric'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/classes' | '/items' | '/items-electric' | '/users'
-  id: '__root__' | '/' | '/classes' | '/items' | '/items-electric' | '/users'
+  to: '/' | '/classes' | '/items' | '/items-electric'
+  id: '__root__' | '/' | '/classes' | '/items' | '/items-electric'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,18 +67,10 @@ export interface RootRouteChildren {
   ClassesRoute: typeof ClassesRoute
   ItemsRoute: typeof ItemsRoute
   ItemsElectricRoute: typeof ItemsElectricRoute
-  UsersRoute: typeof UsersRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/users': {
-      id: '/users'
-      path: '/users'
-      fullPath: '/users'
-      preLoaderRoute: typeof UsersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/items-electric': {
       id: '/items-electric'
       path: '/items-electric'
@@ -124,7 +107,6 @@ const rootRouteChildren: RootRouteChildren = {
   ClassesRoute: ClassesRoute,
   ItemsRoute: ItemsRoute,
   ItemsElectricRoute: ItemsElectricRoute,
-  UsersRoute: UsersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
