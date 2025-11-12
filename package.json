@@ -2,9 +2,10 @@
   "name": "fly-stack",
   "private": true,
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc && vite build",
     "format": "biome check --linter-enabled=false --write",
     "lint": "biome lint",
     "ci": "biome ci",
@@ -32,6 +33,7 @@
     "typescript": "~5.7.2",
     "usehooks-ts": "^3.1.1",
     "vite": "^6.3.6",
+    "vite-tsconfig-paths": "^5.1.4",
     "zod": "^4.1.11"
   }
 }
