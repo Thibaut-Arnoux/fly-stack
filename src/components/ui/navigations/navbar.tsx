@@ -27,12 +27,6 @@ export const Navbar = () => {
         </button>
         <ul className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
           <li>
-            <Link to="/classes">Classes</Link>
-          </li>
-          <li>
-            <Link to="/items">Items</Link>
-          </li>
-          <li>
             <Link to="/items-electric">Items Electric</Link>
           </li>
         </ul>
@@ -41,12 +35,6 @@ export const Navbar = () => {
         {appName}
       </Link>
       <ul className="menu menu-horizontal px-1 hidden lg:flex">
-        <li>
-          <Link to="/classes">Classes</Link>
-        </li>
-        <li>
-          <Link to="/items">Items</Link>
-        </li>
         <li>
           <Link to="/items-electric">Items Electric</Link>
         </li>

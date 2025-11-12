@@ -10,23 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ItemsElectricRouteImport } from './routes/items-electric'
-import { Route as ItemsRouteImport } from './routes/items'
-import { Route as ClassesRouteImport } from './routes/classes'
 import { Route as IndexRouteImport } from './routes/index'
 
 const ItemsElectricRoute = ItemsElectricRouteImport.update({
   id: '/items-electric',
   path: '/items-electric',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ItemsRoute = ItemsRouteImport.update({
-  id: '/items',
-  path: '/items',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ClassesRoute = ClassesRouteImport.update({
-  id: '/classes',
-  path: '/classes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -37,35 +25,27 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/classes': typeof ClassesRoute
-  '/items': typeof ItemsRoute
   '/items-electric': typeof ItemsElectricRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/classes': typeof ClassesRoute
-  '/items': typeof ItemsRoute
   '/items-electric': typeof ItemsElectricRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/classes': typeof ClassesRoute
-  '/items': typeof ItemsRoute
   '/items-electric': typeof ItemsElectricRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/classes' | '/items' | '/items-electric'
+  fullPaths: '/' | '/items-electric'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/classes' | '/items' | '/items-electric'
-  id: '__root__' | '/' | '/classes' | '/items' | '/items-electric'
+  to: '/' | '/items-electric'
+  id: '__root__' | '/' | '/items-electric'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ClassesRoute: typeof ClassesRoute
-  ItemsRoute: typeof ItemsRoute
   ItemsElectricRoute: typeof ItemsElectricRoute
 }
 
@@ -76,20 +56,6 @@ declare module '@tanstack/react-router' {
       path: '/items-electric'
       fullPath: '/items-electric'
       preLoaderRoute: typeof ItemsElectricRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/items': {
-      id: '/items'
-      path: '/items'
-      fullPath: '/items'
-      preLoaderRoute: typeof ItemsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/classes': {
-      id: '/classes'
-      path: '/classes'
-      fullPath: '/classes'
-      preLoaderRoute: typeof ClassesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -104,8 +70,6 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ClassesRoute: ClassesRoute,
-  ItemsRoute: ItemsRoute,
   ItemsElectricRoute: ItemsElectricRoute,
 }
 export const routeTree = rootRouteImport
