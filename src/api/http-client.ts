@@ -7,42 +7,37 @@ import ky, {
 } from 'ky';
 
 export class HttpClient {
-  protected _baseUrl: URL;
+  protected readonly _baseUrl: URL;
 
-  protected _redirectUnauthorizedEndpoint?: string;
+  protected readonly _redirectUnauthorizedEndpoint?: string;
 
-  protected _redirectCSRFEndpoint?: string;
+  protected readonly _redirectCSRFEndpoint?: string;
 
-  protected _headers: HeadersInit;
-
-  protected _httpClient: KyInstance;
+  private readonly _httpClient: KyInstance;
 
   constructor({
     baseUrl,
     redirectUnauthorizedEndpoint,
     redirectCSRFEndpoint,
-    headers,
+    options,
   }: {
     baseUrl: string;
     redirectUnauthorizedEndpoint?: string;
     redirectCSRFEndpoint?: string;
-    headers?: HeadersInit;
+    options?: Omit<Options, 'prefixUrl' | 'hooks'>;
   }) {
     if (!this._isValidHttpUrl(baseUrl)) throw new Error('Invalid base url');
 
     this._baseUrl = new URL(baseUrl);
     this._redirectUnauthorizedEndpoint = redirectUnauthorizedEndpoint;
     this._redirectCSRFEndpoint = redirectCSRFEndpoint;
-    this._headers = headers || {};
     this._httpClient = ky.create({
       prefixUrl: this._baseUrl,
-      headers: this._headers,
-      credentials: 'include',
-      timeout: 30_000, // higher than electric pulling 20s
       hooks: {
         beforeRequest: [this._handleXSRFToken],
         afterResponse: [this._handleError],
       },
+      ...options,
     });
   }
 

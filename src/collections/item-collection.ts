@@ -1,16 +1,16 @@
 import { electricCollectionOptions } from '@tanstack/electric-db-collection';
 import { createCollection } from '@tanstack/react-db';
-import { flyffElectricService } from '@/api/flyff-electric-service';
-import { itemElectricSchema } from '@/schemas/item-schema';
+import { flyffService } from '@/api/flyff-service';
+import { itemSchema } from '@/schemas/item-schema';
 
 export const itemCollection = createCollection(
   electricCollectionOptions({
     id: 'items',
     shapeOptions: {
-      url: flyffElectricService.urls.items,
-      fetchClient: flyffElectricService.asFetch,
+      url: flyffService.urls.items,
+      fetchClient: flyffService.httpClient.asFetch,
     },
-    schema: itemElectricSchema,
+    schema: itemSchema,
     getKey: (item) => item.id,
   }),
 );

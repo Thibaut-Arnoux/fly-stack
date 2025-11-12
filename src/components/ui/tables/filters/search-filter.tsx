@@ -1,9 +1,9 @@
 import { SearchBar } from '@/components/ui/inputs/search-bar';
 import { useDataTableContext } from '@/components/ui/tables/data-table';
-import type { DisplayItemElectric } from '@/schemas/item-schema';
+import type { DisplayItem } from '@/schemas/item-schema';
 
 export const SearchFilter = ({ column }: { column: string }) => {
-  const { table } = useDataTableContext<DisplayItemElectric>();
+  const { table } = useDataTableContext<DisplayItem>();
 
   return (
     <SearchBar

@@ -4,7 +4,7 @@ import { createColumnHelper, type SortingState } from '@tanstack/react-table';
 import { ListFilter } from 'lucide-react';
 import { useMemo } from 'react';
 import { itemCollection } from '@/collections/item-collection';
-import { FilterItemElectric } from '@/components/features/items-electric/filter-item-electric';
+import { FilterItem } from '@/components/features/items/filter-item';
 import { Drawer } from '@/components/ui/layouts/drawer';
 import {
   DataTable,
@@ -13,14 +13,14 @@ import {
 import { arrEqualsSome } from '@/components/ui/tables/filters/fn/arr-equals-some';
 import { SearchFilter } from '@/components/ui/tables/filters/search-filter';
 import { PaginationTable } from '@/components/ui/tables/pagination-table';
-import type { DisplayItemElectric } from '@/schemas/item-schema';
+import type { DisplayItem } from '@/schemas/item-schema';
 
-export const Route = createFileRoute('/items-electric')({
+export const Route = createFileRoute('/items')({
   loader: () => itemCollection.preload(),
-  component: ItemsElectric,
+  component: Items,
 });
 
-function ItemsElectric() {
+function Items() {
   const { data: items } = useLiveQuery((q) =>
     q.from({ item: itemCollection }).select(({ item }) => ({
       id: item.id,
@@ -42,7 +42,7 @@ function ItemsElectric() {
     },
   ];
 
-  const columnHelper = createColumnHelper<DisplayItemElectric>();
+  const columnHelper = createColumnHelper<DisplayItem>();
   const columns = useMemo(
     () => [
       columnHelper.display({
@@ -148,7 +148,7 @@ function ItemsElectric() {
           </div>
         </Drawer.Content>
         <Drawer.Side className="w-80">
-          <FilterItemElectric />
+          <FilterItem />
         </Drawer.Side>
       </Drawer>
     </DataTableProvider>

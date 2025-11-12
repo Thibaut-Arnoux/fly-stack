@@ -1,9 +1,9 @@
-import { FilterCategory } from '@/components/features/items-electric/filter-category';
-import { FilterLevel } from '@/components/features/items-electric/filter-level';
-import { FilterRarity } from '@/components/features/items-electric/filter-rarity';
-import { FilterSubcategory } from '@/components/features/items-electric/filter-subcategory';
+import { FilterCategory } from '@/components/features/items/filter-category';
+import { FilterLevel } from '@/components/features/items/filter-level';
+import { FilterRarity } from '@/components/features/items/filter-rarity';
+import { FilterSubcategory } from '@/components/features/items/filter-subcategory';
 
-export const FilterItemElectric = () => {
+export const FilterItem = () => {
   return (
     <ul className="menu rounded-box w-full">
       <li className="w-full">
