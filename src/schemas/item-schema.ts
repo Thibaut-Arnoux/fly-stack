@@ -6,7 +6,7 @@ import { SexEnum } from '@/enums/sex-enum';
 import {
   localizedStringOptionalSchema,
   localizedStringSchema,
-} from '@/schemas/shared';
+} from '@/schemas/shared-schema';
 
 const spawnSchema = z.object({
   world: z.number().int(),
@@ -18,7 +18,7 @@ const spawnSchema = z.object({
 });
 
 // TODO : update schema with missing new properties
-export const itemElectricSchema = z.object({
+export const itemSchema = z.object({
   id: z.uuid(),
   item_id: z.number().int().positive(),
   name: localizedStringSchema,
@@ -41,12 +41,12 @@ export const itemElectricSchema = z.object({
   spawns: z.array(spawnSchema),
 });
 
-export type ItemElectric = z.infer<typeof itemElectricSchema>;
+export type Item = z.infer<typeof itemSchema>;
 
-export const itemsElectricSchema = z.array(itemElectricSchema);
+export const itemsSchema = z.array(itemSchema);
 
-export type DisplayItemElectric = Pick<
-  ItemElectric,
+export type DisplayItem = Pick<
+  Item,
   | 'id'
   | 'icon'
   | 'name'

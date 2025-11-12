@@ -1,56 +1,156 @@
+import { useLiveQuery } from '@tanstack/react-db';
 import { createFileRoute } from '@tanstack/react-router';
+import { createColumnHelper, type SortingState } from '@tanstack/react-table';
 import { ListFilter } from 'lucide-react';
-import { useEffect } from 'react';
+import { useMemo } from 'react';
+import { itemCollection } from '@/collections/item-collection';
 import { FilterItem } from '@/components/features/items/filter-item';
-import { ItemDatagrid } from '@/components/features/items/item-datagrid';
-import { PaginationItem } from '@/components/features/items/pagination-item';
-import { SearchItem } from '@/components/features/items/search-item';
 import { Drawer } from '@/components/ui/layouts/drawer';
-import { itemsQueryOptions } from '@/hooks/flyff-service/use-items-query';
-import { useApiOptionsActions } from '@/hooks/stores/use-api-options';
-import { apiOptionsStore } from '@/stores/api-options-store';
+import {
+  DataTable,
+  DataTableProvider,
+} from '@/components/ui/tables/data-table';
+import { arrEqualsSome } from '@/components/ui/tables/filters/fn/arr-equals-some';
+import { SearchFilter } from '@/components/ui/tables/filters/search-filter';
+import { PaginationTable } from '@/components/ui/tables/pagination-table';
+import type { DisplayItem } from '@/schemas/item-schema';
 
 export const Route = createFileRoute('/items')({
-  loader: ({ context: { queryClient } }) => {
-    return queryClient.ensureQueryData(
-      itemsQueryOptions({
-        page: apiOptionsStore.state.page,
-        likes: apiOptionsStore.state.likes,
-        sorts: apiOptionsStore.state.sorts,
-      }),
-    );
-  },
+  loader: () => itemCollection.preload(),
   component: Items,
 });
 
 function Items() {
-  const { reset } = useApiOptionsActions();
+  const { data: items } = useLiveQuery((q) =>
+    q.from({ item: itemCollection }).select(({ item }) => ({
+      id: item.id,
+      icon: item.icon,
+      name: item.name,
+      description: item.description,
+      sex: item.sex,
+      rarity: item.rarity,
+      category: item.category,
+      subcategory: item.subcategory,
+      level: item.level,
+    })),
+  );
 
-  useEffect(() => {
-    return () => {
-      reset();
-    };
-  }, [reset]);
+  const sortingState: SortingState = [
+    {
+      id: 'level',
+      desc: false,
+    },
+  ];
+
+  const columnHelper = createColumnHelper<DisplayItem>();
+  const columns = useMemo(
+    () => [
+      columnHelper.display({
+        id: 'icon',
+        header: 'Icon',
+        cell: (props) => (
+          <img
+            width={32}
+            height={32}
+            className="min-w-[32px]" // avoid shrink img size on reduced window
+            src={`${import.meta.env.VITE_FLYFF_API_BASE_URL}/image/item/${props.row.original.icon}`}
+            alt={props.row.original.icon}
+          />
+        ),
+        size: 50,
+        enableSorting: false,
+      }),
+      columnHelper.accessor((row) => row.name?.en ?? undefined, {
+        id: 'name',
+        header: 'Name',
+        cell: (props) => props.renderValue() ?? '-',
+        size: 150,
+        sortingFn: 'alphanumeric',
+        filterFn: 'includesString',
+      }),
+      columnHelper.accessor(
+        (row) =>
+          (row.description.en ?? 'null') === 'null'
+            ? undefined
+            : row.description.en,
+        {
+          id: 'description',
+          header: 'Description',
+          cell: (props) => props.renderValue() ?? '-',
+          size: 250,
+          sortingFn: 'alphanumeric',
+          sortDescFirst: false,
+        },
+      ),
+      columnHelper.accessor((row) => row.sex ?? undefined, {
+        id: 'sex',
+        header: 'Sex',
+        cell: (props) => props.renderValue() ?? '-',
+        size: 50,
+        sortingFn: 'text',
+      }),
+      columnHelper.accessor('rarity', {
+        id: 'rarity',
+        header: 'Rarity',
+        cell: (props) => props.renderValue(),
+        size: 80,
+        sortingFn: 'text',
+        filterFn: arrEqualsSome,
+      }),
+      columnHelper.accessor('category', {
+        id: 'category',
+        header: 'Category',
+        cell: (props) => props.renderValue(),
+        size: 80,
+        sortingFn: 'text',
+        filterFn: 'arrIncludesSome',
+      }),
+      columnHelper.accessor((row) => row.subcategory ?? undefined, {
+        id: 'subcategory',
+        header: 'Subcategory',
+        cell: (props) => props.renderValue() ?? '-',
+        size: 80,
+        sortingFn: 'text',
+        filterFn: 'arrIncludesSome',
+      }),
+      columnHelper.accessor('level', {
+        id: 'level',
+        cell: (props) => props.renderValue(),
+        header: 'Level',
+        size: 50,
+        sortingFn: 'alphanumeric',
+        sortDescFirst: false,
+        filterFn: 'inNumberRange',
+      }),
+    ],
+    [columnHelper],
+  );
 
   return (
-    <>
-      <Drawer className="drawer-end">
-        <Drawer.Content className="flex justify-end gap-2 mr-2 mt-2">
-          <SearchItem />
-          <Drawer.Trigger className="btn btn-square">
-            <ListFilter size={16} />
-          </Drawer.Trigger>
+    <DataTableProvider
+      data={items}
+      columns={columns}
+      sortingState={sortingState}
+    >
+      <Drawer className="drawer-end h-full min-h-0">
+        <Drawer.Content className="h-full flex flex-col min-h-0">
+          <div className="flex justify-end gap-2 mr-2 mt-2">
+            <SearchFilter column="name" />
+            <Drawer.Trigger className="btn btn-square">
+              <ListFilter size={16} />
+            </Drawer.Trigger>
+          </div>
+          <div className="flex-1 overflow-y-auto">
+            <DataTable className="table-fixed table-zebra" />
+          </div>
+          <div className="flex justify-center my-1">
+            <PaginationTable />
+          </div>
         </Drawer.Content>
         <Drawer.Side className="w-80">
           <FilterItem />
         </Drawer.Side>
       </Drawer>
-      <div className="flex-1 overflow-y-auto p-2">
-        <ItemDatagrid />
-      </div>
-      <div className="flex justify-center my-1">
-        <PaginationItem />
-      </div>
-    </>
+    </DataTableProvider>
   );
 }
