@@ -8,9 +8,7 @@
     "format": "biome check --linter-enabled=false --write",
     "lint": "biome lint",
     "ci": "biome ci",
-    "preview": "vite preview",
-    "server": "json-server server/db.json",
-    "server:scrap": "tsc -b tsconfig.server.json && node server/dist/server/scraper.js"
+    "preview": "vite preview"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.4",
@@ -32,9 +30,6 @@
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^4.7.0",
     "daisyui": "^5.1.13",
-    "dotenv": "^16.6.1",
-    "globals": "^15.15.0",
-    "json-server": "^0.17.4",
     "ky": "^1.10.0",
     "lucide-react": "^0.487.0",
     "module-alias": "^2.2.3",
