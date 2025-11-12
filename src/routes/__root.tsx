@@ -1,8 +1,9 @@
-import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import { TanStackDevtools } from '@tanstack/react-devtools';
+import { createRootRoute, Outlet } from '@tanstack/react-router';
+import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools';
 import { Navbar } from '@/components/ui/navigations/navbar';
 
-export const Route = createRootRouteWithContext()({
+export const Route = createRootRoute({
   component: RootComponent,
 });
 
@@ -11,7 +12,17 @@ function RootComponent() {
     <div className="h-screen flex flex-col">
       <Navbar />
       <Outlet />
-      <TanStackRouterDevtools />
+      <TanStackDevtools
+        config={{
+          position: 'bottom-right',
+        }}
+        plugins={[
+          {
+            name: 'Tanstack Router',
+            render: <TanStackRouterDevtoolsPanel />,
+          },
+        ]}
+      />
     </div>
   );
 }
