@@ -6,7 +6,7 @@ import { SexEnum } from '@/enums/sex-enum';
 import {
   localizedStringOptionalSchema,
   localizedStringSchema,
-} from '@/schemas/shared';
+} from '@/schemas/shared-schema';
 
 const spawnSchema = z.object({
   world: z.number().int(),

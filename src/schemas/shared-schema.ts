@@ -1,11 +1,5 @@
-import { type ZodSchema, z } from 'zod';
+import { z } from 'zod';
 
-// ids
-const idSchema = z.number().int();
-
-export const idsSchema = z.array(idSchema);
-
-// localized string
 export const localizedStringSchema = z.object({
   en: z.string(),
   ar: z.string(),
@@ -34,20 +28,3 @@ export const localizedStringOptionalSchema = localizedStringSchema
   .extend({
     en: localizedStringSchema.shape.en, // keep "en" required
   });
-
-// paginated
-export const paginatedResponseSchema = <T extends ZodSchema>(schema: T) => {
-  return z.object({
-    first: z.number(),
-    prev: z.number().nullable(),
-    next: z.number().nullable(),
-    last: z.number(),
-    pages: z.number(),
-    items: z.number(),
-    data: z.array(schema),
-  });
-};
-
-export type PaginatedResponse<T extends ZodSchema> = z.infer<
-  ReturnType<typeof paginatedResponseSchema<T>>
->;
