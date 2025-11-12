@@ -10,7 +10,14 @@ export const Route = createRootRoute({
 function RootComponent() {
   return (
     <div className="h-screen flex flex-col">
-      <Navbar />
+      <Navbar
+        links={[
+          {
+            label: 'Items',
+            to: '/items',
+          },
+        ]}
+      />
       <Outlet />
       <TanStackDevtools
         config={{
