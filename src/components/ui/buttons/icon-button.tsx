@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { Button } from '@/components/ui/buttons/button';
 
 export const IconButton = ({
-  className,
+  className = '',
   icon,
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & { icon: ReactNode }) => {
