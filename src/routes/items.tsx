@@ -89,14 +89,6 @@ function Items() {
         size: 50,
         sortingFn: 'text',
       }),
-      columnHelper.accessor('rarity', {
-        id: 'rarity',
-        header: 'Rarity',
-        cell: (props) => props.renderValue(),
-        size: 80,
-        sortingFn: 'text',
-        filterFn: arrEqualsSome,
-      }),
       columnHelper.accessor('category', {
         id: 'category',
         header: 'Category',
@@ -112,6 +104,14 @@ function Items() {
         size: 80,
         sortingFn: 'text',
         filterFn: 'arrIncludesSome',
+      }),
+      columnHelper.accessor('rarity', {
+        id: 'rarity',
+        header: 'Rarity',
+        cell: (props) => props.renderValue(),
+        size: 80,
+        sortingFn: 'text',
+        filterFn: arrEqualsSome,
       }),
       columnHelper.accessor('level', {
         id: 'level',
