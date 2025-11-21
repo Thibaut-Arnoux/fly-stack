@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes } from 'react';
+import { cn } from '@/utils/cn';
 
 export const Button = ({
   className,
@@ -6,7 +7,7 @@ export const Button = ({
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement>) => {
   return (
-    <button type="button" className={`btn ${className}`} {...props}>
+    <button type="button" className={cn('btn', className)} {...props}>
       {children}
     </button>
   );

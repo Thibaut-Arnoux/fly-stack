@@ -1,10 +1,11 @@
 import type { InputHTMLAttributes } from 'react';
+import { cn } from '@/utils/cn';
 
 export const Checkbox = ({
-  className = '',
+  className,
   ...props
 }: InputHTMLAttributes<HTMLInputElement>) => {
   return (
-    <input {...props} className={`checkbox ${className}`} type="checkbox" />
+    <input {...props} className={cn('checkbox', className)} type="checkbox" />
   );
 };

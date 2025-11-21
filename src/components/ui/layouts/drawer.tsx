@@ -1,4 +1,5 @@
 import { createContext, type HTMLAttributes, useContext, useId } from 'react';
+import { cn } from '@/utils/cn';
 
 type DrawerContextType = {
   id: string;
@@ -20,14 +21,14 @@ const useDrawerContext = () => {
  */
 export const Drawer = ({
   children,
-  className = '',
+  className,
   ...props
 }: HTMLAttributes<HTMLDivElement>) => {
   const id = useId();
 
   return (
     <DrawerContext.Provider value={{ id }}>
-      <div className={`drawer ${className}`} {...props}>
+      <div className={cn('drawer', className)} {...props}>
         <input id={id} type="checkbox" className="drawer-toggle" />
         {children}
       </div>
@@ -37,11 +38,11 @@ export const Drawer = ({
 
 Drawer.Content = ({
   children,
-  className = '',
+  className,
   ...props
 }: HTMLAttributes<HTMLDivElement>) => {
   return (
-    <div className={`drawer-content ${className}`} {...props}>
+    <div className={cn('drawer-content', className)} {...props}>
       {children}
     </div>
   );
@@ -59,7 +60,7 @@ Drawer.Trigger = ({ children, ...props }: HTMLAttributes<HTMLLabelElement>) => {
 
 Drawer.Side = ({
   children,
-  className = '',
+  className,
   ...props
 }: HTMLAttributes<HTMLDivElement>) => {
   const { id } = useDrawerContext();
@@ -72,7 +73,10 @@ Drawer.Side = ({
         className="drawer-overlay"
       ></label>
       <div
-        className={`bg-base-200 text-base-content h-full overflow-y-auto ${className}`}
+        className={cn(
+          'bg-base-200 text-base-content h-full overflow-y-auto',
+          className,
+        )}
         {...props}
       >
         {children}

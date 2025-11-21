@@ -19,6 +19,7 @@ import {
   useContext,
   useState,
 } from 'react';
+import { cn } from '@/utils/cn';
 
 type DataTableContextType<TData> = {
   table: Table<TData>;
@@ -95,13 +96,13 @@ export const DataTableProvider = <TData,>({
 };
 
 export const DataTable = <TData,>({
-  className = '',
+  className,
   ...props
 }: HtmlHTMLAttributes<HTMLTableElement>) => {
   const { table } = useDataTableContext<TData>();
 
   return (
-    <table {...props} className={`table ${className}`}>
+    <table {...props} className={cn('table', className)}>
       <thead>
         <tr>
           {table.getFlatHeaders().map((header) => (
