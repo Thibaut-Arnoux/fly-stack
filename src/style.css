@@ -3,6 +3,6 @@
 @plugin "daisyui" {
   /* biome-ignore lint/correctness/noUnknownProperty: daisyui theme setup */
   themes:
-    light --default,
-    dark --prefersdark;
+    winter --default,
+    dim --prefersdark;
 }
