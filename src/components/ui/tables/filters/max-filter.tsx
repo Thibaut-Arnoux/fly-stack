@@ -9,13 +9,19 @@ export const MaxFilter = ({
   ...props
 }: { column: string } & InputProps) => {
   const { table } = useDataTableContext();
+  const filterValue = table.getColumn(column)?.getFilterValue() as
+    | [number, number]
+    | undefined;
+  const defaultValue = filterValue ? Math.max(...filterValue) : max;
 
   return (
     <NumberInput
       {...props}
+      // re-mount the component to reset the input value, tricks for uncontrolled inputs
+      key={`max-filter-${defaultValue}`}
       min={min}
       max={max}
-      defaultValue={max}
+      defaultValue={defaultValue}
       onBlur={(e) => {
         table.firstPage();
         table

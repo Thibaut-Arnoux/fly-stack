@@ -9,13 +9,19 @@ export const MinFilter = ({
   ...props
 }: { column: string } & InputProps) => {
   const { table } = useDataTableContext();
+  const filterValue = table.getColumn(column)?.getFilterValue() as
+    | [number, number]
+    | undefined;
+  const defaultValue = filterValue ? Math.min(...filterValue) : min;
 
   return (
     <NumberInput
       {...props}
+      // re-mount the component to reset the input value, tricks for uncontrolled inputs
+      key={`min-filter-${defaultValue}`}
       min={min}
       max={max}
-      defaultValue={min}
+      defaultValue={defaultValue}
       onBlur={(e) => {
         table.firstPage();
         table
