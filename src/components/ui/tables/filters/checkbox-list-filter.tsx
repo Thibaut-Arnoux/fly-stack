@@ -1,5 +1,5 @@
 import { Checkbox } from '@/components/ui/inputs/checkbox';
-import { useDataTableContext } from '@/components/ui/tables/data-table';
+import { useDataTable } from '@/components/ui/tables/hooks/use-data-table';
 import { splitIntoColumns } from '@/utils/array';
 
 export const CheckboxListFilter = ({
@@ -11,7 +11,7 @@ export const CheckboxListFilter = ({
   column: string;
   nbColumns?: number;
 }) => {
-  const { table } = useDataTableContext();
+  const { table } = useDataTable();
 
   const columns = splitIntoColumns(data, nbColumns);
   const selected =

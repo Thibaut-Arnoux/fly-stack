@@ -1,14 +1,16 @@
 import type { InputProps } from '@/components/ui/inputs/input';
 import { NumberInput } from '@/components/ui/inputs/number-input';
-import { useDataTableContext } from '@/components/ui/tables/data-table';
+import { useDataTable } from '@/components/ui/tables/hooks/use-data-table';
 
 export const MaxFilter = ({
   column,
-  min,
-  max,
+  min: minProp,
+  max: maxProp,
   ...props
 }: { column: string } & InputProps) => {
-  const { table } = useDataTableContext();
+  const { table } = useDataTable();
+  const min = Number(minProp);
+  const max = Number(maxProp);
   const filterValue = table.getColumn(column)?.getFilterValue() as
     | [number, number]
     | undefined;
@@ -24,11 +26,19 @@ export const MaxFilter = ({
       defaultValue={defaultValue}
       onBlur={(e) => {
         table.firstPage();
+        const newMax = Number(e.target.value);
+        const currentMin =
+          (
+            table.getColumn(column)?.getFilterValue() as
+              | [number, number]
+              | undefined
+          )?.[0] ?? min;
+
         table
           .getColumn(column)
-          ?.setFilterValue((old: [number, number] | undefined) => [
-            old?.[0] ?? min,
-            Number(e.target.value),
+          ?.setFilterValue(() => [
+            Math.min(currentMin, newMax),
+            Math.max(currentMin, newMax),
           ]);
       }}
     />

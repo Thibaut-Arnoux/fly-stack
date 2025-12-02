@@ -1,14 +1,17 @@
+import { useLocation, useNavigate } from '@tanstack/react-router';
 import { RotateCcw } from 'lucide-react';
 import type { ButtonHTMLAttributes } from 'react';
 import { IconButton } from '@/components/ui/buttons/icon-button';
-import { useDataTableContext } from '@/components/ui/tables/data-table';
+import { useDataTable } from '@/components/ui/tables/hooks/use-data-table';
 import { cn } from '@/utils/cn';
 
 export const ResetFilter = ({
   className,
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement>) => {
-  const { table } = useDataTableContext();
+  const { table } = useDataTable();
+  const { pathname } = useLocation();
+  const navigate = useNavigate({ from: pathname as never });
 
   return (
     <IconButton
@@ -17,6 +20,8 @@ export const ResetFilter = ({
       icon={<RotateCcw size={16} />}
       onClick={() => {
         table.resetColumnFilters();
+        table.firstPage();
+        navigate({ search: () => ({}) } as never);
       }}
     />
   );

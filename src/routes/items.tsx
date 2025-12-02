@@ -1,6 +1,6 @@
 import { useLiveQuery } from '@tanstack/react-db';
 import { createFileRoute } from '@tanstack/react-router';
-import { createColumnHelper, type SortingState } from '@tanstack/react-table';
+import { createColumnHelper } from '@tanstack/react-table';
 import { ListFilter } from 'lucide-react';
 import { useMemo } from 'react';
 import { itemCollection } from '@/collections/item-collection';
@@ -13,14 +13,18 @@ import {
 import { arrEqualsSome } from '@/components/ui/tables/filters/fn/arr-equals-some';
 import { SearchFilter } from '@/components/ui/tables/filters/search-filter';
 import { PaginationTable } from '@/components/ui/tables/pagination-table';
+import { useItemSearch } from '@/hooks/items/use-item-search';
 import type { DisplayItem } from '@/schemas/item-schema';
+import { searchSchema } from '@/schemas/search-schema';
 
 export const Route = createFileRoute('/items')({
+  validateSearch: searchSchema,
   loader: () => itemCollection.preload(),
   component: Items,
 });
 
 function Items() {
+  const { sorts, filters } = useItemSearch();
   const { data: items } = useLiveQuery((q) =>
     q.from({ item: itemCollection }).select(({ item }) => ({
       id: item.id,
@@ -34,13 +38,6 @@ function Items() {
       level: item.level,
     })),
   );
-
-  const sortingState: SortingState = [
-    {
-      id: 'level',
-      desc: false,
-    },
-  ];
 
   const columnHelper = createColumnHelper<DisplayItem>();
   const columns = useMemo(
@@ -130,7 +127,8 @@ function Items() {
     <DataTableProvider
       data={items}
       columns={columns}
-      sortingState={sortingState}
+      sortingState={sorts}
+      columnFiltersState={filters}
     >
       <Drawer className="drawer-end h-full min-h-0">
         <Drawer.Content className="h-full flex flex-col min-h-0">

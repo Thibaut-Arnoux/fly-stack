@@ -16,12 +16,13 @@ import {
   createContext,
   type HtmlHTMLAttributes,
   type PropsWithChildren,
-  useContext,
   useState,
 } from 'react';
+import { useDataTable } from '@/components/ui/tables/hooks/use-data-table';
+import { useSearchSync } from '@/components/ui/tables/hooks/use-search-sync';
 import { cn } from '@/utils/cn';
 
-type DataTableContextType<TData> = {
+export type DataTableContextType<TData> = {
   table: Table<TData>;
 };
 
@@ -30,20 +31,7 @@ function createDataTableContext<TData>() {
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: cast any for Provider, will be overrided in custom hook
-const DataTableContext = createDataTableContext<any>();
-
-export const useDataTableContext = <TData,>() => {
-  const ctx = useContext(
-    DataTableContext,
-  ) as DataTableContextType<TData> | null;
-
-  if (!ctx)
-    throw new Error(
-      'useDataTableContext must be used inside <DataTableProvider>',
-    );
-
-  return ctx;
-};
+export const DataTableContext = createDataTableContext<any>();
 
 export const DataTableProvider = <TData,>({
   data,
@@ -99,7 +87,8 @@ export const DataTable = <TData,>({
   className,
   ...props
 }: HtmlHTMLAttributes<HTMLTableElement>) => {
-  const { table } = useDataTableContext<TData>();
+  const { table } = useDataTable<TData>();
+  useSearchSync();
 
   return (
     <table {...props} className={cn('table', className)}>
