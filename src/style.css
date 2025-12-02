@@ -1,0 +1,8 @@
+@import "tailwindcss";
+/** biome-ignore lint/suspicious/noUnknownAtRules: daisyui setup */
+@plugin "daisyui" {
+  /* biome-ignore lint/correctness/noUnknownProperty: daisyui theme setup */
+  themes:
+    winter --default,
+    dim --prefersdark;
+}

@@ -5,95 +5,95 @@ import ky, {
   type NormalizedOptions,
   type Options,
 } from 'ky';
-import type { LinkHeader } from '@/types/api';
 
 export class HttpClient {
-  private _baseUrl: URL;
+  protected readonly _baseUrl: URL;
 
-  private _headers: HeadersInit;
+  protected readonly _redirectUnauthorizedEndpoint?: string;
 
-  private _httpClient: KyInstance;
+  protected readonly _redirectCSRFEndpoint?: string;
+
+  private readonly _httpClient: KyInstance;
 
   constructor({
     baseUrl,
-    headers,
+    redirectUnauthorizedEndpoint,
+    redirectCSRFEndpoint,
+    options,
   }: {
     baseUrl: string;
-    headers?: HeadersInit;
+    redirectUnauthorizedEndpoint?: string;
+    redirectCSRFEndpoint?: string;
+    options?: Omit<Options, 'prefixUrl' | 'hooks'>;
   }) {
     if (!this._isValidHttpUrl(baseUrl)) throw new Error('Invalid base url');
 
     this._baseUrl = new URL(baseUrl);
-    this._headers = headers || {};
+    this._redirectUnauthorizedEndpoint = redirectUnauthorizedEndpoint;
+    this._redirectCSRFEndpoint = redirectCSRFEndpoint;
     this._httpClient = ky.create({
       prefixUrl: this._baseUrl,
-      headers: this._headers,
       hooks: {
-        afterResponse: [this._handlePagination, this._handleError],
+        beforeRequest: [this._handleXSRFToken],
+        afterResponse: [this._handleError],
       },
+      ...options,
     });
   }
+
+  public asFetch: typeof fetch = (input, init) => {
+    // @see : https://github.com/sindresorhus/ky?tab=readme-ov-file#input
+    if (typeof input === 'string') input = new Request(input);
+    return this._httpClient(input, init);
+  };
 
   public get = async <T>(endpoint: string, options?: Options) => {
     return this._httpClient.get<T>(endpoint, options).json();
   };
 
-  /**
-   * @see https://joshgoestoflatiron.medium.com/february-10-pagination-in-a-json-server-api-with-the-link-header-dea63eb0a835
-   */
-  private _parseLinkHeader = (linkHeader: string): LinkHeader => {
-    const linkHeadersArray = linkHeader
-      .split(', ')
-      .map((header) => header.split('; '));
-    const linkHeadersMap = linkHeadersArray.map((header) => {
-      const thisHeaderRel = header[1].replace(/"/g, '').replace('rel=', '');
-      const thisHeaderUrl = new URL(header[0].slice(1, -1));
-      const thisPageValue = Number(thisHeaderUrl.searchParams.get('_page'));
-
-      return [thisHeaderRel, thisPageValue];
-    });
-
-    return Object.fromEntries(linkHeadersMap);
+  public post = async <T>(endpoint: string, options?: Options) => {
+    return this._httpClient.post<T>(endpoint, options).json();
   };
 
-  /**
-   * Use to handle the downgrade version of json-server from 1.0 to 0.17
-   * Many things does not work on the beta version sort, like, ...
-   * This allow to keep the same format provided in version 1.0
-   */
-  private _handlePagination = async (
-    _request: KyRequest,
+  private _getCookie(name: string): string | null {
+    const m = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
+    return m ? decodeURIComponent(m[1]) : null;
+  }
+
+  private _handleXSRFToken = async (
+    request: KyRequest,
     _options: NormalizedOptions,
-    response: KyResponse,
   ) => {
-    if (!response.headers.has('x-total-count') || !response.headers.has('link'))
-      return;
-
-    const total = response.headers.get('x-total-count');
-    const link = response.headers.get('link');
-    const parseLinkHeader = link
-      ? this._parseLinkHeader(link)
-      : { first: 1, last: 1 };
-
-    const data = await response.json();
-    const pagination = {
-      prev: null,
-      next: null,
-      items: Number(total),
-      pages: parseLinkHeader.last - parseLinkHeader.first + 1,
-      ...parseLinkHeader,
-    };
-
-    return new Response(JSON.stringify({ data, ...pagination }), response);
+    const token = this._getCookie('XSRF-TOKEN');
+    if (token) request.headers.set('X-XSRF-TOKEN', decodeURIComponent(token));
   };
 
-  private _handleError = (
+  private _handleError = async (
     _request: KyRequest,
     _options: NormalizedOptions,
     response: KyResponse,
   ) => {
     if (!response.ok)
-      throw new Error(`Request failed with status: ${response.status}`);
+      switch (response.status) {
+        case 401:
+          if (this._redirectUnauthorizedEndpoint) {
+            await this._httpClient.post(this._redirectUnauthorizedEndpoint);
+
+            return this._httpClient(_request, _options);
+          }
+
+          break;
+        case 419:
+          if (this._redirectCSRFEndpoint) {
+            await this._httpClient.get(this._redirectCSRFEndpoint);
+
+            return this._httpClient(_request, _options);
+          }
+
+          break;
+        default:
+          throw new Error(`Request failed with status: ${response.status}`);
+      }
   };
 
   private _isValidHttpUrl(url: string) {

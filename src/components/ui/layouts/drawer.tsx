@@ -1,4 +1,5 @@
 import { createContext, type HTMLAttributes, useContext, useId } from 'react';
+import { cn } from '@/utils/cn';
 
 type DrawerContextType = {
   id: string;
@@ -27,7 +28,7 @@ export const Drawer = ({
 
   return (
     <DrawerContext.Provider value={{ id }}>
-      <div className={`drawer ${className}`} {...props}>
+      <div className={cn('drawer', className)} {...props}>
         <input id={id} type="checkbox" className="drawer-toggle" />
         {children}
       </div>
@@ -41,7 +42,7 @@ Drawer.Content = ({
   ...props
 }: HTMLAttributes<HTMLDivElement>) => {
   return (
-    <div className={`drawer-content ${className}`} {...props}>
+    <div className={cn('drawer-content', className)} {...props}>
       {children}
     </div>
   );
@@ -72,7 +73,10 @@ Drawer.Side = ({
         className="drawer-overlay"
       ></label>
       <div
-        className={`bg-base-200 text-base-content min-h-full ${className}`}
+        className={cn(
+          'bg-base-200 text-base-content h-full overflow-y-auto',
+          className,
+        )}
         {...props}
       >
         {children}

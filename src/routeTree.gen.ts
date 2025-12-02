@@ -10,17 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ItemsRouteImport } from './routes/items'
-import { Route as ClassesRouteImport } from './routes/classes'
 import { Route as IndexRouteImport } from './routes/index'
 
 const ItemsRoute = ItemsRouteImport.update({
   id: '/items',
   path: '/items',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ClassesRoute = ClassesRouteImport.update({
-  id: '/classes',
-  path: '/classes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -31,31 +25,27 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/classes': typeof ClassesRoute
   '/items': typeof ItemsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/classes': typeof ClassesRoute
   '/items': typeof ItemsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/classes': typeof ClassesRoute
   '/items': typeof ItemsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/classes' | '/items'
+  fullPaths: '/' | '/items'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/classes' | '/items'
-  id: '__root__' | '/' | '/classes' | '/items'
+  to: '/' | '/items'
+  id: '__root__' | '/' | '/items'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ClassesRoute: typeof ClassesRoute
   ItemsRoute: typeof ItemsRoute
 }
 
@@ -66,13 +56,6 @@ declare module '@tanstack/react-router' {
       path: '/items'
       fullPath: '/items'
       preLoaderRoute: typeof ItemsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/classes': {
-      id: '/classes'
-      path: '/classes'
-      fullPath: '/classes'
-      preLoaderRoute: typeof ClassesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -87,7 +70,6 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ClassesRoute: ClassesRoute,
   ItemsRoute: ItemsRoute,
 }
 export const routeTree = rootRouteImport

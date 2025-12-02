@@ -1,6 +1,7 @@
 import { Search as SearchIcon } from 'lucide-react';
 import { type LabelHTMLAttributes, useId } from 'react';
 import { Input } from '@/components/ui/inputs/input';
+import { cn } from '@/utils/cn';
 
 type SearchProps = {
   placeholder?: string;
@@ -18,7 +19,7 @@ export const SearchBar = ({
   const id = useId();
 
   return (
-    <label htmlFor={id} className={`input ${className}`} {...props}>
+    <label htmlFor={id} className={cn('input', className)} {...props}>
       <SearchIcon />
       <Input
         id={id}
