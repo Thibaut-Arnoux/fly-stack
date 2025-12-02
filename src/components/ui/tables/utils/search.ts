@@ -84,9 +84,9 @@ export const toSortingState = (
 };
 
 export const toColumnFiltersState = (
-  filters: Record<string, ColumnFilter | undefined>,
+  filters: (ColumnFilter | undefined)[],
 ): ColumnFiltersState => {
-  return Object.values(filters).filter(
+  return filters.filter(
     (filter): filter is ColumnFilter => filter !== undefined,
   );
 };

@@ -16,6 +16,7 @@ import { PaginationTable } from '@/components/ui/tables/pagination-table';
 import { useItemSearch } from '@/hooks/items/use-item-search';
 import type { DisplayItem } from '@/schemas/item-schema';
 import { searchSchema } from '@/schemas/search-schema';
+import { isFilterEnabled, isSortEnabled } from '@/utils/is';
 
 export const Route = createFileRoute('/items')({
   validateSearch: searchSchema,
@@ -62,7 +63,9 @@ function Items() {
         header: 'Name',
         cell: (props) => props.renderValue() ?? '-',
         size: 150,
+        enableSorting: isSortEnabled('name'),
         sortingFn: 'alphanumeric',
+        enableColumnFilter: isFilterEnabled('name'),
         filterFn: 'includesString',
       }),
       columnHelper.accessor(
@@ -75,6 +78,7 @@ function Items() {
           header: 'Description',
           cell: (props) => props.renderValue() ?? '-',
           size: 250,
+          enableSorting: isSortEnabled('description'),
           sortingFn: 'alphanumeric',
           sortDescFirst: false,
         },
@@ -84,6 +88,7 @@ function Items() {
         header: 'Sex',
         cell: (props) => props.renderValue() ?? '-',
         size: 50,
+        enableSorting: isSortEnabled('sex'),
         sortingFn: 'text',
       }),
       columnHelper.accessor('category', {
@@ -91,7 +96,9 @@ function Items() {
         header: 'Category',
         cell: (props) => props.renderValue(),
         size: 80,
+        enableSorting: isSortEnabled('category'),
         sortingFn: 'text',
+        enableColumnFilter: isFilterEnabled('category'),
         filterFn: 'arrIncludesSome',
       }),
       columnHelper.accessor((row) => row.subcategory ?? undefined, {
@@ -99,7 +106,9 @@ function Items() {
         header: 'Subcategory',
         cell: (props) => props.renderValue() ?? '-',
         size: 80,
+        enableSorting: isSortEnabled('subcategory'),
         sortingFn: 'text',
+        enableColumnFilter: isFilterEnabled('subcategory'),
         filterFn: 'arrIncludesSome',
       }),
       columnHelper.accessor('rarity', {
@@ -107,7 +116,9 @@ function Items() {
         header: 'Rarity',
         cell: (props) => props.renderValue(),
         size: 80,
+        enableSorting: isSortEnabled('rarity'),
         sortingFn: 'text',
+        enableColumnFilter: isFilterEnabled('rarity'),
         filterFn: arrEqualsSome,
       }),
       columnHelper.accessor('level', {
@@ -115,8 +126,10 @@ function Items() {
         cell: (props) => props.renderValue(),
         header: 'Level',
         size: 50,
+        enableSorting: isSortEnabled('level'),
         sortingFn: 'alphanumeric',
         sortDescFirst: false,
+        enableColumnFilter: isFilterEnabled('level'),
         filterFn: 'inNumberRange',
       }),
     ],
