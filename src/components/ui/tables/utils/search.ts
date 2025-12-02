@@ -23,6 +23,7 @@ export const parseCommaSeparatedEnum = (
     .filter((item) => item !== '' && enumArray.includes(item));
 
   if (parsed.length === 0) return;
+
   return { id, value: parsed };
 };
 
@@ -49,6 +50,7 @@ export const parseRange = (
 
   const sortedMin = Math.min(min, max);
   const sortedMax = Math.max(min, max);
+
   return { id, value: [sortedMin, sortedMax] };
 };
 
