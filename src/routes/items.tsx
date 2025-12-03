@@ -5,6 +5,10 @@ import { ListFilter } from 'lucide-react';
 import { useMemo } from 'react';
 import { itemCollection } from '@/collections/item-collection';
 import { FilterItem } from '@/components/features/items/filter-item';
+import {
+  ItemModalProvider,
+  useItemModal,
+} from '@/components/features/items/item-modal';
 import { Drawer } from '@/components/ui/layouts/drawer';
 import {
   DataTable,
@@ -21,8 +25,31 @@ import { isFilterEnabled, isSortEnabled } from '@/utils/is';
 export const Route = createFileRoute('/items')({
   validateSearch: searchSchema,
   loader: () => itemCollection.preload(),
-  component: Items,
+  component: () => (
+    <ItemModalProvider>
+      <Items />
+    </ItemModalProvider>
+  ),
 });
+
+const NameCell = ({
+  itemId,
+  itemName,
+}: {
+  itemId: string;
+  itemName?: string;
+}) => {
+  const { openWithItemId } = useItemModal();
+  return (
+    <button
+      type="button"
+      className="link link-hover text-left font-medium"
+      onClick={() => openWithItemId(itemId)}
+    >
+      {itemName ?? '-'}
+    </button>
+  );
+};
 
 function Items() {
   const { sorts, filters } = useItemSearch();
@@ -61,7 +88,12 @@ function Items() {
       columnHelper.accessor((row) => row.name?.en ?? undefined, {
         id: 'name',
         header: 'Name',
-        cell: (props) => props.renderValue() ?? '-',
+        cell: (props) => (
+          <NameCell
+            itemId={props.row.original.id}
+            itemName={props.row.original.name?.en}
+          />
+        ),
         size: 150,
         enableSorting: isSortEnabled('name'),
         sortingFn: 'alphanumeric',
@@ -70,9 +102,9 @@ function Items() {
       }),
       columnHelper.accessor(
         (row) =>
-          (row.description.en ?? 'null') === 'null'
+          (row.description?.en ?? 'null') === 'null'
             ? undefined
-            : row.description.en,
+            : row.description?.en,
         {
           id: 'description',
           header: 'Description',
