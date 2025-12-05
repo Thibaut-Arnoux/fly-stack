@@ -95,86 +95,64 @@ const ItemModalContent = ({ isOpen, itemId }: ItemModalContentProps) => {
   return (
     <Modal open={isOpen} onOpenChange={(open) => !open && close()}>
       <Modal.Content
-        size="xl"
+        size="lg"
         className="p-0 overflow-hidden bg-base-100 max-h-[90vh]"
       >
-        <Modal.Close className="z-20 text-base-content/70 hover:text-base-content" />
+        <Modal.Close className="z-20 text-base-content/50 hover:text-base-content" />
 
-        {/* Hero Header */}
-        <div className="relative overflow-hidden">
-          {/* Decorative Background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-base-200 via-base-300 to-base-200 opacity-50" />
-          <div
-            className={cn(
-              'absolute inset-0 opacity-10',
-              rarityColor
-                .split(' ')[0]
-                .replace('bg-', 'bg-gradient-to-br from-'),
-            )}
-          />
-
-          {/* Header Content */}
-          <div className="relative px-8 py-8">
-            <div className="flex items-start gap-6">
-              {/* Item Icon with Glow */}
+        {/* Minimal Header */}
+        <div className="border-b border-base-300">
+          <div className="px-6 py-5">
+            <div className="flex items-start gap-5">
+              {/* Item Icon - Clean */}
               <div className="relative flex-shrink-0">
                 <div
                   className={cn(
-                    'absolute inset-0 blur-xl opacity-40',
-                    rarityColor,
-                  )}
-                />
-                <div
-                  className={cn(
-                    'relative rounded-xl p-3 border-2 backdrop-blur-sm',
-                    rarityColor,
+                    'rounded-lg p-2 border',
+                    rarityColor.replace('shadow-lg', '').trim(),
                   )}
                 >
                   <img
                     src={`${import.meta.env.VITE_FLYFF_API_BASE_URL}/image/item/${selectedItem.icon}`}
                     alt={selectedItem.name?.en ?? 'Item'}
-                    className="w-24 h-24 object-contain relative z-10"
+                    className="w-16 h-16 object-contain"
                   />
                 </div>
                 {selectedItem.premium && (
-                  <div className="absolute -top-2 -right-2 bg-amber-400 text-amber-900 rounded-full p-1.5 shadow-lg">
-                    <Star className="w-4 h-4 fill-current" />
+                  <div className="absolute -top-1 -right-1 bg-warning text-warning-content rounded-full p-1">
+                    <Star className="w-3 h-3 fill-current" />
                   </div>
                 )}
               </div>
 
-              {/* Item Info */}
+              {/* Item Info - Compact */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between gap-4 mb-3">
-                  <div>
-                    <h2 className="text-4xl font-black text-base-content mb-1 tracking-tight leading-none">
-                      {selectedItem.name?.en ?? 'Unknown Item'}
-                    </h2>
-                    <p className="text-base-content/50 text-sm font-medium">
-                      Item ID: {selectedItem.item_id}
-                    </p>
-                  </div>
-                </div>
+                <h2 className="text-2xl font-bold text-base-content mb-1 leading-tight">
+                  {selectedItem.name?.en ?? 'Unknown Item'}
+                </h2>
+                <p className="text-base-content/50 text-xs font-mono mb-3">
+                  #{selectedItem.item_id}
+                </p>
 
-                <div className="flex flex-wrap items-center gap-2 mb-4">
+                <div className="flex flex-wrap items-center gap-1.5">
                   <span
                     className={cn(
-                      'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-widest shadow-sm',
-                      rarityColor,
+                      'inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide',
+                      rarityColor.replace('shadow-lg', '').trim(),
                     )}
                   >
-                    <Sparkles className="w-3.5 h-3.5" />
+                    <Sparkles className="w-3 h-3" />
                     {selectedItem.rarity}
                   </span>
 
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-base-200 text-base-content border border-base-300">
-                    <TrendingUp className="w-3.5 h-3.5" />
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-base-200 text-base-content">
+                    <TrendingUp className="w-3 h-3" />
                     LVL {selectedItem.level}
                   </span>
 
                   {selectedItem.element && selectedItem.element !== 'none' && (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-100 text-blue-700 border border-blue-200">
-                      <Shield className="w-3.5 h-3.5" />
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-info/20 text-info-content">
+                      <Shield className="w-3 h-3" />
                       {selectedItem.element}
                     </span>
                   )}
@@ -183,7 +161,7 @@ const ItemModalContent = ({ isOpen, itemId }: ItemModalContentProps) => {
                 {/* Description */}
                 {selectedItem.description?.en &&
                   selectedItem.description.en !== 'null' && (
-                    <p className="text-base-content/70 leading-relaxed text-sm">
+                    <p className="text-base-content/60 leading-snug text-xs mt-3">
                       {selectedItem.description.en}
                     </p>
                   )}
@@ -193,99 +171,100 @@ const ItemModalContent = ({ isOpen, itemId }: ItemModalContentProps) => {
         </div>
 
         {/* Content Body with Scroll */}
-        <div className="overflow-y-auto max-h-[50vh] px-8 py-6">
+        <div className="overflow-y-auto max-h-[50vh]">
           {/* Classification */}
-          <Section title="Classification">
-            <div className="grid grid-cols-3 gap-3">
-              <InfoCard label="Category" value={selectedItem.category} />
+          <Section title="Classification" variant="default">
+            <div className="flex flex-wrap items-center gap-3 text-xs">
+              <InfoPill label="Category" value={selectedItem.category} />
               {selectedItem.subcategory && (
-                <InfoCard
+                <InfoPill
                   label="Subcategory"
                   value={selectedItem.subcategory}
                 />
               )}
               {selectedItem.sex && (
-                <InfoCard label="Gender" value={selectedItem.sex} />
+                <InfoPill label="Gender" value={selectedItem.sex} />
               )}
             </div>
           </Section>
 
           {/* Economy */}
-          <Section title="Economy">
-            <div className="grid grid-cols-2 gap-3">
-              <InfoCard
+          <Section title="Economy" variant="bordered">
+            <div className="flex flex-wrap items-center gap-4 text-xs">
+              <InfoStat
+                icon={<DollarSign className="w-3.5 h-3.5" />}
                 label="Sell Price"
-                value={`${formatPrice(selectedItem.sell_price)} Gold`}
-                icon={<DollarSign className="w-4 h-4" />}
+                value={formatPrice(selectedItem.sell_price)}
+                unit="Gold"
               />
-              <InfoCard
+              <InfoStat
+                icon={<Package className="w-3.5 h-3.5" />}
                 label="Stack Size"
                 value={selectedItem.stack.toString()}
-                icon={<Package className="w-4 h-4" />}
               />
             </div>
           </Section>
 
           {/* Properties */}
-          <Section title="Properties">
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          <Section title="Properties" variant="default">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
               <PropertyBadge
                 label="Consumable"
                 active={selectedItem.consumable}
-                icon={<Coins className="w-3.5 h-3.5" />}
+                icon={<Coins className="w-3 h-3" />}
               />
               <PropertyBadge
                 label="Premium"
                 active={selectedItem.premium}
-                icon={<Star className="w-3.5 h-3.5" />}
+                icon={<Star className="w-3 h-3" />}
               />
               <PropertyBadge
                 label="Shining"
                 active={selectedItem.shining}
-                icon={<Sparkles className="w-3.5 h-3.5" />}
+                icon={<Sparkles className="w-3 h-3" />}
               />
               <PropertyBadge
                 label="Tradable"
                 active={selectedItem.tradable}
-                icon={<TrendingUp className="w-3.5 h-3.5" />}
+                icon={<TrendingUp className="w-3 h-3" />}
               />
               <PropertyBadge
                 label="Deletable"
                 active={selectedItem.deletable}
-                icon={<Trash2 className="w-3.5 h-3.5" />}
+                icon={<Trash2 className="w-3 h-3" />}
               />
               <PropertyBadge
                 label="Real Time Duration"
                 active={selectedItem.duration_real_time}
-                icon={<Timer className="w-3.5 h-3.5" />}
+                icon={<Timer className="w-3 h-3" />}
               />
             </div>
           </Section>
 
           {/* Spawn Locations */}
           {selectedItem.spawns && selectedItem.spawns.length > 0 && (
-            <Section title="Spawn Locations">
-              <div className="space-y-2">
+            <Section title="Spawn Locations" variant="accent">
+              <div className="space-y-1.5">
                 {selectedItem.spawns.map((spawn, index) => (
                   <div
                     key={`${spawn.world}-${index}`}
-                    className="flex items-start gap-3 p-3 bg-base-200 rounded-lg border border-base-300"
+                    className="flex items-start gap-2.5 p-2.5 bg-base-200/50 rounded border border-base-300/50"
                   >
-                    <MapPin className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                    <MapPin className="w-4 h-4 text-base-content/40 flex-shrink-0 mt-0.5" />
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="font-bold text-sm text-base-content">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <span className="font-semibold text-xs text-base-content">
                           World {spawn.world}
                         </span>
                         {spawn.continent !== undefined && (
-                          <span className="text-xs px-2 py-0.5 bg-base-300 rounded-full text-base-content/70">
+                          <span className="text-[10px] px-1.5 py-0.5 bg-base-300/70 rounded text-base-content/60">
                             Continent {spawn.continent}
                           </span>
                         )}
                       </div>
-                      <div className="text-xs text-base-content/60 font-mono">
-                        Coordinates: ({spawn.left}, {spawn.top}) to (
-                        {spawn.right}, {spawn.bottom})
+                      <div className="text-[10px] text-base-content/50 font-mono">
+                        ({spawn.left}, {spawn.top}) → ({spawn.right},{' '}
+                        {spawn.bottom})
                       </div>
                     </div>
                   </div>
@@ -295,12 +274,9 @@ const ItemModalContent = ({ isOpen, itemId }: ItemModalContentProps) => {
           )}
         </div>
 
-        {/* Footer */}
-        <div className="px-8 py-4 bg-base-200 border-t border-base-300 flex items-center justify-between">
-          <div className="text-xs text-base-content/50">
-            Last updated: {new Date().toLocaleDateString()}
-          </div>
-          <button type="button" className="btn btn-primary" onClick={close}>
+        {/* Minimal Footer */}
+        <div className="px-6 py-2 border-t border-base-300 flex items-center justify-end">
+          <button type="button" className="btn btn-sm" onClick={close}>
             Close
           </button>
         </div>
@@ -313,35 +289,64 @@ const ItemModalContent = ({ isOpen, itemId }: ItemModalContentProps) => {
 const Section = ({
   title,
   children,
+  variant = 'default',
 }: {
   title: string;
   children: ReactNode;
-}) => (
-  <div className="mb-6 last:mb-0">
-    <h3 className="text-xs font-black uppercase tracking-widest text-base-content/60 mb-3 flex items-center gap-2">
-      <div className="h-px flex-1 bg-base-300" />
-      {title}
-      <div className="h-px flex-1 bg-base-300" />
-    </h3>
-    {children}
+  variant?: 'default' | 'striped' | 'bordered' | 'accent';
+}) => {
+  const variantStyles = {
+    default: 'px-6 py-2.5',
+    striped: 'px-6 py-2.5 bg-base-200/30',
+    bordered: 'px-6 py-2.5',
+    accent: 'px-6 py-2.5 bg-gradient-to-r from-base-200/40 to-transparent',
+  };
+
+  return (
+    <div className={cn('relative', variantStyles[variant])}>
+      {variant === 'accent' && (
+        <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary/50" />
+      )}
+      <h3 className="text-[10px] font-bold uppercase tracking-wider text-base-content/50 mb-3 flex items-center gap-2">
+        {title}
+        <div className="flex-1 h-px bg-base-300/50" />
+      </h3>
+      {children}
+    </div>
+  );
+};
+
+const InfoPill = ({ label, value }: { label: string; value: string }) => (
+  <div className="flex items-center gap-2">
+    <span className="text-base-content/40 font-medium">{label}</span>
+    <span className="px-2.5 py-1 bg-base-300/50 rounded text-base-content font-semibold">
+      {value}
+    </span>
   </div>
 );
 
-const InfoCard = ({
+const InfoStat = ({
+  icon,
   label,
   value,
-  icon,
+  unit,
 }: {
+  icon: ReactNode;
   label: string;
   value: string;
-  icon?: ReactNode;
+  unit?: string;
 }) => (
-  <div className="bg-base-200 rounded-lg px-4 py-3 border border-base-300">
-    <div className="flex items-center gap-1.5 text-xs font-bold text-base-content/60 uppercase tracking-wider mb-1.5">
-      {icon}
-      {label}
-    </div>
-    <div className="text-base font-bold text-base-content">{value}</div>
+  <div className="flex items-center gap-2">
+    <span className="text-base-content/40">{icon}</span>
+    <span className="text-base-content/40 font-medium">{label}</span>
+    <span className="text-base-content font-bold">
+      {value}
+      {unit && (
+        <span className="text-[10px] font-normal ml-1 text-base-content/50">
+          {unit}
+        </span>
+      )}
+    </span>
   </div>
 );
 
@@ -356,15 +361,19 @@ const PropertyBadge = ({
 }) => (
   <div
     className={cn(
-      'flex items-center gap-2 px-3 py-2 rounded-lg border text-sm font-semibold transition-colors',
+      'flex items-center gap-1.5 px-2.5 py-1.5 rounded border text-xs font-medium transition-colors',
       active
         ? 'bg-success/10 border-success/30 text-success'
-        : 'bg-base-200 border-base-300 text-base-content/40',
+        : 'bg-base-200/30 border-base-300/50 text-base-content/30',
     )}
   >
-    {active ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
-    <span className="flex items-center gap-1.5">
-      {icon}
+    {active ? (
+      <Check className="w-3 h-3" />
+    ) : (
+      <X className="w-3 h-3 opacity-50" />
+    )}
+    <span className="flex items-center gap-1">
+      <span className="opacity-60">{icon}</span>
       {label}
     </span>
   </div>
