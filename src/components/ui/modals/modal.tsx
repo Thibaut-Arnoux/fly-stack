@@ -1,23 +1,22 @@
+import { X } from 'lucide-react';
 import {
+  Children,
   cloneElement,
   createContext,
+  type ElementType,
   type HTMLAttributes,
   isValidElement,
+  type ReactElement,
   type ReactNode,
   useContext,
-  useEffect,
-  useId,
   useRef,
-  useState,
 } from 'react';
+import { Button } from '@/components/ui/buttons/button';
+import { IconButton } from '@/components/ui/buttons/icon-button';
 import { cn } from '@/utils/cn';
 
 interface ModalContextType {
-  modalId: string;
-  isOpen: boolean;
   open: () => void;
-  close: () => void;
-  dialogRef: React.RefObject<HTMLDialogElement | null>;
 }
 
 const ModalContext = createContext<ModalContextType | null>(null);
@@ -27,198 +26,202 @@ const useModalContext = (): ModalContextType => {
   if (!context) {
     throw new Error('Modal compound components must be used within Modal');
   }
+
   return context;
 };
 
-interface ModalProps {
-  children: ReactNode;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
+interface SeparatedModalChildren {
+  triggerElement: ReactNode;
+  dialogContent: ReactNode[];
 }
 
-const ModalRoot = ({
-  children,
-  open: controlledOpen,
-  onOpenChange,
-}: ModalProps) => {
-  const modalId = useId();
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const [internalOpen, setInternalOpen] = useState(false);
+const separateModalChildren = (
+  children: ReactNode,
+  triggerType: ElementType,
+): SeparatedModalChildren => {
+  const childArray = Children.toArray(children);
+  let triggerElement: ReactNode = null;
+  const dialogContent: ReactNode[] = [];
 
-  const isOpen = controlledOpen ?? internalOpen;
-  const setIsOpen = onOpenChange ?? setInternalOpen;
-
-  const open = () => {
-    dialogRef.current?.showModal();
-    setIsOpen(true);
-  };
-
-  const close = () => {
-    dialogRef.current?.close();
-    setIsOpen(false);
-  };
-
-  useEffect(() => {
-    if (isOpen && !dialogRef.current?.open) {
-      dialogRef.current?.showModal();
-    } else if (!isOpen && dialogRef.current?.open) {
-      dialogRef.current?.close();
+  for (const child of childArray) {
+    if (isValidElement(child) && child.type === triggerType) {
+      if (triggerElement !== null) {
+        console.warn(
+          'Modal: Multiple Trigger elements detected. Only the first will be used.',
+        );
+      } else {
+        triggerElement = child;
+      }
+    } else {
+      dialogContent.push(child);
     }
-  }, [isOpen]);
+  }
+
+  return { triggerElement, dialogContent };
+};
+
+interface ModalProps extends HTMLAttributes<HTMLDialogElement> {
+  children: ReactNode;
+  position?: 'top' | 'middle' | 'bottom' | 'start' | 'end';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+}
+
+const positionClasses: Record<string, string> = {
+  top: 'modal-top',
+  middle: 'modal-middle',
+  bottom: 'modal-bottom',
+  start: 'modal-start',
+  end: 'modal-end',
+};
+
+const sizeClasses: Record<string, string> = {
+  sm: 'max-w-sm',
+  md: 'max-w-2xl',
+  lg: 'max-w-4xl',
+  xl: 'max-w-6xl',
+};
+
+const heightClasses: Record<string, string> = {
+  sm: 'max-h-[50vh]',
+  md: 'max-h-[70vh]',
+  lg: 'max-h-[85vh]',
+  xl: 'max-h-[90vh]',
+};
+
+export const Modal = ({
+  children,
+  position = 'middle',
+  size = 'md',
+  className,
+  ...props
+}: ModalProps) => {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  const open = () => dialogRef.current?.showModal();
+
+  const { triggerElement, dialogContent } = separateModalChildren(
+    children,
+    Trigger,
+  );
 
   const value: ModalContextType = {
-    modalId,
-    isOpen,
     open,
-    close,
-    dialogRef,
   };
 
   return (
-    <ModalContext.Provider value={value}>{children}</ModalContext.Provider>
+    <ModalContext.Provider value={value}>
+      {triggerElement}
+      <dialog
+        ref={dialogRef}
+        className={cn('modal', positionClasses[position])}
+        {...props}
+      >
+        <div
+          className={cn(
+            'modal-box p-0 flex flex-col',
+            sizeClasses[size],
+            heightClasses[size],
+            className,
+          )}
+        >
+          {dialogContent}
+        </div>
+        {/* DaisyUI pattern: backdrop with form method="dialog" enables outside click close */}
+        <form method="dialog" className="modal-backdrop">
+          <button type="submit" aria-label="Close modal">
+            close
+          </button>
+        </form>
+      </dialog>
+    </ModalContext.Provider>
   );
 };
 
-interface TriggerProps extends HTMLAttributes<HTMLElement> {
-  children: ReactNode;
-  asChild?: boolean;
-}
-
-const Trigger = ({ children, asChild, onClick, ...props }: TriggerProps) => {
+const Trigger = ({
+  children,
+}: {
+  children: ReactElement<{
+    onClick?: (e: MouseEvent) => void;
+  }>;
+}) => {
   const { open } = useModalContext();
+  return cloneElement(children, {
+    onClick: () => open(),
+  });
+};
 
-  if (asChild && isValidElement(children)) {
-    const childProps = children.props as {
-      onClick?: (e: React.MouseEvent) => void;
-    };
-    return cloneElement(children, {
-      onClick: (e: React.MouseEvent) => {
-        open();
-        onClick?.(e as React.MouseEvent<HTMLElement>);
-        if (childProps.onClick) {
-          childProps.onClick(e);
-        }
-      },
-    } as Partial<unknown>);
-  }
-
+const Close = () => {
   return (
-    <button
-      type="button"
-      onClick={(e) => {
-        open();
-        onClick?.(e);
-      }}
+    <form method="dialog" className="absolute right-2 top-1">
+      <IconButton
+        type="submit"
+        className="btn-sm btn-circle btn-ghost"
+        icon={<X className="w-4 h-4" />}
+        aria-label="Close modal"
+      />
+    </form>
+  );
+};
+
+const Header = ({
+  children,
+  className,
+  ...props
+}: HTMLAttributes<HTMLDivElement>) => {
+  return (
+    <div
+      className={cn('border-b border-base-300 px-4 py-2', className)}
       {...props}
     >
       {children}
-    </button>
+      <Close />
+    </div>
   );
 };
 
-interface ContentProps extends HTMLAttributes<HTMLDivElement> {
-  children: ReactNode;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-  position?: 'top' | 'middle' | 'bottom';
-}
-
-const Content = ({
+const Body = ({
   children,
   className,
-  size = 'md',
-  position = 'middle',
   ...props
-}: ContentProps) => {
-  const { dialogRef, close } = useModalContext();
+}: HTMLAttributes<HTMLDivElement>) => (
+  <div
+    className={cn('flex-1 overflow-y-auto min-h-0 px-4 py-2', className)}
+    {...props}
+  >
+    {children}
+  </div>
+);
 
-  const sizeClasses: Record<string, string> = {
-    sm: 'max-w-sm',
-    md: 'max-w-2xl',
-    lg: 'max-w-4xl',
-    xl: 'max-w-6xl',
-  };
-
-  const positionClasses: Record<string, string> = {
-    top: 'modal-top',
-    middle: 'modal-middle',
-    bottom: 'modal-bottom',
-  };
-
+const Cancel = () => {
   return (
-    <dialog ref={dialogRef} className={cn('modal', positionClasses[position])}>
-      <div className={cn('modal-box', sizeClasses[size], className)} {...props}>
-        {children}
-      </div>
-      <form method="dialog" className="modal-backdrop">
-        <button type="submit" onClick={close}>
-          close
-        </button>
-      </form>
-    </dialog>
+    <form method="dialog">
+      <Button className="btn-sm" type="submit">
+        Cancel
+      </Button>
+    </form>
   );
 };
 
-interface CloseProps extends HTMLAttributes<HTMLButtonElement> {
-  children?: ReactNode;
-}
-
-const Close = ({ children, className, onClick, ...props }: CloseProps) => {
-  const { close } = useModalContext();
-
+const Footer = ({
+  children,
+  className,
+  ...props
+}: HTMLAttributes<HTMLDivElement>) => {
   return (
-    <button
-      type="button"
+    <div
       className={cn(
-        'btn btn-sm btn-circle btn-ghost absolute right-2 top-2',
+        'modal-action mt-0 border-t border-base-300 px-4 py-2',
         className,
       )}
-      onClick={(e) => {
-        close();
-        onClick?.(e);
-      }}
-      aria-label="Close modal"
       {...props}
     >
-      {children ?? '✕'}
-    </button>
+      {children ?? <Cancel />}
+    </div>
   );
 };
 
-interface HeaderProps extends HTMLAttributes<HTMLDivElement> {
-  children: ReactNode;
-}
-
-const Header = ({ children, className, ...props }: HeaderProps) => (
-  <div className={cn('mb-4', className)} {...props}>
-    {children}
-  </div>
-);
-
-interface BodyProps extends HTMLAttributes<HTMLDivElement> {
-  children: ReactNode;
-}
-
-const Body = ({ children, className, ...props }: BodyProps) => (
-  <div className={cn('py-4', className)} {...props}>
-    {children}
-  </div>
-);
-
-interface FooterProps extends HTMLAttributes<HTMLDivElement> {
-  children: ReactNode;
-}
-
-const Footer = ({ children, className, ...props }: FooterProps) => (
-  <div className={cn('modal-action', className)} {...props}>
-    {children}
-  </div>
-);
-
-export const Modal = Object.assign(ModalRoot, {
-  Trigger,
-  Content,
-  Close,
-  Header,
-  Body,
-  Footer,
-});
+Modal.Trigger = Trigger;
+Modal.Header = Header;
+Modal.Body = Body;
+Modal.Cancel = Cancel;
+Modal.Footer = Footer;
