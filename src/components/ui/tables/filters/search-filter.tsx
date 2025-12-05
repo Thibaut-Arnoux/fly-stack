@@ -8,8 +8,6 @@ export const SearchFilter = ({ column }: { column: string }) => {
 
   return (
     <SearchBar
-      // re-mount the component to reset the input value, tricks for uncontrolled inputs
-      key={search ? 'active' : 'idle'}
       search={search}
       onSearchChange={(value) => {
         table.firstPage();
