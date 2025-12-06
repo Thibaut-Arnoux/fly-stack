@@ -2,13 +2,10 @@ import { useLiveQuery } from '@tanstack/react-db';
 import { createFileRoute } from '@tanstack/react-router';
 import { createColumnHelper } from '@tanstack/react-table';
 import { ListFilter } from 'lucide-react';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { itemCollection } from '@/collections/item-collection';
 import { FilterItem } from '@/components/features/items/filter-item';
-import {
-  ItemModalProvider,
-  useItemModal,
-} from '@/components/features/items/item-modal';
+import { ItemDetailModal } from '@/components/features/items/item-detail-modal';
 import { Drawer } from '@/components/ui/layouts/drawer';
 import {
   DataTable,
@@ -18,33 +15,28 @@ import { arrEqualsSome } from '@/components/ui/tables/filters/fn/arr-equals-some
 import { SearchFilter } from '@/components/ui/tables/filters/search-filter';
 import { PaginationTable } from '@/components/ui/tables/pagination-table';
 import { useItemSearch } from '@/hooks/items/use-item-search';
-import type { DisplayItem } from '@/schemas/item-schema';
+import type { Item } from '@/schemas/item-schema';
 import { searchSchema } from '@/schemas/search-schema';
 import { isFilterEnabled, isSortEnabled } from '@/utils/is';
 
 export const Route = createFileRoute('/items')({
   validateSearch: searchSchema,
   loader: () => itemCollection.preload(),
-  component: () => (
-    <ItemModalProvider>
-      <Items />
-    </ItemModalProvider>
-  ),
+  component: Items,
 });
 
 const NameCell = ({
-  itemId,
   itemName,
+  onClick,
 }: {
-  itemId: string;
   itemName?: string;
+  onClick: () => void;
 }) => {
-  const { openWithItemId } = useItemModal();
   return (
     <button
       type="button"
       className="link link-hover text-left font-medium"
-      onClick={() => openWithItemId(itemId)}
+      onClick={onClick}
     >
       {itemName ?? '-'}
     </button>
@@ -53,21 +45,10 @@ const NameCell = ({
 
 function Items() {
   const { sorts, filters } = useItemSearch();
-  const { data: items } = useLiveQuery((q) =>
-    q.from({ item: itemCollection }).select(({ item }) => ({
-      id: item.id,
-      icon: item.icon,
-      name: item.name,
-      description: item.description,
-      sex: item.sex,
-      rarity: item.rarity,
-      category: item.category,
-      subcategory: item.subcategory,
-      level: item.level,
-    })),
-  );
+  const { data: items } = useLiveQuery((q) => q.from({ item: itemCollection }));
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 
-  const columnHelper = createColumnHelper<DisplayItem>();
+  const columnHelper = createColumnHelper<Item>();
   const columns = useMemo(
     () => [
       columnHelper.display({
@@ -90,8 +71,8 @@ function Items() {
         header: 'Name',
         cell: (props) => (
           <NameCell
-            itemId={props.row.original.id}
             itemName={props.row.original.name?.en}
+            onClick={() => setSelectedItem(props.row.original)}
           />
         ),
         size: 150,
@@ -169,31 +150,40 @@ function Items() {
   );
 
   return (
-    <DataTableProvider
-      data={items}
-      columns={columns}
-      sortingState={sorts}
-      columnFiltersState={filters}
-    >
-      <Drawer className="drawer-end h-full min-h-0">
-        <Drawer.Content className="h-full flex flex-col min-h-0">
-          <div className="flex justify-end gap-2 mr-2 mt-2">
-            <SearchFilter column="name" />
-            <Drawer.Trigger className="btn btn-square">
-              <ListFilter size={16} />
-            </Drawer.Trigger>
-          </div>
-          <div className="flex-1 overflow-y-auto">
-            <DataTable className="table-fixed table-zebra" />
-          </div>
-          <div className="flex justify-center my-1">
-            <PaginationTable />
-          </div>
-        </Drawer.Content>
-        <Drawer.Side className="w-80">
-          <FilterItem />
-        </Drawer.Side>
-      </Drawer>
-    </DataTableProvider>
+    <>
+      <DataTableProvider
+        data={items}
+        columns={columns}
+        sortingState={sorts}
+        columnFiltersState={filters}
+      >
+        <Drawer className="drawer-end h-full min-h-0">
+          <Drawer.Content className="h-full flex flex-col min-h-0">
+            <div className="flex justify-end gap-2 mr-2 mt-2">
+              <SearchFilter column="name" />
+              <Drawer.Trigger className="btn btn-square">
+                <ListFilter size={16} />
+              </Drawer.Trigger>
+            </div>
+            <div className="flex-1 overflow-y-auto">
+              <DataTable className="table-fixed table-zebra" />
+            </div>
+            <div className="flex justify-center my-1">
+              <PaginationTable />
+            </div>
+          </Drawer.Content>
+          <Drawer.Side className="w-80">
+            <FilterItem />
+          </Drawer.Side>
+        </Drawer>
+      </DataTableProvider>
+
+      {/* Single modal instance - only mounts when item is selected */}
+      <ItemDetailModal
+        item={selectedItem}
+        isOpen={selectedItem !== null}
+        onClose={() => setSelectedItem(null)}
+      />
+    </>
   );
 }

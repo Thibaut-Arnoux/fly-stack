@@ -10,6 +10,7 @@ import {
   type ReactNode,
   useContext,
   useRef,
+  useState,
 } from 'react';
 import { Button } from '@/components/ui/buttons/button';
 import { IconButton } from '@/components/ui/buttons/icon-button';
@@ -96,8 +97,16 @@ export const Modal = ({
   ...props
 }: ModalProps) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const open = () => dialogRef.current?.showModal();
+  const open = () => {
+    setIsOpen(true);
+    dialogRef.current?.showModal();
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+  };
 
   const { triggerElement, dialogContent } = separateModalChildren(
     children,
@@ -114,6 +123,7 @@ export const Modal = ({
       <dialog
         ref={dialogRef}
         className={cn('modal', positionClasses[position])}
+        onClose={handleClose}
         {...props}
       >
         <div
@@ -124,7 +134,7 @@ export const Modal = ({
             className,
           )}
         >
-          {dialogContent}
+          {isOpen && dialogContent}
         </div>
         {/* DaisyUI pattern: backdrop with form method="dialog" enables outside click close */}
         <form method="dialog" className="modal-backdrop">
