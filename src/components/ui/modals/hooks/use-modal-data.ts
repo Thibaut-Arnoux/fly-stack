@@ -9,6 +9,5 @@ export const useModalData = <T = unknown>() => {
 
   if (!ctx) throw new Error('useModalData must be used within ModalProvider');
 
-  // Only expose data - dialogRef is used internally by Modal component only
   return { data: ctx.data };
 };

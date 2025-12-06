@@ -33,180 +33,178 @@ const getRarityColor = (rarity?: string): string => {
 export const ItemModal = () => {
   const { data: item } = useModalData<Item>();
 
-  const rarityColor = item ? getRarityColor(item.rarity) : '';
+  if (!item) return null;
+
+  const rarityColor = getRarityColor(item.rarity);
 
   return (
-    <Modal position="middle" size="lg">
-      {item && (
-        <>
-          <Modal.Header>
-            <div className="flex items-start gap-4">
-              {/* Item Icon */}
-              <div className="relative flex-shrink-0">
-                <div
-                  className={cn(
-                    'rounded-lg p-3 border-2',
-                    rarityColor.replace('shadow-lg', '').trim(),
-                  )}
-                >
-                  <img
-                    src={`${import.meta.env.VITE_FLYFF_API_BASE_URL}/image/item/${item.icon}`}
-                    alt={item.name?.en ?? 'Item'}
-                    className="w-16 h-16 object-contain"
-                  />
-                </div>
-                {item.premium && (
-                  <div className="absolute -top-1 -right-1 bg-warning text-warning-content rounded-full p-1">
-                    <Star className="w-3 h-3 fill-current" />
-                  </div>
-                )}
-              </div>
-
-              {/* Item Info */}
-              <div className="flex-1 min-w-0">
-                <h2 className="text-2xl font-bold text-base-content mb-1">
-                  {item.name?.en ?? 'Unknown Item'}
-                </h2>
-                <p className="text-base-content/50 text-xs font-mono mb-3">
-                  #{item.item_id}
-                </p>
-
-                <div className="flex flex-wrap items-center gap-2">
-                  <span
-                    className={cn(
-                      'inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold uppercase tracking-wide',
-                      rarityColor.replace('shadow-lg', '').trim(),
-                    )}
-                  >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    {item.rarity}
-                  </span>
-
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold bg-base-200 text-base-content">
-                    <TrendingUp className="w-3.5 h-3.5" />
-                    LVL {item.level}
-                  </span>
-
-                  {item.element && item.element !== 'none' && (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold bg-info/20 text-info-content">
-                      <Shield className="w-3.5 h-3.5" />
-                      {item.element}
-                    </span>
-                  )}
-                </div>
-
-                {/* Description */}
-                {item.description?.en && item.description.en !== 'null' && (
-                  <p className="text-base-content/70 text-sm mt-3 leading-relaxed">
-                    {item.description.en}
-                  </p>
-                )}
-              </div>
+    <>
+      <Modal.Header>
+        <div className="flex items-start gap-4">
+          {/* Item Icon */}
+          <div className="relative flex-shrink-0">
+            <div
+              className={cn(
+                'rounded-lg p-3 border-2',
+                rarityColor.replace('shadow-lg', '').trim(),
+              )}
+            >
+              <img
+                src={`${import.meta.env.VITE_FLYFF_API_BASE_URL}/image/item/${item.icon}`}
+                alt={item.name?.en ?? 'Item'}
+                className="w-16 h-16 object-contain"
+              />
             </div>
-          </Modal.Header>
-
-          <Modal.Body className="space-y-6">
-            {/* Classification */}
-            <Section title="Classification">
-              <div className="flex flex-wrap items-center gap-3">
-                <InfoPill label="Category" value={item.category} />
-                {item.subcategory && (
-                  <InfoPill label="Subcategory" value={item.subcategory} />
-                )}
-                {item.sex && <InfoPill label="Gender" value={item.sex} />}
+            {item.premium && (
+              <div className="absolute -top-1 -right-1 bg-warning text-warning-content rounded-full p-1">
+                <Star className="w-3 h-3 fill-current" />
               </div>
-            </Section>
-
-            {/* Economy */}
-            <Section title="Economy">
-              <div className="flex flex-wrap items-center gap-6">
-                <InfoStat
-                  icon={<DollarSign className="w-4 h-4" />}
-                  label="Sell Price"
-                  value={formatPrice(item.sell_price)}
-                  unit="Gold"
-                />
-                <InfoStat
-                  icon={<Package className="w-4 h-4" />}
-                  label="Stack Size"
-                  value={item.stack.toString()}
-                />
-              </div>
-            </Section>
-
-            {/* Properties */}
-            <Section title="Properties">
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                <PropertyBadge
-                  label="Consumable"
-                  active={item.consumable}
-                  icon={<Coins className="w-3.5 h-3.5" />}
-                />
-                <PropertyBadge
-                  label="Premium"
-                  active={item.premium}
-                  icon={<Star className="w-3.5 h-3.5" />}
-                />
-                <PropertyBadge
-                  label="Shining"
-                  active={item.shining}
-                  icon={<Sparkles className="w-3.5 h-3.5" />}
-                />
-                <PropertyBadge
-                  label="Tradable"
-                  active={item.tradable}
-                  icon={<TrendingUp className="w-3.5 h-3.5" />}
-                />
-                <PropertyBadge
-                  label="Deletable"
-                  active={item.deletable}
-                  icon={<Trash2 className="w-3.5 h-3.5" />}
-                />
-                <PropertyBadge
-                  label="Real Time Duration"
-                  active={item.duration_real_time}
-                  icon={<Timer className="w-3.5 h-3.5" />}
-                />
-              </div>
-            </Section>
-
-            {/* Spawn Locations */}
-            {item.spawns && item.spawns.length > 0 && (
-              <Section title="Spawn Locations">
-                <div className="space-y-2">
-                  {item.spawns.map((spawn, index) => (
-                    <div
-                      key={`${spawn.world}-${index}`}
-                      className="flex items-start gap-3 p-3 bg-base-200/50 rounded-lg border border-base-300"
-                    >
-                      <MapPin className="w-4 h-4 text-base-content/50 flex-shrink-0 mt-0.5" />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="font-semibold text-sm text-base-content">
-                            World {spawn.world}
-                          </span>
-                          {spawn.continent !== undefined && (
-                            <span className="text-xs px-2 py-0.5 bg-base-300 rounded text-base-content/60">
-                              Continent {spawn.continent}
-                            </span>
-                          )}
-                        </div>
-                        <div className="text-xs text-base-content/50 font-mono">
-                          ({spawn.left}, {spawn.top}) → ({spawn.right},{' '}
-                          {spawn.bottom})
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </Section>
             )}
-          </Modal.Body>
+          </div>
 
-          <Modal.Footer />
-        </>
-      )}
-    </Modal>
+          {/* Item Info */}
+          <div className="flex-1 min-w-0">
+            <h2 className="text-2xl font-bold text-base-content mb-1">
+              {item.name?.en ?? 'Unknown Item'}
+            </h2>
+            <p className="text-base-content/50 text-xs font-mono mb-3">
+              #{item.item_id}
+            </p>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <span
+                className={cn(
+                  'inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold uppercase tracking-wide',
+                  rarityColor.replace('shadow-lg', '').trim(),
+                )}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                {item.rarity}
+              </span>
+
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold bg-base-200 text-base-content">
+                <TrendingUp className="w-3.5 h-3.5" />
+                LVL {item.level}
+              </span>
+
+              {item.element && item.element !== 'none' && (
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold bg-info/20 text-info-content">
+                  <Shield className="w-3.5 h-3.5" />
+                  {item.element}
+                </span>
+              )}
+            </div>
+
+            {/* Description */}
+            {item.description?.en && item.description.en !== 'null' && (
+              <p className="text-base-content/70 text-sm mt-3 leading-relaxed">
+                {item.description.en}
+              </p>
+            )}
+          </div>
+        </div>
+      </Modal.Header>
+
+      <Modal.Body className="space-y-6">
+        {/* Classification */}
+        <Section title="Classification">
+          <div className="flex flex-wrap items-center gap-3">
+            <InfoPill label="Category" value={item.category} />
+            {item.subcategory && (
+              <InfoPill label="Subcategory" value={item.subcategory} />
+            )}
+            {item.sex && <InfoPill label="Gender" value={item.sex} />}
+          </div>
+        </Section>
+
+        {/* Economy */}
+        <Section title="Economy">
+          <div className="flex flex-wrap items-center gap-6">
+            <InfoStat
+              icon={<DollarSign className="w-4 h-4" />}
+              label="Sell Price"
+              value={formatPrice(item.sell_price)}
+              unit="Gold"
+            />
+            <InfoStat
+              icon={<Package className="w-4 h-4" />}
+              label="Stack Size"
+              value={item.stack.toString()}
+            />
+          </div>
+        </Section>
+
+        {/* Properties */}
+        <Section title="Properties">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <PropertyBadge
+              label="Consumable"
+              active={item.consumable}
+              icon={<Coins className="w-3.5 h-3.5" />}
+            />
+            <PropertyBadge
+              label="Premium"
+              active={item.premium}
+              icon={<Star className="w-3.5 h-3.5" />}
+            />
+            <PropertyBadge
+              label="Shining"
+              active={item.shining}
+              icon={<Sparkles className="w-3.5 h-3.5" />}
+            />
+            <PropertyBadge
+              label="Tradable"
+              active={item.tradable}
+              icon={<TrendingUp className="w-3.5 h-3.5" />}
+            />
+            <PropertyBadge
+              label="Deletable"
+              active={item.deletable}
+              icon={<Trash2 className="w-3.5 h-3.5" />}
+            />
+            <PropertyBadge
+              label="Real Time Duration"
+              active={item.duration_real_time}
+              icon={<Timer className="w-3.5 h-3.5" />}
+            />
+          </div>
+        </Section>
+
+        {/* Spawn Locations */}
+        {item.spawns && item.spawns.length > 0 && (
+          <Section title="Spawn Locations">
+            <div className="space-y-2">
+              {item.spawns.map((spawn, index) => (
+                <div
+                  key={`${spawn.world}-${index}`}
+                  className="flex items-start gap-3 p-3 bg-base-200/50 rounded-lg border border-base-300"
+                >
+                  <MapPin className="w-4 h-4 text-base-content/50 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-semibold text-sm text-base-content">
+                        World {spawn.world}
+                      </span>
+                      {spawn.continent !== undefined && (
+                        <span className="text-xs px-2 py-0.5 bg-base-300 rounded text-base-content/60">
+                          Continent {spawn.continent}
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-xs text-base-content/50 font-mono">
+                      ({spawn.left}, {spawn.top}) → ({spawn.right},{' '}
+                      {spawn.bottom})
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Section>
+        )}
+      </Modal.Body>
+
+      <Modal.Footer />
+    </>
   );
 };
 

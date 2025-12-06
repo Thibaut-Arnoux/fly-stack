@@ -9,6 +9,5 @@ export const useModal = <T = unknown>() => {
 
   if (!ctx) throw new Error('useModal must be used within ModalProvider');
 
-  // Only expose the open method
   return { open: ctx.open };
 };

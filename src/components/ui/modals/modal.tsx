@@ -4,7 +4,6 @@ import {
   type HTMLAttributes,
   type PropsWithChildren,
   type ReactNode,
-  useContext,
   useRef,
   useState,
 } from 'react';
@@ -12,38 +11,18 @@ import { Button } from '@/components/ui/buttons/button';
 import { IconButton } from '@/components/ui/buttons/icon-button';
 import { cn } from '@/utils/cn';
 
-// Context type - contains both public and internal state
 export interface ModalContextType<T = unknown> {
   open: (data?: T) => void;
   data: T | null;
-  dialogRef: React.RefObject<HTMLDialogElement | null>;
 }
 
 export const ModalContext = createContext<ModalContextType | null>(null);
 
-// Provider component
-export const ModalProvider = ({ children }: PropsWithChildren) => {
-  const [data, setData] = useState<unknown>(null);
-  const dialogRef = useRef<HTMLDialogElement>(null);
-
-  const open: ModalContextType['open'] = (newData?: unknown) => {
-    if (newData !== undefined) {
-      setData(newData);
-    }
-    dialogRef.current?.showModal();
-  };
-
-  return (
-    <ModalContext.Provider value={{ open, data, dialogRef }}>
-      {children}
-    </ModalContext.Provider>
-  );
-};
-
-interface ModalProps extends HTMLAttributes<HTMLDialogElement> {
-  children: ReactNode;
+interface ModalProviderProps extends PropsWithChildren {
   position?: 'top' | 'middle' | 'bottom' | 'start' | 'end';
   size?: 'sm' | 'md' | 'lg' | 'xl';
+  className?: string;
+  modal: ReactNode;
 }
 
 const positionClasses: Record<string, string> = {
@@ -68,39 +47,48 @@ const heightClasses: Record<string, string> = {
   xl: 'max-h-[90vh]',
 };
 
-export const Modal = ({
+export const ModalProvider = ({
   children,
+  modal,
   position = 'middle',
   size = 'md',
   className,
-  ...props
-}: ModalProps) => {
-  const ctx = useContext(ModalContext);
+}: ModalProviderProps) => {
+  const [data, setData] = useState<unknown>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
-  if (!ctx) throw new Error('Modal must be used within ModalProvider');
+  const open: ModalContextType['open'] = (newData?: unknown) => {
+    if (newData !== undefined) {
+      setData(newData);
+    }
+    dialogRef.current?.showModal();
+  };
+  console.debug(children);
 
   return (
-    <dialog
-      ref={ctx.dialogRef}
-      className={cn('modal', positionClasses[position])}
-      {...props}
-    >
-      <div
-        className={cn(
-          'modal-box p-0 flex flex-col',
-          sizeClasses[size],
-          heightClasses[size],
-          className,
-        )}
+    <ModalContext.Provider value={{ open, data }}>
+      {children}
+      <dialog
+        ref={dialogRef}
+        className={cn('modal', positionClasses[position])}
       >
-        {children}
-      </div>
-      <form method="dialog" className="modal-backdrop">
-        <button type="submit" aria-label="Close modal">
-          close
-        </button>
-      </form>
-    </dialog>
+        <div
+          className={cn(
+            'modal-box p-0 flex flex-col',
+            sizeClasses[size],
+            heightClasses[size],
+            className,
+          )}
+        >
+          {modal}
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button type="submit" aria-label="Close modal">
+            close
+          </button>
+        </form>
+      </dialog>
+    </ModalContext.Provider>
   );
 };
 
@@ -174,7 +162,9 @@ const Footer = ({
   );
 };
 
-Modal.Header = Header;
-Modal.Body = Body;
-Modal.Cancel = Cancel;
-Modal.Footer = Footer;
+export const Modal = {
+  Header,
+  Body,
+  Cancel,
+  Footer,
+};

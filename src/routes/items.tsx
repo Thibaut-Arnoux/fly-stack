@@ -151,7 +151,7 @@ function Items() {
   );
 
   return (
-    <ModalProvider>
+    <ModalProvider modal={<ItemModal />} position="middle" size="lg">
       <DataTableProvider
         data={items}
         columns={columns}
@@ -178,9 +178,6 @@ function Items() {
           </Drawer.Side>
         </Drawer>
       </DataTableProvider>
-
-      {/* Single modal instance - no props needed */}
-      <ItemModal />
     </ModalProvider>
   );
 }
