@@ -38,7 +38,7 @@ export const ItemModal = () => {
   const rarityColor = getRarityColor(item.rarity);
 
   return (
-    <>
+    <Modal>
       <Modal.Header>
         <div className="flex items-start gap-4">
           {/* Item Icon */}
@@ -204,7 +204,7 @@ export const ItemModal = () => {
       </Modal.Body>
 
       <Modal.Footer />
-    </>
+    </Modal>
   );
 };
 
@@ -222,7 +222,6 @@ const Section = memo(
     );
   },
 );
-Section.displayName = 'Section';
 
 const InfoPill = memo(({ label, value }: { label: string; value: string }) => (
   <div className="flex items-center gap-2 text-sm">
@@ -232,7 +231,6 @@ const InfoPill = memo(({ label, value }: { label: string; value: string }) => (
     </span>
   </div>
 ));
-InfoPill.displayName = 'InfoPill';
 
 const InfoStat = memo(
   ({
@@ -260,7 +258,6 @@ const InfoStat = memo(
     </div>
   ),
 );
-InfoStat.displayName = 'InfoStat';
 
 const PropertyBadge = memo(
   ({
@@ -292,4 +289,3 @@ const PropertyBadge = memo(
     </div>
   ),
 );
-PropertyBadge.displayName = 'PropertyBadge';

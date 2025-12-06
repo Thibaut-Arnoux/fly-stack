@@ -63,7 +63,6 @@ export const ModalProvider = ({
     }
     dialogRef.current?.showModal();
   };
-  console.debug(children);
 
   return (
     <ModalContext.Provider value={{ open, data }}>
@@ -162,9 +161,11 @@ const Footer = ({
   );
 };
 
-export const Modal = {
-  Header,
-  Body,
-  Cancel,
-  Footer,
+export const Modal = ({ children }: { children: ReactNode }) => {
+  return <>{children}</>;
 };
+
+Modal.Header = Header;
+Modal.Body = Body;
+Modal.Cancel = Cancel;
+Modal.Footer = Footer;
