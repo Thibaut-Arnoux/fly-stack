@@ -12,18 +12,12 @@ import {
   TrendingUp,
   X,
 } from 'lucide-react';
-import { memo, type ReactElement, type ReactNode } from 'react';
+import { memo, type ReactNode } from 'react';
+import { useModalData } from '@/components/ui/modals/hooks/use-modal-data';
 import { Modal } from '@/components/ui/modals/modal';
 import type { Item } from '@/schemas/item-schema';
 import { cn } from '@/utils/cn';
 import { RARITY_COLORS } from '@/utils/constants';
-
-interface ItemModalProps {
-  item: Item;
-  children: ReactElement<{
-    onClick?: () => void;
-  }>;
-}
 
 // Helper function outside component to avoid recreation
 const formatPrice = (price: number): string => {
@@ -36,19 +30,15 @@ const getRarityColor = (rarity?: string): string => {
   return RARITY_COLORS[rarity.toLowerCase()] ?? RARITY_COLORS.common;
 };
 
-const ItemModalComponent = ({
-  item: selectedItem,
-  children,
-}: ItemModalProps) => {
-  const rarityColor = getRarityColor(selectedItem?.rarity);
+export const ItemModal = () => {
+  const { data: item } = useModalData<Item>();
+
+  const rarityColor = item ? getRarityColor(item.rarity) : '';
 
   return (
     <Modal position="middle" size="lg">
-      <Modal.Trigger>{children}</Modal.Trigger>
-
-      {selectedItem ? (
+      {item && (
         <>
-          {/* Header */}
           <Modal.Header>
             <div className="flex items-start gap-4">
               {/* Item Icon */}
@@ -60,12 +50,12 @@ const ItemModalComponent = ({
                   )}
                 >
                   <img
-                    src={`${import.meta.env.VITE_FLYFF_API_BASE_URL}/image/item/${selectedItem.icon}`}
-                    alt={selectedItem.name?.en ?? 'Item'}
+                    src={`${import.meta.env.VITE_FLYFF_API_BASE_URL}/image/item/${item.icon}`}
+                    alt={item.name?.en ?? 'Item'}
                     className="w-16 h-16 object-contain"
                   />
                 </div>
-                {selectedItem.premium && (
+                {item.premium && (
                   <div className="absolute -top-1 -right-1 bg-warning text-warning-content rounded-full p-1">
                     <Star className="w-3 h-3 fill-current" />
                   </div>
@@ -75,10 +65,10 @@ const ItemModalComponent = ({
               {/* Item Info */}
               <div className="flex-1 min-w-0">
                 <h2 className="text-2xl font-bold text-base-content mb-1">
-                  {selectedItem.name?.en ?? 'Unknown Item'}
+                  {item.name?.en ?? 'Unknown Item'}
                 </h2>
                 <p className="text-base-content/50 text-xs font-mono mb-3">
-                  #{selectedItem.item_id}
+                  #{item.item_id}
                 </p>
 
                 <div className="flex flex-wrap items-center gap-2">
@@ -89,48 +79,41 @@ const ItemModalComponent = ({
                     )}
                   >
                     <Sparkles className="w-3.5 h-3.5" />
-                    {selectedItem.rarity}
+                    {item.rarity}
                   </span>
 
                   <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold bg-base-200 text-base-content">
                     <TrendingUp className="w-3.5 h-3.5" />
-                    LVL {selectedItem.level}
+                    LVL {item.level}
                   </span>
 
-                  {selectedItem.element && selectedItem.element !== 'none' && (
+                  {item.element && item.element !== 'none' && (
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold bg-info/20 text-info-content">
                       <Shield className="w-3.5 h-3.5" />
-                      {selectedItem.element}
+                      {item.element}
                     </span>
                   )}
                 </div>
 
                 {/* Description */}
-                {selectedItem.description?.en &&
-                  selectedItem.description.en !== 'null' && (
-                    <p className="text-base-content/70 text-sm mt-3 leading-relaxed">
-                      {selectedItem.description.en}
-                    </p>
-                  )}
+                {item.description?.en && item.description.en !== 'null' && (
+                  <p className="text-base-content/70 text-sm mt-3 leading-relaxed">
+                    {item.description.en}
+                  </p>
+                )}
               </div>
             </div>
           </Modal.Header>
 
-          {/* Body */}
           <Modal.Body className="space-y-6">
             {/* Classification */}
             <Section title="Classification">
               <div className="flex flex-wrap items-center gap-3">
-                <InfoPill label="Category" value={selectedItem.category} />
-                {selectedItem.subcategory && (
-                  <InfoPill
-                    label="Subcategory"
-                    value={selectedItem.subcategory}
-                  />
+                <InfoPill label="Category" value={item.category} />
+                {item.subcategory && (
+                  <InfoPill label="Subcategory" value={item.subcategory} />
                 )}
-                {selectedItem.sex && (
-                  <InfoPill label="Gender" value={selectedItem.sex} />
-                )}
+                {item.sex && <InfoPill label="Gender" value={item.sex} />}
               </div>
             </Section>
 
@@ -140,13 +123,13 @@ const ItemModalComponent = ({
                 <InfoStat
                   icon={<DollarSign className="w-4 h-4" />}
                   label="Sell Price"
-                  value={formatPrice(selectedItem.sell_price)}
+                  value={formatPrice(item.sell_price)}
                   unit="Gold"
                 />
                 <InfoStat
                   icon={<Package className="w-4 h-4" />}
                   label="Stack Size"
-                  value={selectedItem.stack.toString()}
+                  value={item.stack.toString()}
                 />
               </div>
             </Section>
@@ -156,42 +139,42 @@ const ItemModalComponent = ({
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 <PropertyBadge
                   label="Consumable"
-                  active={selectedItem.consumable}
+                  active={item.consumable}
                   icon={<Coins className="w-3.5 h-3.5" />}
                 />
                 <PropertyBadge
                   label="Premium"
-                  active={selectedItem.premium}
+                  active={item.premium}
                   icon={<Star className="w-3.5 h-3.5" />}
                 />
                 <PropertyBadge
                   label="Shining"
-                  active={selectedItem.shining}
+                  active={item.shining}
                   icon={<Sparkles className="w-3.5 h-3.5" />}
                 />
                 <PropertyBadge
                   label="Tradable"
-                  active={selectedItem.tradable}
+                  active={item.tradable}
                   icon={<TrendingUp className="w-3.5 h-3.5" />}
                 />
                 <PropertyBadge
                   label="Deletable"
-                  active={selectedItem.deletable}
+                  active={item.deletable}
                   icon={<Trash2 className="w-3.5 h-3.5" />}
                 />
                 <PropertyBadge
                   label="Real Time Duration"
-                  active={selectedItem.duration_real_time}
+                  active={item.duration_real_time}
                   icon={<Timer className="w-3.5 h-3.5" />}
                 />
               </div>
             </Section>
 
             {/* Spawn Locations */}
-            {selectedItem.spawns && selectedItem.spawns.length > 0 && (
+            {item.spawns && item.spawns.length > 0 && (
               <Section title="Spawn Locations">
                 <div className="space-y-2">
-                  {selectedItem.spawns.map((spawn, index) => (
+                  {item.spawns.map((spawn, index) => (
                     <div
                       key={`${spawn.world}-${index}`}
                       className="flex items-start gap-3 p-3 bg-base-200/50 rounded-lg border border-base-300"
@@ -222,13 +205,10 @@ const ItemModalComponent = ({
 
           <Modal.Footer />
         </>
-      ) : null}
+      )}
     </Modal>
   );
 };
-
-// Memoize to prevent re-renders when item data hasn't changed
-export const ItemModal = memo(ItemModalComponent);
 
 // Helper Components - Memoized to prevent unnecessary re-renders
 const Section = memo(
@@ -244,6 +224,7 @@ const Section = memo(
     );
   },
 );
+Section.displayName = 'Section';
 
 const InfoPill = memo(({ label, value }: { label: string; value: string }) => (
   <div className="flex items-center gap-2 text-sm">
@@ -253,6 +234,7 @@ const InfoPill = memo(({ label, value }: { label: string; value: string }) => (
     </span>
   </div>
 ));
+InfoPill.displayName = 'InfoPill';
 
 const InfoStat = memo(
   ({
@@ -280,6 +262,7 @@ const InfoStat = memo(
     </div>
   ),
 );
+InfoStat.displayName = 'InfoStat';
 
 const PropertyBadge = memo(
   ({
@@ -311,3 +294,4 @@ const PropertyBadge = memo(
     </div>
   ),
 );
+PropertyBadge.displayName = 'PropertyBadge';

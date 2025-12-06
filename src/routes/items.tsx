@@ -2,11 +2,13 @@ import { useLiveQuery } from '@tanstack/react-db';
 import { createFileRoute } from '@tanstack/react-router';
 import { createColumnHelper } from '@tanstack/react-table';
 import { ListFilter } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { itemCollection } from '@/collections/item-collection';
 import { FilterItem } from '@/components/features/items/filter-item';
-import { ItemDetailModal } from '@/components/features/items/item-detail-modal';
+import { ItemModal } from '@/components/features/items/item-modal';
 import { Drawer } from '@/components/ui/layouts/drawer';
+import { useModal } from '@/components/ui/modals/hooks/use-modal';
+import { ModalProvider } from '@/components/ui/modals/modal';
 import {
   DataTable,
   DataTableProvider,
@@ -25,18 +27,18 @@ export const Route = createFileRoute('/items')({
   component: Items,
 });
 
-const NameCell = ({
-  itemName,
-  onClick,
-}: {
-  itemName?: string;
-  onClick: () => void;
-}) => {
+const NameCell = ({ itemName, item }: { itemName?: string; item: Item }) => {
+  const { open } = useModal<Item>();
+
+  const handleClick = () => {
+    open(item);
+  };
+
   return (
     <button
       type="button"
       className="link link-hover text-left font-medium"
-      onClick={onClick}
+      onClick={handleClick}
     >
       {itemName ?? '-'}
     </button>
@@ -46,7 +48,6 @@ const NameCell = ({
 function Items() {
   const { sorts, filters } = useItemSearch();
   const { data: items } = useLiveQuery((q) => q.from({ item: itemCollection }));
-  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 
   const columnHelper = createColumnHelper<Item>();
   const columns = useMemo(
@@ -72,7 +73,7 @@ function Items() {
         cell: (props) => (
           <NameCell
             itemName={props.row.original.name?.en}
-            onClick={() => setSelectedItem(props.row.original)}
+            item={props.row.original}
           />
         ),
         size: 150,
@@ -150,7 +151,7 @@ function Items() {
   );
 
   return (
-    <>
+    <ModalProvider>
       <DataTableProvider
         data={items}
         columns={columns}
@@ -178,12 +179,8 @@ function Items() {
         </Drawer>
       </DataTableProvider>
 
-      {/* Single modal instance - only mounts when item is selected */}
-      <ItemDetailModal
-        item={selectedItem}
-        isOpen={selectedItem !== null}
-        onClose={() => setSelectedItem(null)}
-      />
-    </>
+      {/* Single modal instance - no props needed */}
+      <ItemModal />
+    </ModalProvider>
   );
 }

@@ -1,12 +1,8 @@
 import { X } from 'lucide-react';
 import {
-  Children,
-  cloneElement,
   createContext,
-  type ElementType,
   type HTMLAttributes,
-  isValidElement,
-  type ReactElement,
+  type PropsWithChildren,
   type ReactNode,
   useContext,
   useRef,
@@ -16,49 +12,32 @@ import { Button } from '@/components/ui/buttons/button';
 import { IconButton } from '@/components/ui/buttons/icon-button';
 import { cn } from '@/utils/cn';
 
-interface ModalContextType {
-  open: () => void;
+// Context type - contains both public and internal state
+export interface ModalContextType<T = unknown> {
+  open: (data?: T) => void;
+  data: T | null;
+  dialogRef: React.RefObject<HTMLDialogElement | null>;
 }
 
-const ModalContext = createContext<ModalContextType | null>(null);
+export const ModalContext = createContext<ModalContextType | null>(null);
 
-const useModalContext = (): ModalContextType => {
-  const context = useContext(ModalContext);
-  if (!context) {
-    throw new Error('Modal compound components must be used within Modal');
-  }
+// Provider component
+export const ModalProvider = ({ children }: PropsWithChildren) => {
+  const [data, setData] = useState<unknown>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
-  return context;
-};
-
-interface SeparatedModalChildren {
-  triggerElement: ReactNode;
-  dialogContent: ReactNode[];
-}
-
-const separateModalChildren = (
-  children: ReactNode,
-  triggerType: ElementType,
-): SeparatedModalChildren => {
-  const childArray = Children.toArray(children);
-  let triggerElement: ReactNode = null;
-  const dialogContent: ReactNode[] = [];
-
-  for (const child of childArray) {
-    if (isValidElement(child) && child.type === triggerType) {
-      if (triggerElement !== null) {
-        console.warn(
-          'Modal: Multiple Trigger elements detected. Only the first will be used.',
-        );
-      } else {
-        triggerElement = child;
-      }
-    } else {
-      dialogContent.push(child);
+  const open: ModalContextType['open'] = (newData?: unknown) => {
+    if (newData !== undefined) {
+      setData(newData);
     }
-  }
+    dialogRef.current?.showModal();
+  };
 
-  return { triggerElement, dialogContent };
+  return (
+    <ModalContext.Provider value={{ open, data, dialogRef }}>
+      {children}
+    </ModalContext.Provider>
+  );
 };
 
 interface ModalProps extends HTMLAttributes<HTMLDialogElement> {
@@ -96,68 +75,33 @@ export const Modal = ({
   className,
   ...props
 }: ModalProps) => {
-  const dialogRef = useRef<HTMLDialogElement>(null);
-  const [isOpen, setIsOpen] = useState(false);
+  const ctx = useContext(ModalContext);
 
-  const open = () => {
-    setIsOpen(true);
-    dialogRef.current?.showModal();
-  };
-
-  const handleClose = () => {
-    setIsOpen(false);
-  };
-
-  const { triggerElement, dialogContent } = separateModalChildren(
-    children,
-    Trigger,
-  );
-
-  const value: ModalContextType = {
-    open,
-  };
+  if (!ctx) throw new Error('Modal must be used within ModalProvider');
 
   return (
-    <ModalContext.Provider value={value}>
-      {triggerElement}
-      <dialog
-        ref={dialogRef}
-        className={cn('modal', positionClasses[position])}
-        onClose={handleClose}
-        {...props}
+    <dialog
+      ref={ctx.dialogRef}
+      className={cn('modal', positionClasses[position])}
+      {...props}
+    >
+      <div
+        className={cn(
+          'modal-box p-0 flex flex-col',
+          sizeClasses[size],
+          heightClasses[size],
+          className,
+        )}
       >
-        <div
-          className={cn(
-            'modal-box p-0 flex flex-col',
-            sizeClasses[size],
-            heightClasses[size],
-            className,
-          )}
-        >
-          {isOpen && dialogContent}
-        </div>
-        {/* DaisyUI pattern: backdrop with form method="dialog" enables outside click close */}
-        <form method="dialog" className="modal-backdrop">
-          <button type="submit" aria-label="Close modal">
-            close
-          </button>
-        </form>
-      </dialog>
-    </ModalContext.Provider>
+        {children}
+      </div>
+      <form method="dialog" className="modal-backdrop">
+        <button type="submit" aria-label="Close modal">
+          close
+        </button>
+      </form>
+    </dialog>
   );
-};
-
-const Trigger = ({
-  children,
-}: {
-  children: ReactElement<{
-    onClick?: (e: MouseEvent) => void;
-  }>;
-}) => {
-  const { open } = useModalContext();
-  return cloneElement(children, {
-    onClick: () => open(),
-  });
 };
 
 const Close = () => {
@@ -230,7 +174,6 @@ const Footer = ({
   );
 };
 
-Modal.Trigger = Trigger;
 Modal.Header = Header;
 Modal.Body = Body;
 Modal.Cancel = Cancel;
