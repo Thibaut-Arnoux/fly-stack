@@ -16,13 +16,10 @@ import {
 import { arrEqualsSome } from '@/components/ui/tables/filters/fn/arr-equals-some';
 import { SearchFilter } from '@/components/ui/tables/filters/search-filter';
 import { PaginationTable } from '@/components/ui/tables/pagination-table';
-import { useItemSearch } from '@/hooks/items/use-item-search';
 import type { Item } from '@/schemas/item-schema';
-import { searchSchema } from '@/schemas/search-schema';
 import { isFilterEnabled, isSortEnabled } from '@/utils/is';
 
 export const Route = createFileRoute('/items')({
-  validateSearch: searchSchema,
   loader: () => itemCollection.preload(),
   component: Items,
 });
@@ -46,7 +43,6 @@ const NameCell = ({ itemName, item }: { itemName?: string; item: Item }) => {
 };
 
 function Items() {
-  const { sorts, filters } = useItemSearch();
   const { data: items } = useLiveQuery((q) => q.from({ item: itemCollection }));
 
   const columnHelper = createColumnHelper<Item>();
@@ -65,7 +61,8 @@ function Items() {
           />
         ),
         size: 50,
-        enableSorting: false,
+        enableSorting: isSortEnabled('icon'),
+        enableColumnFilter: isFilterEnabled('icon'),
       }),
       columnHelper.accessor((row) => row.name?.en ?? undefined, {
         id: 'name',
@@ -95,6 +92,7 @@ function Items() {
           enableSorting: isSortEnabled('description'),
           sortingFn: 'alphanumeric',
           sortDescFirst: false,
+          enableColumnFilter: isFilterEnabled('description'),
         },
       ),
       columnHelper.accessor((row) => row.sex ?? undefined, {
@@ -104,6 +102,7 @@ function Items() {
         size: 50,
         enableSorting: isSortEnabled('sex'),
         sortingFn: 'text',
+        enableColumnFilter: isFilterEnabled('sex'),
       }),
       columnHelper.accessor('category', {
         id: 'category',
@@ -152,12 +151,7 @@ function Items() {
 
   return (
     <ModalProvider modal={<ItemModal />} position="middle" size="lg">
-      <DataTableProvider
-        data={items}
-        columns={columns}
-        sortingState={sorts}
-        columnFiltersState={filters}
-      >
+      <DataTableProvider data={items} columns={columns}>
         <Drawer className="drawer-end h-full min-h-0">
           <Drawer.Content className="h-full flex flex-col min-h-0">
             <div className="flex justify-end gap-2 mr-2 mt-2">

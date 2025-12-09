@@ -1,6 +1,7 @@
-import { useLocation, useNavigate } from '@tanstack/react-router';
 import { RotateCcw } from 'lucide-react';
+import { parseAsString, useQueryStates } from 'nuqs';
 import type { ButtonHTMLAttributes } from 'react';
+import { useMemo } from 'react';
 import { IconButton } from '@/components/ui/buttons/icon-button';
 import { useDataTable } from '@/components/ui/tables/hooks/use-data-table';
 import { cn } from '@/utils/cn';
@@ -10,8 +11,22 @@ export const ResetFilter = ({
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement>) => {
   const { table } = useDataTable();
-  const { pathname } = useLocation();
-  const navigate = useNavigate({ from: pathname as never });
+
+  const filterColumns = useMemo(
+    () =>
+      table
+        .getAllColumns()
+        .filter((col) => col.getCanFilter())
+        .map((col) => col.id),
+    [table],
+  );
+
+  const filterParsers = useMemo(
+    () => Object.fromEntries(filterColumns.map((col) => [col, parseAsString])),
+    [filterColumns],
+  );
+
+  const [, setQueryStates] = useQueryStates(filterParsers);
 
   return (
     <IconButton
@@ -21,7 +36,9 @@ export const ResetFilter = ({
       onClick={() => {
         table.resetColumnFilters();
         table.firstPage();
-        navigate({ search: () => ({}) } as never);
+        setQueryStates(
+          Object.fromEntries(filterColumns.map((key) => [key, null])),
+        );
       }}
     />
   );
