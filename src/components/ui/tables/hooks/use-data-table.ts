@@ -4,7 +4,7 @@ import {
   type DataTableContextType,
 } from '@/components/ui/tables/data-table';
 
-export const useDataTable = <TData,>() => {
+export const useDataTable = <TData>() => {
   const ctx = useContext(
     DataTableContext,
   ) as DataTableContextType<TData> | null;
