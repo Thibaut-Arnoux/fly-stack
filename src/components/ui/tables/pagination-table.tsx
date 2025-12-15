@@ -4,12 +4,12 @@ import {
   ChevronsLeft,
   ChevronsRight,
 } from 'lucide-react';
-import { useDataTableContext } from '@/components/ui/tables/data-table';
+import { useDataTable } from '@/components/ui/tables/hooks/use-data-table';
 import { Button } from '../buttons/button';
 import { IconButton } from '../buttons/icon-button';
 
 export const PaginationTable = () => {
-  const { table } = useDataTableContext();
+  const { table } = useDataTable();
 
   return (
     <div className="join">

@@ -1,13 +1,11 @@
 import {
   type ColumnDef,
-  type ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
   type PaginationState,
-  type SortingState,
   type Table,
   useReactTable,
 } from '@tanstack/react-table';
@@ -16,12 +14,16 @@ import {
   createContext,
   type HtmlHTMLAttributes,
   type PropsWithChildren,
-  useContext,
+  useMemo,
   useState,
 } from 'react';
+import { useDataTable } from '@/components/ui/tables/hooks/use-data-table';
+import { useFilteringSearchParams } from '@/components/ui/tables/hooks/use-filtering-search-params';
+import { useSortingSearchParams } from '@/components/ui/tables/hooks/use-sorting-search-params';
+import { getEnabledColumnIds } from '@/components/ui/tables/utils/get-enabled-column-ids';
 import { cn } from '@/utils/cn';
 
-type DataTableContextType<TData> = {
+export type DataTableContextType<TData> = {
   table: Table<TData>;
 };
 
@@ -30,55 +32,69 @@ function createDataTableContext<TData>() {
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: cast any for Provider, will be overrided in custom hook
-const DataTableContext = createDataTableContext<any>();
-
-export const useDataTableContext = <TData,>() => {
-  const ctx = useContext(
-    DataTableContext,
-  ) as DataTableContextType<TData> | null;
-
-  if (!ctx)
-    throw new Error(
-      'useDataTableContext must be used inside <DataTableProvider>',
-    );
-
-  return ctx;
-};
+export const DataTableContext = createDataTableContext<any>();
 
 export const DataTableProvider = <TData,>({
   data,
   columns,
   paginationState = { pageIndex: 0, pageSize: 20 },
-  sortingState = [],
-  columnFiltersState = [],
   children,
 }: PropsWithChildren<{
   data: TData[];
-  // biome-ignore lint/suspicious/noExplicitAny: flexible type for accessor
+  // biome-ignore lint/suspicious/noExplicitAny: TanStack Table uses complex union types for columns
   columns: ColumnDef<TData, any>[];
   paginationState?: PaginationState;
-  sortingState?: SortingState;
-  columnFiltersState?: ColumnFiltersState;
 }>) => {
   const [pagination, setPagination] =
     useState<PaginationState>(paginationState);
-  const [sorting, setSorting] = useState<SortingState>(sortingState);
-  const [columnFilters, setColumnFilters] =
-    useState<ColumnFiltersState>(columnFiltersState);
+
+  const filterColumns = useMemo(
+    () => getEnabledColumnIds(columns, 'enableColumnFilter'),
+    [columns],
+  );
+
+  const sortColumns = useMemo(
+    () => getEnabledColumnIds(columns, 'enableSorting'),
+    [columns],
+  );
+
+  const arrayFilterColumns = useMemo(() => {
+    const knownArrayFilters = new Set([
+      'arrIncludes',
+      'arrIncludesAll',
+      'arrIncludesSome',
+      'inNumberRange',
+    ]);
+
+    return columns
+      .filter(
+        (col) =>
+          col.id &&
+          typeof col.filterFn === 'string' &&
+          knownArrayFilters.has(col.filterFn),
+      )
+      .map((col) => col.id as string);
+  }, [columns]);
+
+  const { sorting, onSortingChange } = useSortingSearchParams({ sortColumns });
+  const { columnFilters, onColumnFiltersChange } = useFilteringSearchParams({
+    filterColumns,
+    arrayFilterColumns,
+  });
 
   const table = useReactTable({
     data,
     columns,
     defaultColumn: {
-      sortUndefined: 'last', // global behavior to manage undefined
+      sortUndefined: 'last',
     },
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onPaginationChange: setPagination,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
+    onSortingChange,
+    onColumnFiltersChange,
     state: {
       pagination,
       sorting,
@@ -99,7 +115,7 @@ export const DataTable = <TData,>({
   className,
   ...props
 }: HtmlHTMLAttributes<HTMLTableElement>) => {
-  const { table } = useDataTableContext<TData>();
+  const { table } = useDataTable<TData>();
 
   return (
     <table {...props} className={cn('table', className)}>

@@ -1,8 +1,8 @@
 import { Badge } from '@/components/ui/badge';
-import { useDataTableContext } from '@/components/ui/tables/data-table';
+import { useDataTable } from '@/components/ui/tables/hooks/use-data-table';
 
 export const BadgeFilter = ({ column }: { column?: string }) => {
-  const { table } = useDataTableContext();
+  const { table } = useDataTable();
 
   const filters = table.getState().columnFilters;
 

@@ -1,6 +1,6 @@
 import { useLiveQuery } from '@tanstack/react-db';
 import { createFileRoute } from '@tanstack/react-router';
-import { createColumnHelper, type SortingState } from '@tanstack/react-table';
+import { createColumnHelper } from '@tanstack/react-table';
 import { ListFilter } from 'lucide-react';
 import { useMemo } from 'react';
 import { itemCollection } from '@/collections/item-collection';
@@ -14,6 +14,7 @@ import { arrEqualsSome } from '@/components/ui/tables/filters/fn/arr-equals-some
 import { SearchFilter } from '@/components/ui/tables/filters/search-filter';
 import { PaginationTable } from '@/components/ui/tables/pagination-table';
 import type { DisplayItem } from '@/schemas/item-schema';
+import { isFilterEnabled, isSortEnabled } from '@/utils/is';
 
 export const Route = createFileRoute('/items')({
   loader: () => itemCollection.preload(),
@@ -35,13 +36,6 @@ function Items() {
     })),
   );
 
-  const sortingState: SortingState = [
-    {
-      id: 'level',
-      desc: false,
-    },
-  ];
-
   const columnHelper = createColumnHelper<DisplayItem>();
   const columns = useMemo(
     () => [
@@ -58,14 +52,17 @@ function Items() {
           />
         ),
         size: 50,
-        enableSorting: false,
+        enableSorting: isSortEnabled('icon'),
+        enableColumnFilter: isFilterEnabled('icon'),
       }),
       columnHelper.accessor((row) => row.name?.en ?? undefined, {
         id: 'name',
         header: 'Name',
         cell: (props) => props.renderValue() ?? '-',
         size: 150,
+        enableSorting: isSortEnabled('name'),
         sortingFn: 'alphanumeric',
+        enableColumnFilter: isFilterEnabled('name'),
         filterFn: 'includesString',
       }),
       columnHelper.accessor(
@@ -78,8 +75,10 @@ function Items() {
           header: 'Description',
           cell: (props) => props.renderValue() ?? '-',
           size: 250,
+          enableSorting: isSortEnabled('description'),
           sortingFn: 'alphanumeric',
           sortDescFirst: false,
+          enableColumnFilter: isFilterEnabled('description'),
         },
       ),
       columnHelper.accessor((row) => row.sex ?? undefined, {
@@ -87,14 +86,18 @@ function Items() {
         header: 'Sex',
         cell: (props) => props.renderValue() ?? '-',
         size: 50,
+        enableSorting: isSortEnabled('sex'),
         sortingFn: 'text',
+        enableColumnFilter: isFilterEnabled('sex'),
       }),
       columnHelper.accessor('category', {
         id: 'category',
         header: 'Category',
         cell: (props) => props.renderValue(),
         size: 80,
+        enableSorting: isSortEnabled('category'),
         sortingFn: 'text',
+        enableColumnFilter: isFilterEnabled('category'),
         filterFn: 'arrIncludesSome',
       }),
       columnHelper.accessor((row) => row.subcategory ?? undefined, {
@@ -102,7 +105,9 @@ function Items() {
         header: 'Subcategory',
         cell: (props) => props.renderValue() ?? '-',
         size: 80,
+        enableSorting: isSortEnabled('subcategory'),
         sortingFn: 'text',
+        enableColumnFilter: isFilterEnabled('subcategory'),
         filterFn: 'arrIncludesSome',
       }),
       columnHelper.accessor('rarity', {
@@ -110,7 +115,9 @@ function Items() {
         header: 'Rarity',
         cell: (props) => props.renderValue(),
         size: 80,
+        enableSorting: isSortEnabled('rarity'),
         sortingFn: 'text',
+        enableColumnFilter: isFilterEnabled('rarity'),
         filterFn: arrEqualsSome,
       }),
       columnHelper.accessor('level', {
@@ -118,8 +125,10 @@ function Items() {
         cell: (props) => props.renderValue(),
         header: 'Level',
         size: 50,
+        enableSorting: isSortEnabled('level'),
         sortingFn: 'alphanumeric',
         sortDescFirst: false,
+        enableColumnFilter: isFilterEnabled('level'),
         filterFn: 'inNumberRange',
       }),
     ],
@@ -127,11 +136,7 @@ function Items() {
   );
 
   return (
-    <DataTableProvider
-      data={items}
-      columns={columns}
-      sortingState={sortingState}
-    >
+    <DataTableProvider data={items} columns={columns}>
       <Drawer className="drawer-end h-full min-h-0">
         <Drawer.Content className="h-full flex flex-col min-h-0">
           <div className="flex justify-end gap-2 mr-2 mt-2">

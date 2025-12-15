@@ -1,14 +1,32 @@
 import { RotateCcw } from 'lucide-react';
+import { parseAsString, useQueryStates } from 'nuqs';
 import type { ButtonHTMLAttributes } from 'react';
+import { useMemo } from 'react';
 import { IconButton } from '@/components/ui/buttons/icon-button';
-import { useDataTableContext } from '@/components/ui/tables/data-table';
+import { useDataTable } from '@/components/ui/tables/hooks/use-data-table';
 import { cn } from '@/utils/cn';
 
 export const ResetFilter = ({
   className,
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement>) => {
-  const { table } = useDataTableContext();
+  const { table } = useDataTable();
+
+  const filterColumns = useMemo(
+    () =>
+      table
+        .getAllColumns()
+        .filter((col) => col.getCanFilter())
+        .map((col) => col.id),
+    [table],
+  );
+
+  const filterParsers = useMemo(
+    () => Object.fromEntries(filterColumns.map((col) => [col, parseAsString])),
+    [filterColumns],
+  );
+
+  const [, setQueryStates] = useQueryStates(filterParsers);
 
   return (
     <IconButton
@@ -17,6 +35,10 @@ export const ResetFilter = ({
       icon={<RotateCcw size={16} />}
       onClick={() => {
         table.resetColumnFilters();
+        table.firstPage();
+        setQueryStates(
+          Object.fromEntries(filterColumns.map((key) => [key, null])),
+        );
       }}
     />
   );
