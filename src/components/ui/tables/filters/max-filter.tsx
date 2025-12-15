@@ -19,6 +19,7 @@ export const MaxFilter = ({
   const [localValue, setLocalValue] = useState(String(currentValue));
   const prevFilterRef = useRef(currentValue);
 
+  // sync mechanism from external source like 'reset filter'
   if (prevFilterRef.current !== currentValue) {
     setLocalValue(String(currentValue));
   }
@@ -32,21 +33,18 @@ export const MaxFilter = ({
       value={localValue}
       onChange={(e) => setLocalValue(e.target.value)}
       onBlur={(e) => {
-        table.firstPage();
         const newMax = Number(e.target.value);
-        const currentMin =
-          (
-            table.getColumn(column)?.getFilterValue() as
-              | [number, number]
-              | undefined
-          )?.[0] ?? min;
+        const filterValue = table.getColumn(column)?.getFilterValue() as
+          | [number, number]
+          | undefined;
+        const currentMin = filterValue ? Math.min(...filterValue) : min;
+        const finalMax = Math.max(currentMin, newMax);
 
         table
           .getColumn(column)
-          ?.setFilterValue(() => [
-            Math.min(currentMin, newMax),
-            Math.max(currentMin, newMax),
-          ]);
+          ?.setFilterValue(() => [Math.min(currentMin, finalMax), finalMax]);
+        table.firstPage();
+        setLocalValue(String(finalMax));
       }}
     />
   );
