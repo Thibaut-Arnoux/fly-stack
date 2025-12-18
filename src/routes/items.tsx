@@ -4,8 +4,8 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { ListFilter } from 'lucide-react';
 import { useMemo } from 'react';
 import { itemCollection } from '@/collections/item-collection';
+import { ItemDetailsModal } from '@/components/features/item-details/item-details-modal';
 import { FilterItem } from '@/components/features/items/filter-item';
-import { ItemModal } from '@/components/features/items/item-modal';
 import { Drawer } from '@/components/ui/layouts/drawer';
 import { useModal } from '@/components/ui/modals/hooks/use-modal';
 import { ModalProvider } from '@/components/ui/modals/modal';
@@ -150,7 +150,7 @@ function Items() {
   );
 
   return (
-    <ModalProvider modal={<ItemModal />} position="middle" size="lg">
+    <ModalProvider modal={<ItemDetailsModal />} position="middle" size="lg">
       <DataTableProvider data={items} columns={columns}>
         <Drawer className="drawer-end h-full min-h-0">
           <Drawer.Content className="h-full flex flex-col min-h-0">

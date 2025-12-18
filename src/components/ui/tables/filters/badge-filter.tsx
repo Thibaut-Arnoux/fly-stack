@@ -1,4 +1,4 @@
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/ui/data-display/badge';
 import { useDataTable } from '@/components/ui/tables/hooks/use-data-table';
 
 export const BadgeFilter = ({ column }: { column?: string }) => {

@@ -1,7 +1,16 @@
+/** biome-ignore-all lint/suspicious/noUnknownAtRules: css file */
+/** biome-ignore-all lint/correctness/noUnknownProperty: css file */
 @import "tailwindcss";
-/** biome-ignore lint/suspicious/noUnknownAtRules: daisyui setup */
+
+@theme {
+  --color-rarity-common: oklch(0.72 0.03 260);
+  --color-rarity-uncommon: oklch(0.74 0.17 145);
+  --color-rarity-rare: oklch(0.62 0.19 255);
+  --color-rarity-very-rare: oklch(0.61 0.2 290);
+  --color-rarity-unique: oklch(0.76 0.16 85);
+  --color-rarity-ultimate: oklch(0.6 0.22 30);
+}
 @plugin "daisyui" {
-  /* biome-ignore lint/correctness/noUnknownProperty: daisyui theme setup */
   themes:
     winter --default,
     dim --prefersdark;
