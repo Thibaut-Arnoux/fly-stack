@@ -1,9 +1,9 @@
-import { useLiveQuery } from '@tanstack/react-db';
 import { createFileRoute } from '@tanstack/react-router';
 import { createColumnHelper } from '@tanstack/react-table';
-import { ListFilter } from 'lucide-react';
+import { ListFilter, Star } from 'lucide-react';
 import { useMemo } from 'react';
 import { itemCollection } from '@/collections/item-collection';
+import { itemUserCollection } from '@/collections/item-user-collection';
 import { ItemDetailsModal } from '@/components/features/item-details/item-details-modal';
 import { FilterItem } from '@/components/features/items/filter-item';
 import { Drawer } from '@/components/ui/layouts/drawer';
@@ -16,16 +16,27 @@ import {
 import { arrEqualsSome } from '@/components/ui/tables/filters/fn/arr-equals-some';
 import { SearchFilter } from '@/components/ui/tables/filters/search-filter';
 import { PaginationTable } from '@/components/ui/tables/pagination-table';
-import type { Item } from '@/schemas/item-schema';
+import { useItem } from '@/hooks/items/use-item';
+import type { ItemWithUserLinks } from '@/schemas/item-schema';
+import { cn } from '@/utils/cn';
 import { isFilterEnabled, isSortEnabled } from '@/utils/is';
 
 export const Route = createFileRoute('/items')({
-  loader: () => itemCollection.preload(),
+  loader: () => {
+    itemCollection.preload();
+    itemUserCollection.preload();
+  },
   component: Items,
 });
 
-const NameCell = ({ itemName, item }: { itemName?: string; item: Item }) => {
-  const { open } = useModal<Item>();
+const NameCell = ({
+  itemName,
+  item,
+}: {
+  itemName?: string;
+  item: ItemWithUserLinks;
+}) => {
+  const { open } = useModal<ItemWithUserLinks>();
 
   const handleClick = () => {
     open(item);
@@ -43,9 +54,9 @@ const NameCell = ({ itemName, item }: { itemName?: string; item: Item }) => {
 };
 
 function Items() {
-  const { data: items } = useLiveQuery((q) => q.from({ item: itemCollection }));
+  const { data: items } = useItem();
 
-  const columnHelper = createColumnHelper<Item>();
+  const columnHelper = createColumnHelper<ItemWithUserLinks>();
   const columns = useMemo(
     () => [
       columnHelper.display({
@@ -63,6 +74,43 @@ function Items() {
         size: 50,
         enableSorting: isSortEnabled('icon'),
         enableColumnFilter: isFilterEnabled('icon'),
+      }),
+      columnHelper.accessor((row) => row.favorite ?? false, {
+        id: 'favorite',
+        header: 'Star',
+        cell: (props) => {
+          const handleClick = () => {
+            const favoriteId = props.row.original.item_user_id;
+            if (!favoriteId) {
+              itemUserCollection.insert({
+                id: crypto.randomUUID(),
+                item_id: props.row.original.id,
+                favorite: true,
+                note: null,
+              });
+            } else {
+              itemUserCollection.update(favoriteId, (draft) => {
+                draft.favorite = !draft.favorite;
+              });
+            }
+          };
+
+          return (
+            <Star
+              size={20}
+              onClick={handleClick}
+              className={cn(
+                'transition-all hover:brightness-150 hover:scale-110 cursor-pointer',
+                props.row.original.favorite
+                  ? 'fill-warning text-warning'
+                  : 'text-base-content opacity-30',
+              )}
+            />
+          );
+        },
+        size: 50,
+        enableSorting: isSortEnabled('favorite'),
+        enableColumnFilter: isFilterEnabled('favorite'),
       }),
       columnHelper.accessor((row) => row.name?.en ?? undefined, {
         id: 'name',

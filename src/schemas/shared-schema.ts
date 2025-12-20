@@ -28,3 +28,9 @@ export const localizedStringOptionalSchema = localizedStringSchema
   .extend({
     en: localizedStringSchema.shape.en, // keep "en" required
   });
+
+export const txidResponseSchema = z.object({
+  txid: z.number().int().positive(),
+});
+
+export type TxidResponse = z.infer<typeof txidResponseSchema>;

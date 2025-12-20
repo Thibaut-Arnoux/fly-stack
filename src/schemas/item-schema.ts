@@ -3,6 +3,7 @@ import { ItemCategoryEnum } from '@/enums/item-category-enum';
 import { ItemRarityEnum } from '@/enums/item-rarity-enum';
 import { ItemSubcategoryEnum } from '@/enums/item-subcategory-enum';
 import { SexEnum } from '@/enums/sex-enum';
+import type { ItemUser } from '@/schemas/item-user-schema';
 import {
   localizedStringOptionalSchema,
   localizedStringSchema,
@@ -45,8 +46,14 @@ export type Item = z.infer<typeof itemSchema>;
 
 export const itemsSchema = z.array(itemSchema);
 
-export type DisplayItem = Pick<
-  Item,
+export type ItemWithUserLinks = Item & {
+  item_user_id?: ItemUser['id'];
+  favorite: ItemUser['favorite'];
+  note: ItemUser['note'];
+};
+
+export type ItemColumns = Pick<
+  ItemWithUserLinks,
   | 'id'
   | 'icon'
   | 'name'
@@ -56,4 +63,5 @@ export type DisplayItem = Pick<
   | 'category'
   | 'subcategory'
   | 'level'
+  | 'favorite'
 >;
