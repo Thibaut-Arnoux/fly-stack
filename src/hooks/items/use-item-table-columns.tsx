@@ -1,7 +1,10 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import { Star } from 'lucide-react';
 import { useMemo } from 'react';
-import { itemUserCollection } from '@/collections/item-user-collection';
+import {
+  insertFavoriteItem,
+  updateFavoriteItem,
+} from '@/collections/item-user-collection';
 import { useModal } from '@/components/ui/modals/hooks/use-modal';
 import { arrEqualsSome } from '@/components/ui/tables/filters/fn/arr-equals-some';
 import type { ItemWithUserLinks } from '@/schemas/item-schema';
@@ -23,19 +26,11 @@ const IconCell = ({ icon }: { icon: string }) => {
 const FavoriteCell = ({ item }: { item: ItemWithUserLinks }) => {
   const handleClick = () => {
     const favoriteId = item.item_user_id;
+
     if (!favoriteId) {
-      itemUserCollection.insert({
-        id: crypto.randomUUID(),
-        item_id: item.id,
-        favorite: true,
-        note: null,
-        created_at: null,
-        updated_at: null,
-      });
+      insertFavoriteItem({ itemId: item.id });
     } else {
-      itemUserCollection.update(favoriteId, (draft) => {
-        draft.favorite = !draft.favorite;
-      });
+      updateFavoriteItem({ id: favoriteId, favorite: !item.favorite });
     }
   };
 

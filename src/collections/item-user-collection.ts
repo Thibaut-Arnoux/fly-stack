@@ -1,7 +1,7 @@
 import { electricCollectionOptions } from '@tanstack/electric-db-collection';
 import { createCollection } from '@tanstack/react-db';
 import { flyffService } from '@/api/flyff-service';
-import { itemUserSchema } from '@/schemas/item-user-schema';
+import { type ItemUser, itemUserSchema } from '@/schemas/item-user-schema';
 
 export const itemUserCollection = createCollection(
   electricCollectionOptions({
@@ -34,3 +34,79 @@ export const itemUserCollection = createCollection(
     },
   }),
 );
+
+export const insertItemUser = ({
+  itemId,
+  favorite = false,
+  note = null,
+}: {
+  itemId: ItemUser['item_id'];
+  favorite?: ItemUser['favorite'];
+  note?: ItemUser['note'];
+}) => {
+  itemUserCollection.insert({
+    id: crypto.randomUUID(),
+    item_id: itemId,
+    favorite,
+    note,
+    created_at: null,
+    updated_at: null,
+  });
+};
+
+export const insertFavoriteItem = ({
+  itemId,
+}: {
+  itemId: ItemUser['item_id'];
+}) => {
+  insertItemUser({ itemId, favorite: true });
+};
+
+export const insertNoteItem = ({
+  itemId,
+  note,
+}: {
+  itemId: ItemUser['item_id'];
+  note: ItemUser['note'];
+}) => {
+  insertItemUser({ itemId, note });
+};
+
+export const updateItemUser = ({
+  id,
+  favorite,
+  note,
+}: {
+  id: ItemUser['id'];
+  favorite?: ItemUser['favorite'];
+  note?: ItemUser['note'];
+}) => {
+  itemUserCollection.update(id, (draft) => {
+    if (favorite !== undefined) {
+      draft.favorite = favorite;
+    }
+    if (note !== undefined) {
+      draft.note = note;
+    }
+  });
+};
+
+export const updateFavoriteItem = ({
+  id,
+  favorite,
+}: {
+  id: ItemUser['id'];
+  favorite: ItemUser['favorite'];
+}) => {
+  updateItemUser({ id, favorite });
+};
+
+export const updateNoteItem = ({
+  id,
+  note,
+}: {
+  id: ItemUser['id'];
+  note: ItemUser['note'];
+}) => {
+  updateItemUser({ id, note });
+};
