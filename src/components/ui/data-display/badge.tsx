@@ -1,4 +1,4 @@
-import type { HTMLAttributes } from 'react';
+import type { HTMLAttributes, ReactNode } from 'react';
 import { cn } from '@/utils/cn';
 
 type BadgeVariant = 'outline' | 'dash' | 'soft' | 'ghost';
@@ -19,6 +19,7 @@ interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   variant?: BadgeVariant;
   color?: BadgeColor;
   size?: BadgeSize;
+  icon?: ReactNode;
 }
 
 // explicit classes to be bundle by tailwind
@@ -53,6 +54,7 @@ export const Badge = ({
   variant,
   color,
   size,
+  icon,
   children,
   ...props
 }: BadgeProps) => {
@@ -63,10 +65,12 @@ export const Badge = ({
         variant && variantClasses[variant],
         color && colorClasses[color],
         size && sizeClasses[size],
+        icon && 'gap-2',
         className,
       )}
       {...props}
     >
+      {icon}
       {children}
     </span>
   );

@@ -4,8 +4,11 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { ListFilter } from 'lucide-react';
 import { useMemo } from 'react';
 import { itemCollection } from '@/collections/item-collection';
+import { ItemDetailsModal } from '@/components/features/item-details/item-details-modal';
 import { FilterItem } from '@/components/features/items/filter-item';
 import { Drawer } from '@/components/ui/layouts/drawer';
+import { useModal } from '@/components/ui/modals/hooks/use-modal';
+import { ModalProvider } from '@/components/ui/modals/modal';
 import {
   DataTable,
   DataTableProvider,
@@ -13,7 +16,7 @@ import {
 import { arrEqualsSome } from '@/components/ui/tables/filters/fn/arr-equals-some';
 import { SearchFilter } from '@/components/ui/tables/filters/search-filter';
 import { PaginationTable } from '@/components/ui/tables/pagination-table';
-import type { DisplayItem } from '@/schemas/item-schema';
+import type { Item } from '@/schemas/item-schema';
 import { isFilterEnabled, isSortEnabled } from '@/utils/is';
 
 export const Route = createFileRoute('/items')({
@@ -21,22 +24,28 @@ export const Route = createFileRoute('/items')({
   component: Items,
 });
 
-function Items() {
-  const { data: items } = useLiveQuery((q) =>
-    q.from({ item: itemCollection }).select(({ item }) => ({
-      id: item.id,
-      icon: item.icon,
-      name: item.name,
-      description: item.description,
-      sex: item.sex,
-      rarity: item.rarity,
-      category: item.category,
-      subcategory: item.subcategory,
-      level: item.level,
-    })),
-  );
+const NameCell = ({ itemName, item }: { itemName?: string; item: Item }) => {
+  const { open } = useModal<Item>();
 
-  const columnHelper = createColumnHelper<DisplayItem>();
+  const handleClick = () => {
+    open(item);
+  };
+
+  return (
+    <button
+      type="button"
+      className="link link-hover text-left font-medium"
+      onClick={handleClick}
+    >
+      {itemName ?? '-'}
+    </button>
+  );
+};
+
+function Items() {
+  const { data: items } = useLiveQuery((q) => q.from({ item: itemCollection }));
+
+  const columnHelper = createColumnHelper<Item>();
   const columns = useMemo(
     () => [
       columnHelper.display({
@@ -58,7 +67,12 @@ function Items() {
       columnHelper.accessor((row) => row.name?.en ?? undefined, {
         id: 'name',
         header: 'Name',
-        cell: (props) => props.renderValue() ?? '-',
+        cell: (props) => (
+          <NameCell
+            itemName={props.row.original.name?.en}
+            item={props.row.original}
+          />
+        ),
         size: 150,
         enableSorting: isSortEnabled('name'),
         sortingFn: 'alphanumeric',
@@ -67,9 +81,9 @@ function Items() {
       }),
       columnHelper.accessor(
         (row) =>
-          (row.description.en ?? 'null') === 'null'
+          (row.description?.en ?? 'null') === 'null'
             ? undefined
-            : row.description.en,
+            : row.description?.en,
         {
           id: 'description',
           header: 'Description',
@@ -136,26 +150,28 @@ function Items() {
   );
 
   return (
-    <DataTableProvider data={items} columns={columns}>
-      <Drawer className="drawer-end h-full min-h-0">
-        <Drawer.Content className="h-full flex flex-col min-h-0">
-          <div className="flex justify-end gap-2 mr-2 mt-2">
-            <SearchFilter column="name" />
-            <Drawer.Trigger className="btn btn-square">
-              <ListFilter size={16} />
-            </Drawer.Trigger>
-          </div>
-          <div className="flex-1 overflow-y-auto">
-            <DataTable className="table-fixed table-zebra" />
-          </div>
-          <div className="flex justify-center my-1">
-            <PaginationTable />
-          </div>
-        </Drawer.Content>
-        <Drawer.Side className="w-80">
-          <FilterItem />
-        </Drawer.Side>
-      </Drawer>
-    </DataTableProvider>
+    <ModalProvider modal={<ItemDetailsModal />} position="middle" size="lg">
+      <DataTableProvider data={items} columns={columns}>
+        <Drawer className="drawer-end h-full min-h-0">
+          <Drawer.Content className="h-full flex flex-col min-h-0">
+            <div className="flex justify-end gap-2 mr-2 mt-2">
+              <SearchFilter column="name" />
+              <Drawer.Trigger className="btn btn-square">
+                <ListFilter size={16} />
+              </Drawer.Trigger>
+            </div>
+            <div className="flex-1 overflow-y-auto">
+              <DataTable className="table-fixed table-zebra" />
+            </div>
+            <div className="flex justify-center my-1">
+              <PaginationTable />
+            </div>
+          </Drawer.Content>
+          <Drawer.Side className="w-80">
+            <FilterItem />
+          </Drawer.Side>
+        </Drawer>
+      </DataTableProvider>
+    </ModalProvider>
   );
 }
