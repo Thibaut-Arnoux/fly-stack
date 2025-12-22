@@ -25,12 +25,12 @@ const IconCell = ({ icon }: { icon: string }) => {
 
 const FavoriteCell = ({ item }: { item: ItemWithUserLinks }) => {
   const handleClick = () => {
-    const favoriteId = item.item_user_id;
+    const itemUserId = item.item_user_id;
 
-    if (!favoriteId) {
+    if (!itemUserId) {
       insertFavoriteItem({ itemId: item.id });
     } else {
-      updateFavoriteItem({ id: favoriteId, favorite: !item.favorite });
+      updateFavoriteItem({ id: itemUserId, favorite: !item.favorite });
     }
   };
 

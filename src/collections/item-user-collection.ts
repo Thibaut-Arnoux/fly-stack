@@ -5,7 +5,7 @@ import { type ItemUser, itemUserSchema } from '@/schemas/item-user-schema';
 
 export const itemUserCollection = createCollection(
   electricCollectionOptions({
-    id: 'item-users',
+    id: 'item-user',
     shapeOptions: {
       url: flyffService.urls.itemUsers,
       fetchClient: flyffService.httpClient.asFetch,
