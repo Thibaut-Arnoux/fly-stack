@@ -34,3 +34,8 @@ export const txidResponseSchema = z.object({
 });
 
 export type TxidResponse = z.infer<typeof txidResponseSchema>;
+
+export const timestampSchema = z.object({
+  created_at: z.coerce.date().nullable(),
+  updated_at: z.coerce.date().nullable(),
+});

@@ -22,9 +22,8 @@ import { cn } from '@/utils/cn';
 import { isFilterEnabled, isSortEnabled } from '@/utils/is';
 
 export const Route = createFileRoute('/items')({
-  loader: () => {
-    itemCollection.preload();
-    itemUserCollection.preload();
+  loader: async () => {
+    await Promise.all([itemCollection.preload(), itemUserCollection.preload()]);
   },
   component: Items,
 });
@@ -66,7 +65,7 @@ function Items() {
           <img
             width={32}
             height={32}
-            className="min-w-[32px]" // avoid shrink img size on reduced window
+            className="min-w-8" // avoid shrink img size on reduced window
             src={`${import.meta.env.VITE_FLYFF_API_BASE_URL}/image/item/${props.row.original.icon}`}
             alt={props.row.original.icon}
           />
@@ -87,6 +86,8 @@ function Items() {
                 item_id: props.row.original.id,
                 favorite: true,
                 note: null,
+                created_at: null,
+                updated_at: null,
               });
             } else {
               itemUserCollection.update(favoriteId, (draft) => {
