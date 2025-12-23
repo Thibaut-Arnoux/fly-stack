@@ -17,6 +17,7 @@ import {
   useMemo,
   useState,
 } from 'react';
+import { arrEqualsSome } from '@/components/ui/tables/filters/fn/arr-equals-some';
 import { useDataTable } from '@/components/ui/tables/hooks/use-data-table';
 import { useFilteringSearchParams } from '@/components/ui/tables/hooks/use-filtering-search-params';
 import { useSortingSearchParams } from '@/components/ui/tables/hooks/use-sorting-search-params';
@@ -33,6 +34,16 @@ function createDataTableContext<TData>() {
 
 // biome-ignore lint/suspicious/noExplicitAny: cast any for Provider, will be overrided in custom hook
 export const DataTableContext = createDataTableContext<any>();
+
+const arrayFilterFns = new Set([
+  // build in array filters
+  'arrIncludes',
+  'arrIncludesAll',
+  'arrIncludesSome',
+  'inNumberRange',
+  // custom array filters
+  'arrEqualsSome',
+]);
 
 export const DataTableProvider = <TData,>({
   data,
@@ -59,19 +70,12 @@ export const DataTableProvider = <TData,>({
   );
 
   const arrayFilterColumns = useMemo(() => {
-    const knownArrayFilters = new Set([
-      'arrIncludes',
-      'arrIncludesAll',
-      'arrIncludesSome',
-      'inNumberRange',
-    ]);
-
     return columns
       .filter(
         (col) =>
           col.id &&
           typeof col.filterFn === 'string' &&
-          knownArrayFilters.has(col.filterFn),
+          arrayFilterFns.has(col.filterFn),
       )
       .map((col) => col.id as string);
   }, [columns]);
@@ -87,6 +91,9 @@ export const DataTableProvider = <TData,>({
     columns,
     defaultColumn: {
       sortUndefined: 'last',
+    },
+    filterFns: {
+      arrEqualsSome,
     },
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
