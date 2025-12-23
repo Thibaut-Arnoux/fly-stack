@@ -1,7 +1,6 @@
 import type { FilterFn, Row } from '@tanstack/react-table';
 
-// biome-ignore lint/suspicious/noExplicitAny: type from tanstack table ColumnFiltering.d.ts
-export const arrEqualsSome: FilterFn<any> = (
+export const arrEqualsSome: FilterFn<unknown> = (
   row: Row<unknown>,
   columnId: string,
   filterValue: unknown,
@@ -19,3 +18,6 @@ export const arrEqualsSome: FilterFn<any> = (
 
   return terms.some((t) => cell === t);
 };
+
+arrEqualsSome.autoRemove = (val: unknown) =>
+  !val || (Array.isArray(val) && val.length === 0);

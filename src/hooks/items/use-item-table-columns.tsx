@@ -6,7 +6,6 @@ import {
   updateFavoriteItem,
 } from '@/collections/item-user-collection';
 import { useModal } from '@/components/ui/modals/hooks/use-modal';
-import { arrEqualsSome } from '@/components/ui/tables/filters/fn/arr-equals-some';
 import type { ItemWithUserLinks } from '@/schemas/item-schema';
 import { cn } from '@/utils/cn';
 import { isFilterEnabled, isSortEnabled } from '@/utils/is';
@@ -161,7 +160,7 @@ export const useItemTableColumns = () => {
         enableSorting: isSortEnabled('rarity'),
         sortingFn: 'text',
         enableColumnFilter: isFilterEnabled('rarity'),
-        filterFn: arrEqualsSome,
+        filterFn: 'arrEqualsSome',
       }),
       columnHelper.accessor('level', {
         id: 'level',
