@@ -55,6 +55,10 @@ export class HttpClient {
     return this._httpClient.post<T>(endpoint, options).json();
   };
 
+  public patch = async <T>(endpoint: string, options?: Options) => {
+    return this._httpClient.patch<T>(endpoint, options).json();
+  };
+
   private _getCookie(name: string): string | null {
     const m = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
     return m ? decodeURIComponent(m[1]) : null;
