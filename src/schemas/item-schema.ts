@@ -22,7 +22,7 @@ const spawnSchema = z.object({
 export const itemSchema = z.object({
   id: z.uuid(),
   item_id: z.number().int().positive(),
-  name: localizedStringSchema,
+  name: localizedStringSchema, // TODO update localized schema, only en will be filled and check if there is all langages, en can be optional too
   description: localizedStringOptionalSchema,
   icon: z.string(),
   level: z.number().int().positive(),
