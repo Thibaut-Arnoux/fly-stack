@@ -5,7 +5,10 @@ import { ItemRarityEnum } from '@/enums/item-rarity-enum';
 import { ItemSubcategoryEnum } from '@/enums/item-subcategory-enum';
 import { SexEnum } from '@/enums/sex-enum';
 import type { ItemUser } from '@/schemas/item-user-schema';
-import { localizedStringSchema } from '@/schemas/shared-schema';
+import {
+  localizedStringSchema,
+  timestampSchema,
+} from '@/schemas/shared-schema';
 
 const spawnSchema = z.object({
   world: z.number().int(),
@@ -16,20 +19,23 @@ const spawnSchema = z.object({
   continent: z.number().int().optional(),
 });
 
-// TODO : update schema with missing new properties
 export const itemSchema = z.object({
   id: z.uuid(),
   item_id: z.number().int().positive(),
   name: localizedStringSchema,
   description: localizedStringSchema,
   icon: z.string(),
+  class: z.number().int().positive().nullable(),
   level: z.number().int().positive(),
-  element: z.enum(ElementEnum).optional(),
+  element: z.enum(ElementEnum).nullable(),
+  min_defense: z.number().int().positive().nullable(),
+  max_defense: z.number().int().positive().nullable(),
   category: z.enum(ItemCategoryEnum),
-  subcategory: z.enum(ItemSubcategoryEnum).optional(),
+  subcategory: z.enum(ItemSubcategoryEnum).nullable(),
   rarity: z.enum(ItemRarityEnum),
-  sex: z.enum(SexEnum).optional(),
+  sex: z.enum(SexEnum).nullable(),
   stack: z.number().int().positive(),
+  buy_price: z.number().int().positive().nullable(),
   sell_price: z.number().int().positive(),
   consumable: z.boolean(),
   premium: z.boolean(),
@@ -38,6 +44,8 @@ export const itemSchema = z.object({
   deletable: z.boolean(),
   duration_real_time: z.boolean(),
   spawns: z.array(spawnSchema),
+  transy: z.number().int().positive().nullable(),
+  ...timestampSchema.shape,
 });
 
 export type Item = z.infer<typeof itemSchema>;
