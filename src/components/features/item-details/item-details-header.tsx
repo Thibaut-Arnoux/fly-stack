@@ -65,7 +65,7 @@ export const ItemDetailsHeader = ({ item }: ItemDetailsHeaderProps) => {
             LVL {item.level}
           </Badge>
 
-          {item.element && item.element !== 'none' && (
+          {item.element && (
             <Badge
               variant="ghost"
               icon={<Shield className="w-4 h-4" />}
@@ -76,7 +76,7 @@ export const ItemDetailsHeader = ({ item }: ItemDetailsHeaderProps) => {
           )}
         </div>
 
-        {item.description?.en && item.description.en !== 'null' && (
+        {item.description?.en && (
           <p className="text-base-content/70 text-sm mt-2">
             {item.description.en}
           </p>
