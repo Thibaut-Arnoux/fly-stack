@@ -1,13 +1,11 @@
 import z from 'zod';
+import { ElementEnum } from '@/enums/element-enum';
 import { ItemCategoryEnum } from '@/enums/item-category-enum';
 import { ItemRarityEnum } from '@/enums/item-rarity-enum';
 import { ItemSubcategoryEnum } from '@/enums/item-subcategory-enum';
 import { SexEnum } from '@/enums/sex-enum';
 import type { ItemUser } from '@/schemas/item-user-schema';
-import {
-  localizedStringOptionalSchema,
-  localizedStringSchema,
-} from '@/schemas/shared-schema';
+import { localizedStringSchema } from '@/schemas/shared-schema';
 
 const spawnSchema = z.object({
   world: z.number().int(),
@@ -22,11 +20,11 @@ const spawnSchema = z.object({
 export const itemSchema = z.object({
   id: z.uuid(),
   item_id: z.number().int().positive(),
-  name: localizedStringSchema, // TODO update localized schema, only en will be filled and check if there is all langages, en can be optional too
-  description: localizedStringOptionalSchema,
+  name: localizedStringSchema,
+  description: localizedStringSchema,
   icon: z.string(),
   level: z.number().int().positive(),
-  element: z.string(),
+  element: z.enum(ElementEnum).optional(),
   category: z.enum(ItemCategoryEnum),
   subcategory: z.enum(ItemSubcategoryEnum).optional(),
   rarity: z.enum(ItemRarityEnum),
