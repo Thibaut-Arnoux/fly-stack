@@ -76,7 +76,7 @@ export const useItemTableColumns = () => {
 
   return useMemo(
     () => [
-      columnHelper.accessor((row) => row.favorite ?? false, {
+      columnHelper.accessor((row) => row.favorite, {
         id: 'favorite',
         header: 'Star',
         cell: (props) => <FavoriteCell item={props.row.original} />,
@@ -92,7 +92,7 @@ export const useItemTableColumns = () => {
         enableSorting: isSortEnabled('icon'),
         enableColumnFilter: isFilterEnabled('icon'),
       }),
-      columnHelper.accessor((row) => row.name?.en ?? undefined, {
+      columnHelper.accessor((row) => row.name?.en || undefined, {
         id: 'name',
         header: 'Name',
         cell: (props) => (
@@ -107,22 +107,16 @@ export const useItemTableColumns = () => {
         enableColumnFilter: isFilterEnabled('name'),
         filterFn: 'includesString',
       }),
-      columnHelper.accessor(
-        (row) =>
-          (row.description?.en ?? 'null') === 'null'
-            ? undefined
-            : row.description?.en,
-        {
-          id: 'description',
-          header: 'Description',
-          cell: (props) => props.renderValue() ?? '-',
-          size: 250,
-          enableSorting: isSortEnabled('description'),
-          sortingFn: 'alphanumeric',
-          sortDescFirst: false,
-          enableColumnFilter: isFilterEnabled('description'),
-        },
-      ),
+      columnHelper.accessor((row) => row.description?.en || undefined, {
+        id: 'description',
+        header: 'Description',
+        cell: (props) => props.renderValue() ?? '-',
+        size: 250,
+        enableSorting: isSortEnabled('description'),
+        sortingFn: 'alphanumeric',
+        sortDescFirst: false,
+        enableColumnFilter: isFilterEnabled('description'),
+      }),
       columnHelper.accessor((row) => row.sex ?? undefined, {
         id: 'sex',
         header: 'Sex',
