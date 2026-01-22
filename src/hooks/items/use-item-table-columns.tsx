@@ -27,7 +27,7 @@ const IconCell = ({ icon }: { icon: string }) => {
   );
 };
 
-const FavoriteCell = ({ item }: { item: ItemWithUserLinks }) => {
+const BookmarkCell = ({ item }: { item: ItemWithUserLinks }) => {
   const [note, setNote] = useState(item.note ?? '');
 
   const handleFavoriteClick = () => {
@@ -119,8 +119,8 @@ export const useItemTableColumns = () => {
     () => [
       columnHelper.accessor((row) => row.favorite, {
         id: 'favorite',
-        header: 'Star',
-        cell: (props) => <FavoriteCell item={props.row.original} />,
+        header: 'Bookmark',
+        cell: (props) => <BookmarkCell item={props.row.original} />,
         size: 50,
         enableSorting: isSortEnabled('favorite'),
         enableColumnFilter: isFilterEnabled('favorite'),
