@@ -16,5 +16,5 @@ export const BadgeFilter = ({ column }: { column?: string }) => {
     ? getFilterCount(filters.find((f) => f.id === column)?.value)
     : filters.reduce((sum, f) => sum + getFilterCount(f.value), 0);
 
-  return <Badge color="neutral">{count}</Badge>;
+  return <Badge colorVariant="neutral">{count}</Badge>;
 };

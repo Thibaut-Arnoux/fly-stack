@@ -17,7 +17,7 @@ type BadgeSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   variant?: BadgeVariant;
-  color?: BadgeColor;
+  colorVariant?: BadgeColor;
   size?: BadgeSize;
   icon?: ReactNode;
 }
@@ -52,7 +52,7 @@ const colorClasses: Record<BadgeColor, string> = {
 export const Badge = ({
   className,
   variant,
-  color,
+  colorVariant,
   size,
   icon,
   children,
@@ -63,7 +63,7 @@ export const Badge = ({
       className={cn(
         'badge',
         variant && variantClasses[variant],
-        color && colorClasses[color],
+        colorVariant && colorClasses[colorVariant],
         size && sizeClasses[size],
         icon && 'gap-2',
         className,

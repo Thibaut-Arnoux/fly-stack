@@ -33,14 +33,14 @@ const sizeClasses: Record<TextareaSize, string> = {
 };
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
-  color?: TextareaColor;
+  colorVariant?: TextareaColor;
   size?: TextareaSize;
   ghost?: boolean;
 }
 
 export const Textarea = ({
   className,
-  color,
+  colorVariant,
   size,
   ghost,
   ...props
@@ -49,7 +49,7 @@ export const Textarea = ({
     <textarea
       className={cn(
         'textarea',
-        color && colorClasses[color],
+        colorVariant && colorClasses[colorVariant],
         size && sizeClasses[size],
         ghost && 'textarea-ghost',
         className,
