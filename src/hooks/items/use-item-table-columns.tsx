@@ -1,6 +1,6 @@
 import { createColumnHelper } from '@tanstack/react-table';
 import { PenLine, Star } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { type ToggleEvent, useMemo, useState } from 'react';
 import {
   insertFavoriteItem,
   insertNoteItem,
@@ -29,6 +29,12 @@ const IconCell = ({ icon }: { icon: string }) => {
 
 const BookmarkCell = ({ item }: { item: ItemWithUserLinks }) => {
   const [note, setNote] = useState(item.note ?? '');
+
+  const handleDropdownToggle = (e: ToggleEvent<HTMLDivElement>) => {
+    if (e.newState === 'open') {
+      setNote(item.note ?? '');
+    }
+  };
 
   const handleFavoriteClick = () => {
     const itemUserId = item.item_user_id;
@@ -69,7 +75,7 @@ const BookmarkCell = ({ item }: { item: ItemWithUserLinks }) => {
             icon={<PenLine size={18} />}
           />
         </Dropdown.Trigger>
-        <Dropdown.Content>
+        <Dropdown.Content onToggle={handleDropdownToggle}>
           <div className="flex flex-col gap-2">
             <textarea
               name="note"

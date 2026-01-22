@@ -1,4 +1,5 @@
 import {
+  type CSSProperties,
   cloneElement,
   createContext,
   type HTMLAttributes,
@@ -60,7 +61,7 @@ export const Dropdown = ({ children, position, align }: DropdownProps) => {
 const DropdownTrigger = ({
   children,
 }: {
-  children: ReactElement<{ style?: React.CSSProperties }>;
+  children: ReactElement<{ style?: CSSProperties }>;
 }) => {
   const { id } = useDropdownContext();
 
