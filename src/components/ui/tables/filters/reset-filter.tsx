@@ -4,7 +4,6 @@ import type { ButtonHTMLAttributes } from 'react';
 import { useMemo } from 'react';
 import { IconButton } from '@/components/ui/buttons/icon-button';
 import { useDataTable } from '@/components/ui/tables/hooks/use-data-table';
-import { cn } from '@/utils/cn';
 
 export const ResetFilter = ({
   className,
@@ -30,7 +29,8 @@ export const ResetFilter = ({
 
   return (
     <IconButton
-      className={cn('btn-ghost', className)}
+      variant="ghost"
+      className={className}
       {...props}
       icon={<RotateCcw size={16} />}
       onClick={() => {

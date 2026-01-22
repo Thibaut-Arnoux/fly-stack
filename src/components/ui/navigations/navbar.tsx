@@ -12,7 +12,7 @@ export const Navbar = ({ links = [] }: { links?: NavbarLink[] }) => {
   return (
     <div className="navbar bg-base-100 shadow-sm">
       <div className="dropdown">
-        <IconButton className="btn-ghost lg:hidden" icon={<Menu />} />
+        <IconButton variant="ghost" className="lg:hidden" icon={<Menu />} />
         <ul className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
           {links.map((link) => (
             <li key={link.label}>

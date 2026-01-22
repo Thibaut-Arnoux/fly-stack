@@ -1,14 +1,17 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
-import { Button } from '@/components/ui/buttons/button';
-import { cn } from '@/utils/cn';
+import type { ReactNode } from 'react';
+import { Button, type ButtonProps } from '@/components/ui/buttons/button';
+
+interface IconButtonProps extends ButtonProps {
+  icon: ReactNode;
+}
 
 export const IconButton = ({
-  className,
   icon,
+  shape = 'square',
   ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & { icon: ReactNode }) => {
+}: IconButtonProps) => {
   return (
-    <Button className={cn('btn-square', className)} {...props}>
+    <Button shape={shape} {...props}>
       {icon}
     </Button>
   );

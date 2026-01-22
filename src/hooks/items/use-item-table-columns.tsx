@@ -84,7 +84,11 @@ const BookmarkCell = ({ item }: { item: ItemWithUserLinks }) => {
               value={note}
               onChange={(e) => setNote(e.target.value)}
             />
-            <Button className="w-1/3 btn-sm ml-auto" onClick={handleSaveNote}>
+            <Button
+              size="sm"
+              className="w-1/3 ml-auto"
+              onClick={handleSaveNote}
+            >
               Save
             </Button>
           </div>

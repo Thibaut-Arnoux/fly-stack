@@ -96,7 +96,9 @@ const Close = () => {
     <form method="dialog" className="absolute right-2 top-1">
       <IconButton
         type="submit"
-        className="btn-sm btn-circle btn-ghost"
+        size="sm"
+        shape="circle"
+        variant="ghost"
         icon={<X className="w-4 h-4" />}
         aria-label="Close modal"
       />
@@ -136,7 +138,7 @@ const Body = ({
 const Cancel = () => {
   return (
     <form method="dialog">
-      <Button className="btn-sm" type="submit">
+      <Button size="sm" type="submit">
         Cancel
       </Button>
     </form>
