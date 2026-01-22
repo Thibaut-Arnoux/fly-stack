@@ -1,10 +1,15 @@
 import { createColumnHelper } from '@tanstack/react-table';
-import { Star } from 'lucide-react';
-import { useMemo } from 'react';
+import { PenLine, Star } from 'lucide-react';
+import { useMemo, useState } from 'react';
 import {
   insertFavoriteItem,
+  insertNoteItem,
   updateFavoriteItem,
+  updateNoteItem,
 } from '@/collections/item-user-collection';
+import { Button } from '@/components/ui/buttons/button';
+import { IconButton } from '@/components/ui/buttons/icon-button';
+import { Dropdown } from '@/components/ui/dropdowns/dropdown';
 import { useModal } from '@/components/ui/modals/hooks/use-modal';
 import type { ItemWithUserLinks } from '@/schemas/item-schema';
 import { cn } from '@/utils/cn';
@@ -23,7 +28,9 @@ const IconCell = ({ icon }: { icon: string }) => {
 };
 
 const FavoriteCell = ({ item }: { item: ItemWithUserLinks }) => {
-  const handleClick = () => {
+  const [note, setNote] = useState(item.note ?? '');
+
+  const handleFavoriteClick = () => {
     const itemUserId = item.item_user_id;
 
     if (!itemUserId) {
@@ -33,17 +40,51 @@ const FavoriteCell = ({ item }: { item: ItemWithUserLinks }) => {
     }
   };
 
+  const handleSaveNote = () => {
+    const itemUserId = item.item_user_id;
+
+    if (!itemUserId) {
+      insertNoteItem({ itemId: item.id, note: note || null });
+    } else {
+      updateNoteItem({ id: itemUserId, note: note || null });
+    }
+  };
+
   return (
-    <Star
-      size={20}
-      onClick={handleClick}
-      className={cn(
-        'transition-all hover:brightness-150 hover:scale-110 cursor-pointer',
-        item.favorite
-          ? 'fill-warning text-warning'
-          : 'text-base-content opacity-30',
-      )}
-    />
+    <div className="flex gap-2 items-center">
+      <Star
+        size={20}
+        onClick={handleFavoriteClick}
+        className={cn(
+          'shrink-0 transition-all hover:brightness-150 hover:scale-110 cursor-pointer',
+          item.favorite
+            ? 'fill-warning text-warning'
+            : 'text-base-content opacity-30',
+        )}
+      />
+      <Dropdown>
+        <Dropdown.Trigger>
+          <IconButton
+            className={cn('w-8 h-8', item.note && 'brightness-150')}
+            icon={<PenLine size={18} />}
+          />
+        </Dropdown.Trigger>
+        <Dropdown.Content>
+          <div className="flex flex-col gap-2">
+            <textarea
+              name="note"
+              className="textarea"
+              placeholder="Note"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+            />
+            <Button className="w-1/3 btn-sm ml-auto" onClick={handleSaveNote}>
+              Save
+            </Button>
+          </div>
+        </Dropdown.Content>
+      </Dropdown>
+    </div>
   );
 };
 
