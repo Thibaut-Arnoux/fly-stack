@@ -10,6 +10,7 @@ import {
 import { Button } from '@/components/ui/buttons/button';
 import { IconButton } from '@/components/ui/buttons/icon-button';
 import { Dropdown } from '@/components/ui/dropdowns/dropdown';
+import { Textarea } from '@/components/ui/inputs/textarea';
 import { useModal } from '@/components/ui/modals/hooks/use-modal';
 import type { ItemWithUserLinks } from '@/schemas/item-schema';
 import { cn } from '@/utils/cn';
@@ -77,9 +78,8 @@ const BookmarkCell = ({ item }: { item: ItemWithUserLinks }) => {
         </Dropdown.Trigger>
         <Dropdown.Content onToggle={handleDropdownToggle}>
           <div className="flex flex-col gap-2">
-            <textarea
+            <Textarea
               name="note"
-              className="textarea"
               placeholder="Note"
               value={note}
               onChange={(e) => setNote(e.target.value)}
