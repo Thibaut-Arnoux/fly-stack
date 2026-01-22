@@ -1,14 +1,18 @@
+import type { InputHTMLAttributes } from 'react';
 import { useRef, useState } from 'react';
-import type { InputProps } from '@/components/ui/inputs/input';
 import { NumberInput } from '@/components/ui/inputs/number-input';
 import { useDataTable } from '@/components/ui/tables/hooks/use-data-table';
+
+interface MinFilterProps extends InputHTMLAttributes<HTMLInputElement> {
+  column: string;
+}
 
 export const MinFilter = ({
   column,
   min: minProp,
   max: maxProp,
   ...props
-}: { column: string } & InputProps) => {
+}: MinFilterProps) => {
   const { table } = useDataTable();
   const min = Number(minProp);
   const max = Number(maxProp);

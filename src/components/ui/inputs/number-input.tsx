@@ -1,7 +1,12 @@
-import type { FocusEvent } from 'react';
-import { Input, type InputProps } from '@/components/ui/inputs/input';
+import type { FocusEvent, InputHTMLAttributes } from 'react';
+import { Input } from '@/components/ui/inputs/input';
 
-export const NumberInput = ({ min, max, onBlur, ...props }: InputProps) => {
+export const NumberInput = ({
+  min,
+  max,
+  onBlur,
+  ...props
+}: InputHTMLAttributes<HTMLInputElement>) => {
   const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
 

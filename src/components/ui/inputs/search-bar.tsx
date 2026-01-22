@@ -4,12 +4,12 @@ import { useDebounceCallback } from 'usehooks-ts';
 import { Input } from '@/components/ui/inputs/input';
 import { cn } from '@/utils/cn';
 
-type SearchProps = {
+interface SearchProps extends LabelHTMLAttributes<HTMLLabelElement> {
   placeholder?: string;
   search: string;
   onSearchChange: (value: string) => void;
   delay?: number;
-} & LabelHTMLAttributes<HTMLLabelElement>;
+}
 
 export const SearchBar = ({
   placeholder = 'Search',
