@@ -151,11 +151,11 @@ export const DataTable = <TData,>({
                 )}
                 {
                   {
-                    asc: <ArrowUp size={18} className="min-w-[18px]" />,
-                    desc: <ArrowDown size={18} className="min-w-[18px]" />,
+                    asc: <ArrowUp size={18} className="min-w-4.5" />,
+                    desc: <ArrowDown size={18} className="min-w-4.5" />,
                     false: header.column.getCanSort() ? (
                       <span className="hidden group-hover:inline-flex">
-                        <ArrowUpDown size={18} className="min-w-[18px]" />
+                        <ArrowUpDown size={18} className="min-w-4.5" />
                       </span>
                     ) : null,
                   }[String(header.column.getIsSorted())]
