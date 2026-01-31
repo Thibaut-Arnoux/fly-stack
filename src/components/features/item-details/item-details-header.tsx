@@ -1,4 +1,5 @@
 import { Shield, Sparkles, TrendingUp } from 'lucide-react';
+import { memo, useMemo } from 'react';
 import { Badge } from '@/components/ui/data-display/badge';
 import { type ItemRarity, ItemRarityEnum } from '@/enums/item-rarity-enum';
 import type { Item } from '@/schemas/item-schema';
@@ -17,8 +18,15 @@ interface ItemDetailsHeaderProps {
   item: Item;
 }
 
-export const ItemDetailsHeader = ({ item }: ItemDetailsHeaderProps) => {
+export const ItemDetailsHeader = memo(({ item }: ItemDetailsHeaderProps) => {
   const rarityClasses = RARITY_CLASSES[item.rarity];
+  const itemName = item.name?.en ?? 'Unknown Item';
+  const itemDescription = item.description?.en;
+
+  const imageUrl = useMemo(
+    () => `${import.meta.env.VITE_FLYFF_API_BASE_URL}/image/item/${item.icon}`,
+    [item.icon],
+  );
 
   return (
     <div className="flex items-start gap-4">
@@ -30,16 +38,17 @@ export const ItemDetailsHeader = ({ item }: ItemDetailsHeaderProps) => {
           )}
         >
           <img
-            src={`${import.meta.env.VITE_FLYFF_API_BASE_URL}/image/item/${item.icon}`}
-            alt={item.name?.en ?? 'Item'}
+            src={imageUrl}
+            alt={itemName}
             className="w-16 h-16 object-contain"
+            loading="lazy"
           />
         </div>
       </div>
 
       <div className="flex-1 min-w-0">
         <h2 className="text-2xl font-bold text-base-content mb-1">
-          {item.name?.en ?? 'Unknown Item'}
+          {itemName}
         </h2>
         <p className="text-base-content/50 text-xs font-mono mb-3">
           #{item.item_id}
@@ -48,7 +57,7 @@ export const ItemDetailsHeader = ({ item }: ItemDetailsHeaderProps) => {
         <div className="flex flex-wrap items-center gap-2">
           <Badge
             variant="ghost"
-            icon={<Sparkles className="w-4 h-4" />}
+            icon={<Sparkles className="w-4 h-4" aria-hidden="true" />}
             className={cn(
               'rounded text-xs text-base-content font-semibold uppercase',
               rarityClasses,
@@ -59,7 +68,7 @@ export const ItemDetailsHeader = ({ item }: ItemDetailsHeaderProps) => {
 
           <Badge
             variant="ghost"
-            icon={<TrendingUp className="w-4 h-4" />}
+            icon={<TrendingUp className="w-4 h-4" aria-hidden="true" />}
             className="rounded text-xs text-base-content font-semibold uppercase"
           >
             LVL {item.level}
@@ -68,7 +77,7 @@ export const ItemDetailsHeader = ({ item }: ItemDetailsHeaderProps) => {
           {item.element && (
             <Badge
               variant="ghost"
-              icon={<Shield className="w-4 h-4" />}
+              icon={<Shield className="w-4 h-4" aria-hidden="true" />}
               className="rounded bg-info/20 text-base-content text-xs font-semibold uppercase"
             >
               {item.element}
@@ -76,12 +85,12 @@ export const ItemDetailsHeader = ({ item }: ItemDetailsHeaderProps) => {
           )}
         </div>
 
-        {item.description?.en && (
-          <p className="text-base-content/70 text-sm mt-2">
-            {item.description.en}
-          </p>
+        {itemDescription && (
+          <p className="text-base-content/70 text-sm mt-2">{itemDescription}</p>
         )}
       </div>
     </div>
   );
-};
+});
+
+ItemDetailsHeader.displayName = 'ItemDetailsHeader';
